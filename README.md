@@ -1,8 +1,8 @@
 # [=] AbstractIntegratedModule, Specialized-AI-Agent-framework for Non-LLM Continual-learning edge AI Models.
 
 [~] Introduction:
-- AbstractIntegratedModule or IntegratedPipeline in short, is a standalone Specialized AI Agent Library for Non-LLM memory Augmented Agentic Framework orchestrator - Specifically designed to provide Agentic capability for any Autonomous Agentic Framework locally and Coordinatively that runs efficiently from consumer based machine to High-end embedded systems, where the AI Can directly and continously learn, with minimal and efficient compute, built-in augmented memory, Secure Peer-To-Peer (Multi-Agent) Coordination with security layers as an option, And Explainability capability based on proof from in it's internal metrics, reducing Black-Box condition necessary for reliability. 
-- AbstractIntegratedModule Contains specialized MLP using Its Own specialized geometric Weight shaping (AWE), Specialized efficient Transformer and LSTM (Long-short term memory) architecture for Scarce Data with Alpha-based computation, specifically designed for low-amount samples environment or Messy environments.
+- AbstractIntegratedModule or IntegratedPipeline in short, is a standalone Specialized AI Agent Framework for Non-LLM memory Augmented Local Agentic orchestrator - Specifically designed to provide Local Agentic capability for any Autonomous Agentic Framework as single Instance or Coordinatively that runs efficiently from consumer based machine to High-end embedded systems, where the Model Can directly and continously learn, with minimal and efficient compute, built-in augmented memory, Secure Peer-To-Peer (Multi-Agent) Coordination with security layers as an option, And Explainability capability based on proof from in it's internal metrics, reducing Black-Box condition necessary for reliability. 
+- AbstractIntegratedModule Contains specialized MLP using Its Own specialized geometric Weight encoding (AWE) that is used for Quantization-Aware-Training (QAT) for lower memory Usage, Specialized efficient Transformer and LSTM (Long-short term memory) architecture for Scarce Data training/prediction with Alpha-based computation, specifically designed for low-amount samples environment or Messy environments.
   - IntegratedPipeline Use-Case:
     - Tabular Data Prediction: Finding patterns in structured spreadsheets or rows of numerical and categorical features.
     - Classification Tasks: Separating data into groups, such as spam detection, customer churn, or disease diagnosis.
@@ -18,7 +18,7 @@ ________________________________________________________________________________
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
-- Development Stage on PyPi: 1.2.4 Official Release.
+- Development Stage on PyPi: 1.2.5 Official Release.
 - Author and Maintainer: Micro-Novelty and EpsitronNet-bot.
 - library Source-Code is Open-sourced with MIT License.
 - Purpose: Specifically Designed for providing Non-LLM AI Agent Framework for edge Devices, Optimized for ARM64 architecture.
@@ -64,18 +64,24 @@ ________________________________________________________________________________
    - LSTM is Optimized efficiently for scarce data with AWE method.
    - Robust Advanced prediction capabilities proven effective on ARM64 Using MLP + LSTM Architectures.
    - Transformer Optimized using Cython, reduced Memory overhead and Reduce CPU Usage, With Reduced Training Time is guaranteed.
+   - Reworked Prediction and Training method for User convenience in controlling the Model's capabilities and reducing Black-boxness
 -----
   - Changelog:
-     - v1.2.3:
-       - New Separate Architecture:
-       - SNN Architecture:
-         - Used for event series prediction, or sensor based motion prediction, or Processing sparse, time-series data (like audio or event camera streams) with low power consumption.
-       - Fixed bug where kNN augmented Transformer is unusable when Transformer model is not initiated properly and kNN inference function will create a new instance of Transformer model.
      - v1.2.4:
        - Fixed 2 months old Bug where similarity matching in Correct answer cache reach beyond 100%.
        - Advanced prediction method now returns the most frequently Predicted labels instead of the prediction over the first sample only.
        - Reworks confidence and agreement counts handling to match the most frequently predicted label instead of only the first sample agreement from MLP and Transformer prediction inside Advanced prediction.
        - SNN predicted labels print reports now cant reach 50 times to avoid print flooding the IDE terminal.
+     - v1.2.5 [MAJOR REWORKS]:
+       - Reworks Advanced Prediction method to separate Training and prediction to provide User's control.
+       - Reworks Regression Training for MLP, and LSTM.
+       - Fixed numerous bugs that can appear in edge cases during Advanced prediction method.
+       - New Quantization-Aware-Training method only for MLP to reduce Memory usage during Continuous Training.
+       - Reworks P2P functions to handle regression Tasks.
+       - Reworks Asynchronous function to predict chunked X samples instead of all X samples to prevent Memory overflow for edge devices.
+       - Reworks Numerous important Functions inside IntegratedPipeline that handles number of classes, dataset creation from test titles.
+       - Saving and Loading Weights as memory to SQLite database is now separated, meaning you can handle Continuous Training or stop Training when memory is present and not present.
+
     
      - Note: if you want to see the Changelog history of the library Older versions consider visiting this link:
        - PyPi history: https://pypi.org/project/AbstractIntegratedModule/#history
@@ -114,10 +120,10 @@ ________________________________________________________________________________
 <img width="1280" height="600" alt="WhatsApp Image 2026-05-27 at 07 16 32" src="https://github.com/user-attachments/assets/4b58a556-45a3-419b-96fd-9c1b76cac574" />
 
 ## [+] MANN Intro
-[=] Memory augmented Neural network (MANN) is a neural network architecture coupled with an external, dynamic memory module, allowing it to store, retrieve, and update information similarly to a computer's RAM. Unlike traditional networks that store knowledge only in weight parameters, MANNs excel at fast learning, long-term dependency handling, and episodic recall, In IntegratedPipeline, Its memory is stored in a custom database inside your local machine, then later used for memory retrieval, transfered to the AI Dictionary where it can finnaly recall its memory when input condition matched with memory. 
+[=] Memory augmented Neural network (MANN) is a neural network architecture coupled with an external, dynamic memory module, allowing it to store, retrieve, and update information similarly to a computer's RAM. Unlike traditional networks that store knowledge only in weight parameters, MANNs excel at fast learning, long-term dependency handling, and episodic recall, In IntegratedPipeline, Its memory is stored in a custom database inside your local machine, then later used for memory retrieval, transfered to the Model Dictionary where it can finnaly recall its memory when input condition matched with memory. 
 
 ## [+] Abstract Weight Encoder (AWE) Intro
-[=] AWE is a specialized custom weight shaping or encoding method Specifically designed for MLP Architecture, using eigenvalue and spectral methods as base equations to calculate covariance inside a given input data, and shape the correct Weight from the given eigenvalue, AWE Works by processing input and then captures the necessary eigenvalue to shape a properly initialized Weight that aligns with input data complexity, With this approach, MLP training will be much more consistent and robust against noise.
+[=] AWE is a specialized custom weight shaping or encoding method Specifically designed for MLP Architecture that excels in Quantization-Aware-Training method in MLP dense Layers, using eigenvalue and spectral methods as base equations to calculate covariance inside a given input data, and calibrate the correct Weight from the given eigenvalue, AWE Works by processing input and then captures the necessary eigenvalue to shape a properly initialized Weight that aligns with input data complexity, With this approach, MLP training will be much more consistent especially during Quantization-Aware-Training.
 
 ## [+] LSTM And Transformer Intro:
 A. LSTMs (Long Short-Term Memory) and Transformers are foundational deep learning architectures built to process sequential data (like text or time series). While both handle the flow of time and context, they do so using completely different mechanisms.
@@ -139,21 +145,31 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
 - Link: https://github.com/Micro-Novelty/Specialized-MLP-for-noise-robustness
 
 ## [+] Why IntegratedPipeline?
-[~] IntegratedPipeline is a great choice for a sophisticated Non-LLM AI Program for The Main Orchestrator of a Distributed MANN-Type AI Agent Working in Edge-device/Consumer-Based machine Where LLM is'nt a great fit for Messy, Noisy environments. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
+[~] IntegratedPipeline is a great choice for a sophisticated Non-LLM AI Model Program for The Main Orchestrator of a Distributed MANN-Type Model Agent Working in Edge-device/Consumer-Based machine Where LLM isn't a great fit for Messy, Unpredictable environments. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
 
 [=] IntegratedPipeline offers:
 1. Local-Based AI Orchestrator:
    - IntegratedPipeline Creates its own SQLite Database inside Your Computer once the library is executed, This database is used directly to store the AI Memory, Attention weights, predicted Output, and identified peer, all without leaving the machine, The Database will be created Automatically once you run the library, database name saved as activity_log.db. 
 
 2. Continously Learning behavior for an Agent:
-   - different from LLM that is static and cannot improve beyond its given training condition, AI Agent using IntegratedPipeline has a dynamic, flexible continously learning behavior with conditional training algorithms included in the library that has both supervised and unsupervised learning present, The learned input and predicted Output will be stored in the database, allowing it to recall its memory during processing and find matching known prediction given if input matched with the stored input inside the database. this Continous learning behavior is efficient because its not relying on weights for memory, allowing flexible and predictable behavior inside a given environment.
+   - different from LLM that is static and cannot improve beyond its given training condition, AI Models using IntegratedPipeline has a dynamic, flexible continously learning behavior with conditional training algorithms included in the library that has both supervised and unsupervised learning present, The learned input and predicted Output will be stored in the database as a Memory, allowing it to recall its memory during processing and find matching known prediction given if input matched with the stored input inside the database. 
+   User can control this behavior such as: 
+   - Ex pseudocode:
+      - ```python
+      if memory_is_loaded:
+         stop_training()
+      else:
+         continue_training()
+        ```
+
+   this Continous learning behavior is efficient because its not relying on weights saved in RAM for memory, allowing flexible and predictable behavior inside a given environment.
    
 3. Robust Specialized MLP, Transformer and LSTM Architecture with ensemble weighting architecture:
-  - IntegratedPipeline usually used 1 Model for regular prediction, but in some Conditions, it used 2 Different type's of AI Architecture stacked together, and one architecture to weight their confidence and probability fairly (ensemble method) to get the final prediction for the problem it faced, Specialized MLP for Noise robustness And Specialized Transformer that used Alpha-based Computing algorithm for contextual reasoning, LSTM architecture to provides proof-of-credibility over a certain output, acting as a support mechanism rather than Main orchestrator like MLP and Transformer. The reason why those Models complement and used together:
-      - Specialized MLP Provides synchronous robust classification Against noise with its specialized Weight Encoder (AWE) to handle noise using eigenvalue based computing that is lightweight and efficient. This Method can't be replicated Inside Transformer FFN (Feed-forward-network) because of Transformer dynamic brute force computing where AWE-Based generated weight's get diluted over time by Transformer dynamic projection embedding, making AWE Generated weight causes inefficient inside Transformer dynamic FFN/QKV projection.
+  - IntegratedPipeline usually used 1 Model for regular advanced prediction, but in some Conditions, it used 2 Different type's of AI Architecture stacked together, and one architecture to weight their confidence and probability fairly (ensemble method) to get the final prediction for the problem it faced, Specialized MLP for Noise robustness And Specialized Transformer that used Alpha-based Computing algorithm for contextual reasoning, LSTM architecture to provides proof-of-credibility over a certain output, acting as a support mechanism rather than Main orchestrator like MLP and Transformer. The reason why those Models complement and used together:
+      - Specialized MLP Provides synchronous robust classification Against noise with its specialized Weight Encoder (AWE) to handle noise using eigenvalue based computing that is lightweight and efficient. This allows MLP performance to improve Even during Quantization-Aware-Training, This Method can't be replicated Inside Transformer FFN (Feed-forward-network) because of Transformer dynamic brute force computing where AWE-Based generated weight's get diluted over time by Transformer dynamic projection embedding, making AWE Generated weight causes inefficient inside Transformer dynamic FFN/QKV projection.
       - Specialized Transformer provides robust synchronous advanced contextual relationships, efficient data processing using Alpha based computing, The Transformer is tuned towards to be as flexible as possible to provide dynamic projection or fixed FFN projection training with minimal head's and dimension's to reduce computational power.
       - Our library also provides setup for kNN (k-Nearest-neighbor) Augmented Transformer for Users who Wants to use a much More Advanced Transformer, This Transformer is'nt used in the Main prediction flow inside IntegratedPipeline due to it being Memory heavy to run, instead this Transformer can be used separately if You have Larger Dataset and wants A small Transformer Model that can Remember longer contexts Using HNSW (Hierarchical Navigable Small World) Architecture and apply it on edge Devices.
-        - Honest Limitation: Our Transformer can still analyze Images, by receiving Input that is an Image converted into X samples, its accuracy is expected to be much lower since Analyzing images requires larger datasets.
+        - Honest Limitation: Our Transformer can still analyze Images, by receiving Input that is an Image converted into X samples, its accuracy is expected to be much lower since Analyzing images requires larger datasets -> more computation -> more memory usage.
           
       - LSTM doesn't act as a Main orchestrator, instead it Provides coherent Short-term memory for the Ensemble architecture, acting as a support mechanism to provides proof-of-credibility of a given answer from past previous context input, this allows flexible and achievable Aggreement between Transformer and MLP over a short period of time.
       - Specialized SNN helps for sensor based motion prediction, and Neuromorphic computing.
@@ -179,9 +195,9 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
        - [=] Note: socket Syncing is unsecure witout additional security layer wrapped, For a safer syncing, directly transfer the .json file memory to the target machine via other ways such as manual send.
      - list sessions: listing available sessions using model's memory name.
 
-[=] With its Specialized Multi-Layer-Perceptron (using AWE Encoder) and Optimized Transformer module with optimized Embedding, IntegratedPipeline can directly tolerate low samples-amount of Data, including noisy ambiguous data, using Weighted Confidence assembling from both specialized MLP and Transformer for better reliability during training and prediction over Messy, noisy environments, such as:
+[=] With its Specialized Multi-Layer-Perceptron (using AWE Encoder) and Optimized Transformer module with optimized Embedding, IntegratedPipeline can directly improve overtime, including in ambiguous data, using Weighted Confidence assembling from both specialized MLP and Transformer for better reliability during training and prediction over Unpredictable environments, such as:
 
-[1.] User data's : User data is often messy and ambiguous, Specialized MLP with AWE will do the job for shaping the necessary Weight to complement for the Ambiguous noisy pattern, AWE MLP is highly robust to noise, proven in synthetic Environment such as scikit-learn Make-Classification scarce and Noisy Input robustness during generalization test. making it a great fit for messy, Scarce data.
+[1.] User data's : User data is often messy and ambiguous, Specialized MLP with AWE will do the job for shaping and calibrating the necessary Weight to complement for the Ambiguous pattern, AWE MLP is proven to help in Quantization-Aware-Training in MLP that helps reduce Memory usage -> proven in synthetic Environment such as scikit-learn Make-Classification scarce and Noisy Input robustness during generalization test. making it a great fit for messy, Scarce data.
 
 [2.] Small Dataset's : We often don't have enough Dataset to train a Transformer Model, Thats Why IntegratedPipeline Offers a Highly optimized Transformer that supports scarce dataset processing, Using Alpha-Based computing as a Warm-up for training, it provides a direct Boost for the transformer to be efficient during training in scarce-data Environment.
 
@@ -189,11 +205,12 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
 
 _____________________________________________________________________________________________________________
 [=] Architectural-Overview
-<img width="1600" height="859" alt="New Arch" src="https://github.com/user-attachments/assets/a5db1ed2-9149-4635-8d95-d022ad6e8608" />
+
+<img width="1600" height="859" alt="Gemini_Generated_Image_nlxggenlxggenlxg" src="https://github.com/user-attachments/assets/21cb2e3a-a801-449b-a621-974b1ea097fe" />
 ---
 [=] Contextual meaning:
    1. - Sequence encoding is a machine learning technique that transforms a sequential input (like text, time-series data, or audio) into a compact, fixed-length numerical vector, often called a context vector
-   2. - TF-IDF (Term Frequency-Inverse Document Frequency) is a numerical statistic used in machine learning and NLP to evaluate how important a word is to a document within a collection (corpus). It boosts rare words and penalizes common words (like "the", "and") by multiplying two metrics: how often a word appears in a document (TF) and the inverse frequency of the word across all documents (IDF). 
+   2. - HashingVectorizer is a text feature extraction tool in scikit-learn that converts a collection of text documents into a numerical sparse matrix. It uses the hashing trick (applying a hash function like Murmurhash3 to map token strings directly to feature indices) rather than building and storing an explicit vocabulary dictionary.
    3. - Explainability provides deeper transparency of why a model thought about a detail by showing its internal metrics like attention quality, from distributed peer memory or Ensemble prediction result's.
 
 
@@ -365,7 +382,7 @@ ________________________________________________________________________________
 
 ________________________________________________________________________________________________________________________
 ## Performance in linux ARM64 Docker Environment/Container
-A. [=] Computational performance results with Transformer included during Advanced prediction method.
+A. [=] [OLD DATA] Computational performance results during Training with Transformer included in regular classification tasks (Not regression).
 ```txt
 == TIME == | CPU % | RAM / RAM LIMIT ||
 
@@ -396,7 +413,7 @@ A. [=] Computational performance results with Transformer included during Advanc
                 - Repeated 269 MiB suggests allocator settled, ndarray pools stabilized, workload reached steady state
                 - gradual, safe and steady batch accumulation, reduced possibility of leak explosion.
 
-B. [=] Advanced Prediction without Transformer, Only Specialized MLP + LSTM using AWE.
+B. [=] Advanced Prediction without Transformer, Only Specialized MLP + LSTM using AWE during Training.
 ```txt
 == TIME == | CPU %  | RAM \ RAM LIMIT |
 10:01:37.456 100.44% 269.8MiB / 3.71GiB # initial round 1 training started
@@ -538,22 +555,25 @@ ________________________________________________________________________________
    -  Example format:
       ```txt
       window_title,label
-      "Thesis.docx",focused_work,high,writing-thesis
-      "Microsoft Excel",work,medium,data-analysis
-      "YouTube -> Google Chrome",distracted,high,watching-videos
-      "Slack",communication,high,team-chat
-      "VSCode", focused_work,high,coding
-      "netflix.com -> Google Chrome",break,high,Netflix-break
-      "Outlook",work,medium,checking-email
-      "System Settings",system designing,low,configuring-computer
-      "GitHub",creating-and-editing-repo,research
-      "README.md -> VS Code",focused_work,medium,reading-docs
-      "Amazon.com -> Chrome",personal-work,high,shopping
+      "Thesis.docx",focused_work
+      "Microsoft Excel",work
+      "YouTube -> Google Chrome",distracted
+      "Slack",communication
+      "VSCode", focused_work
+      "netflix.com -> Google Chrome",break
+      "Outlook",work
+      "System Settings",system designing
+      "GitHub",creating-and-editing-repo
+      "README.md -> VS Code",focused_work
+      "Amazon.com -> Chrome",personal-work
       ```
       Note = window_title is target_title and label is target_label, check step below to use it.
+      # NOTE:
+      - There must be no space between ',' and words to prevent missing labels during label_map extraction.
 
 
 4. A. Use IntegratedPipeline as in this example:
+   - A. [CLASSIFICATION TASK ONLY] 
    ```python
    from AbstractIntegratedModule import IntegratedPipeline
    from AbstractIntegratedModule import PipelinePredictionManager
@@ -589,6 +609,7 @@ ________________________________________________________________________________
    ''' # uncomment to use
 
    # Note: The Above setup is Important for Users who wants to do Secure P2P In deployment case, for local P2P the above setup is optional and automatic self-signed CERT will be used for local-device P2P.
+
 
    main_model = IntegratedPipeline(
       memory_name=memory_name,  # memory name for the AI you already initialized
@@ -630,6 +651,11 @@ ________________________________________________________________________________
 
                         # more rules
                     ]
+   
+   # Samples:
+   X = None # <your_x_samples>
+   y = None # <your_y_samples>
+
 
    # activate explainability capability to explain uncertainty:
    main_model.show_explainability_details = True
@@ -641,18 +667,18 @@ ________________________________________________________________________________
    # error_rate > 0.5 means old errors fade quickly — a class that was wrong 3 predictions ago matters less than one wrong just now, making the model less likely to output repetitive wrong answer.
    # this a flexible tunable-knob for the model judgement regarding wrong answer, this will propagate through prediction layers to inform about the model repetitive answer and calibrate it immediately.
 
-   # (Optional manual setup) if you want to Cuztomize the Model setup.
-   main_model.mlp_training_epochs = 2000
-   main_model.transformer_training_epochs = 200
-   main_model.transformer_lr = 0.25
-   main_model.mlp_lr = 0.5
-   main_model.lstm_training_epochs = 200
-   main_model.lstm_lr = 5e-1
-   main_model.lstm_hidden_dim = 64 # LSTM Hidden dim can be set manually, MLP and Transformer hidden dim are already set automatically based on the samples input they have received.
-   # Transformer heads and d_model manual setup
-   main_model.transformer_heads = 4
-   main_model.transformer_d_model = 64
-   # You can set how much epochs are needed to Train your MLP, LSTM and Transformer for your Models, along with their Learning rates. (lr).
+   # NOTE:
+   # (OPTIONAL) You can also define your own QuantConfig for quantization-aware training (QAT), 
+   # this is useful for reducing the model size and improving inference speed, 
+   # especially for deployment on edge devices.
+   qcfg = QuantConfig(enabled=True, w_bits=7, a_bits=7)
+
+   # Set up the main model with the specified configurations you wants, this will override the default configurations of the IntegratedPipeline, 
+   # you can change the parameters to suit your dataset and requirements.
+   # tf -> Transformer, lr -> learning rate.
+   main_model.model_setup(mlp_train_epochs=1000, tf_train_epochs=10, tf_lr=0.1, mlp_lr=0.5,
+                        lstm_train_epochs=50, lstm_lr=5e-1, lstm_hidden_dim=64, tf_heads=4, tf_d_model=32,
+                        error_decay=0.75)
    
    # test samples with more sophisticated rules and more complex titles for prediction
    # (title, intent)
@@ -664,42 +690,120 @@ ________________________________________________________________________________
     ("Watching netflix.com - Chrome", "break"),
    # more titles 
     ]  
-               
-   titles, y, label_map = main_prediction.load_labels_from_csv(
+
+   # Load label_map from your .txt file for Training and Prediction (Important)      
+   titles, _, label_map = main_prediction.load_labels_from_csv(
       <your_filename.>,  # the name of your .txt file with CSV format.
       <target_title>, <target_label>)
 
-   # OPTIONAL TRAINING BLOCK
-   # (Training will happens in the advanced prediction method below, but if you want separate Training for MLP, you can use this setup: )
-   # small training with simple titles first
-   main_model.train(titles, y)
+   # NOTE:
+   # INITIALIZATION BLOCK: This is where you initialize the MLP, Transformer, and LSTM models with the specified configurations you want.
 
-   # main_model.freeze_learning = True
-   # prevent the model from training and make weights unchanged for static prediction.
+   # MLP Initialization: This is where you initialize the MLP model with the specified configurations you want.
+   # titles: the titles you want to use for training and prediction, in this case we use None (Optional).
+   # rules: the rules you want to use for training and prediction, in this case we use None (Optional).
+   # label_map: the label map you want to use for training and prediction, in this case we use the label_map we created earlier.
+   # input_dim: the input dimension you want to use for creating MLP Dense layers, in this case we use the input_dim we created earlier (can be set to None if task is classification, or you can set input_dim=X.shape[-1]).
+   # output_dim: the output dimension you want to use for creating MLP Dense layers, in this case we use the num_classes we created earlier(can be set to None if your task is classification, if regression you must pass the output dim (ex: output_dim=num_classes))
+   # hidden_layers: the hidden layers you want to use for creating MLP Dense layers, The layers are free to change to how much you want. (changeable).
+   # use_qat: whether to use quantization-aware training (QAT) or not, in this case we use True (can be set to False).
+   # qcfg: the quantization configuration you want to use for QAT, in this case we use the qcfg we created earlier (can be set to None).
 
-   # SIMULATION BLOCK:
+   # NOTE: input_dim and output dim can be set to None if your samples are only titles, rules and label_map, but you can still set your hidden_layers however you want.
+   main_model.initialize_mlp_model(titles=titles, rules=rules, label_map=label_map, input_dim=None, output_dim=None, hidden_layers=[26, 64, 85], use_qat=True, qcfg=qcfg)
+
+   # Transformer Initialization: This is where you initialize the Transformer model with the specified configurations you want.
+   # vocab_size: the vocabulary size you want to use for the Transformer, set vocab_size to 1 if your task is regression, set to your own vocab size / set to None if your goal is classification (if set to None, this function below will automatically determine your vocab size from the given test_titles).
+   # num_classes: the number of classes you want to use for creating Transformer weights, in this case we use the num_classes we created earlier.
+   # d_model: the total dimension for creating Transformer layers, this layer is crucial for the Models learning capacity, in this case we use 128 (changeable).
+   # n_heads: the number of attention heads you want to use for creating Transformer layers, in this case we use 4 (Lower head means less computational power and complexity) (changeable).
+   # n_features: the number/length of features you have, if your task is classification, n_features MUST be None, if your task is regression, you MUST need to use the len(feature_cols) of your dataset and pass it as n_features=len(feature_cols) here.
+   # attn_dropout: the dropout rate you want to use for the Transformer layers, in this case we use 0.1 (changeable).
+   # ffn_dropout: the dropout rate you want to use for the Transformer feed-forward network, in this case we use 0.05 (changeable).
+   # weight_decay: the weight decay you want to use for the Transformer layers, in this case we use 1e-4 for smaller and more deterministic decay (changeableand useful for testing the model capability).
+   # task: the task you want to use for the Transformer model, set to 'regression' for regression task, or "classification" for classification task (changeable).
+   main_model.initialize_transformer_model(titles=test_titles, rules=rules, label_map=label_map, vocab_size=None, num_classes=None, d_model=128, n_heads=4, n_features=None,
+   attn_dropout=0.1, ffn_dropout=0.05, weight_decay=1e-4, task='classification')
+
+   # LSTM Initialization: This is where you initialize the LSTM model with the specified configurations you want.
+   # input_size: the input size you want to use for creating LSTM layers, in this case we use 1 (changeable and flexible, meaning you can set to whatever input size you need).
+   # hidden_size: the hidden size you want to use for creating LSTM layers, in this case we use 32 (changeable and flexible, meaning you can set to whatever hidden size you need).
+   # output_size: the output size you want to use for creating LSTM layers, in this case we use 1 (changeable and flexible, meaning you can set to whatever output size you need).
+   # dropout_rate: the dropout rate you want to use for the LSTM layers, in this case we use 0.1 (changeable and flexible, meaning you can set to whatever dropout rate you need).
+   # seed: the random seed you want to use for the LSTM layers, in this case we use 42 (changeable and flexible, meaning you can set to whatever seed you need).
+   main_model.initialize_lstm_model(input_size=1, hidden_size=32, output_size=1, dropout_rate=0.1, seed=42)
+
+
+   # Memory Loading Block: This is where you load the model memory if you have previously saved it, this will allow you to continue training or prediction from where you left off.
+   # This function will automatically adds the loaded weights to the current model, so you can continue training or prediction without losing any progress.
+   memory_loaded, lstm_weights, transformer_weights, mlp_weights, = main_model.load_model_memory()
+
+   # TRAINING BLOCK: This is where you train the MLP, Transformer, and LSTM models with the specified configurations you want.
+
+   # MLP Training: This is where you train the MLP model with the specified configurations you want.
+   # titles and rules are optional, you can set them to None if you don't want to use them for training, but label_map must NOT be None.
+   # X and y are the training samples you want to use for training the MLP model, in this case we use the X and y we created earlier.
+   # pass your task, train_epochs however you like.
+   # momentum: the momentum you want to use for the MLP optimizer, higher momentum leads to faster convergence/better learning, in this case we use 0.75 (changeable).
+   # learning rate (lr): the learning rate you want to use for the MLP optimizer, higher learning rate leads to faster convergence/better learning, in this case we use 0.5 (changeable).
+
+   # EXAMPLE WORKFLOW:
+   # Train when weight memory is not loaded (fresh start)
+   if not memory_loaded:
+      main_model.train_mlp_model(titles=test_titles, rules=rules, label_map=label_map, X=X, y=y, task='classification', train_epochs=500, momentum=0.9, lr=0.01)
+
+      # Transformer Training: This is where you train the Transformer model with the specified configurations you want.
+      # titles and rules are optional, you can set them to None if you don't want to use them for training, but label_map must NOT be None.
+      # X and y are the training samples you want to use for training the Transformer model, in this case we use the X and y we created earlier.
+      # pass your task, train_epochs however you like.
+      # mode: the training mode you want to use for the Transformer model : 
+         # in this case we use 'dynamic_backward': use dynamic_backward for training if you have large samples,
+         # use 'fixed_backward' for training if you have small samples (such as only titles and rules are present, or very small length of X samples (ex: <100)),
+      # batch_size: the batch size you want to use for the Transformer training, in this case we use 2 (changeable, based on how many batch you want, smaller batch means more memory usage).
+      # learning rate (lr): the learning rate you want to use for the Transformer optimizer, higher learning rate leads to faster convergence/better learning, in this case we use 0.5 (changeable).
+      main_model.train_transformer(titles=test_titles, rules=rules, label_map=label_map, X=X, y=y,  task='classification', d_model=128, train_epochs=10, 
+         mode='fixed_backward', lr=0.5, batch_size=2)
+
+      # LSTM Training: This is where you train the LSTM model with the specified configurations you want.
+      # titles and rules are optional, you can set them to None if you don't want to use them for training, but label_map must NOT be None.
+      # raw_X and raw_Y are the training samples you want to use for training the LSTM model, in this case we use the X and y we created earlier.
+      # n_display: display what the LSTM previously thoughts about each sample after training, this will inform the LSTM uncertainty, intervals.
+      # n_train: the percentage of training samples you want to use for training the LSTM model, in this case we use 0.8 or 80% of Training samples is used (changeable).
+      main_model.train_lstm(titles=test_titles, rules=rules, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+   else:
+      print('[>] memory is loaded, skipping Training...)')
+            
+
+   # NOTE:
+   # PREDICTION BLOCK:
+   # the below section called advanced_prediction_method(...) is a prediction method that will output a single answer based from numerous predictions and how frequent it was predicted by a single model (This is called majority-based answer choosing method), it will output a single answer from the label_map you have given as its final prediction.
+   # meaning advanced_prediction method is only used to predict an answer based on the given label_map and only output a single answer, the entire predictions the model has made was saved in 'results' variable below, so you can see how the model predicts each batch of the given sample.
+   # titles and rules are optional, label map must not be None, but both label_map, X, y, titles and rules cannot be all empty.
+   # Use case: - classification and both regression problems that requires a model to only output a single answer.
+   # top_k : meaning, the model will only prints 3 labels it has predicted in the terminal (This will be used when titles and rules is not None, otherwise this argument will not be used.)
+   # batch_size : the batch size you want to use for the prediction, in this case we use 2 (changeable, based on how many batch you want, smaller batch means more memory usage).
+   results, chosen_label, confidence = main_prediction.advanced_prediction_method(
+      titles=test_titles, label_map=label_map, rules=rules, # titles and rules can be set to None (Optional samples), but label_map must NOT be None.
+         X=X, y=y, # you could create your own X and y samples and put it here (Optional, y sample must already be one hot encoded first).
+         top_k=3, batch_size=2)
+
+   # Important Note: If you set titles and rules to None, you must provide X and y samples for prediction, otherwise the models cant predict anything.
+   # batch size=2 is needed during transformer training for batching, if you have larger samples consider using batch_size > 8, for medium amount of samples (>10 -> <50 samples) consider using 2 or 4 batch_size.
+   # the returned 'results' here returns all the predicted labels over each batch inside the given sample, so you can get the full picture of How the models predicts label over each batch in X sample.
+
+   # save Weights as a memory when previous memory isn't present to the SQLite database, this will allow you to load the model memory later for further prediction.
+   # model_type must be 'Pipeline'.
+   if not memory_loaded:
+      main_model.save_weights(memory_name, model_type='Pipeline') 
+
+
+   # SIMULATION BLOCK (OPTIONAL):
    # This function below allows you to create A continuous Training simulations using K-fold split to evaluate MLP Training performance using your provided X and Y samples, This function helps to diagnose if Your samples are appropriate for MLP and make It generalize instead of severely Overfitting.
    # This function will create a fresh instance of MLP every k-amount you have set (the k=5), and also prints a Confusion matrix that helps diagnose Your MLP Training Accuracy Performance.
    # This function is great to help you diagnose Further degradation of MLP performance and also Its consistency, And also helps validate our AWE Method at how well it makes MLP Training performance Consistent Accross different Seeds for better Reliability performance.
    main_model.evaluate_mlp_performance(X, y, label_map, k=5, seed=42)
-   
-   # PREDICTION BLOCK:
-   # the below section called advanced_prediction_method(...) is a prediction method that will output a single answer of a problem you have given to it, it will output a single answer from the label_map you have given as its final prediction.
-   # meaning advanced_prediction method is only used to predict an answer based on the given label_map and only output a single answer, not in batches.
-   # this prediction method is also where training, ensemble and final prediction happens.
-   # Use case: - classification problems that requires a model to only output a single answer.
-   results, chosen_label, confidence = main_prediction.advanced_prediction_method(
-      titles=test_titles, label_map=label_map, rules=example_rules, # titles and rules can be set to None (Optional samples), but label_map must NOT be None.
-         X=None, y=None # you could create your own X and y samples and put it here (Optional, y sample must already be one hot encoded first).
-               show_proba=False, top_k=3, 
-               use_transformer=True,
-               return_attention=False,
-               batch_size=2)
-   # Important Note: If you set titles and rules to None, you must provide X and y samples for prediction, otherwise the models cant predict anything.
-   # Note: The X and y samples will be organized and processed using train_test_split() scikit-learn function for creating better generalization behavior for the model, so when you pass the X and y samples, you must pass the raw X sample (Not modified, just raw X) and the already y hot-encoded sample,
-   # batch size=2 is needed during transformer training for batching, if you have larger samples consider using batch_size > 8, for medium amount of samples (>10 -> <50 samples) consider using 2 or 4 batch_size.
-   # the returned 'results' here returns all the predicted labels over each batch inside the given sample, so you can get the full picture of How the model predicts label over each batch in X sample.
 
+   # (OPTIONAL):
    # This setup below would allow you to save the Accurate answer (if the model guessed a specific problem correct) directly to the database,
    # without initiating prediction over the sample repeatedly.
    input_ids = main_model.model2.cache['input_ids'] # input indices the transformer used as input (model2 is Transformer).
@@ -710,20 +814,166 @@ ________________________________________________________________________________
    
    # ... more features you can add
    ```
+
+   B. [REGRESSION TASK ONLY]
+   ```python
+
+   # Here we used a dataset specifically predicting how much Electricity is used (You can see and inspect this .csv in kagglehub):
+   # the dataset MUST be in .csv format like in example below, The Framework doesnt accept .txt, or any other format (Safety restriction to avoid Data Scraping):
+
+   # Load dataset (Change to Your own dataset here, just make sure to change the column names and features accordingly)
+   df = pd.read_csv("PJME_hourly.csv", parse_dates=["Datetime"], index_col="Datetime")
+   df = df.sort_index() #s sort index
+   daily = df.resample("D").sum()
+
+
+   # calender features (day of week, month, is weekend) (suit to what your dataset actually has)
+   daily["dayofweek"] = daily.index.dayofweek     # 0=Monday, 6=Sunday
+   daily["month"] = daily.index.month
+   daily["is_weekend"] = (daily.index.dayofweek >= 5).astype(int)
+
+   # lag features (in days, not hours) (suit to what your dataset actually has)
+   daily["lag_1"] = daily["PJME_MW"].shift(1)      # yesterday (lag_1 will be used in feature_cols)
+   daily["lag_7"] = daily["PJME_MW"].shift(7)      # last week (same day) (lag_7 will be used in feature_cols)
+   daily["lag_14"] = daily["PJME_MW"].shift(14)    # 2 weeks ago (lag_14 will be used in feature_cols)
+
+   # Rolling statistics (suit to what your dataset actually has)
+   daily["rolling_mean_7"] = daily["PJME_MW"].rolling(7).mean() # (rolling_mean_7 will be used in feature_cols)
+   daily["rolling_std_7"] = daily["PJME_MW"].rolling(7).std()   # (rolling_std_7 will be used in feature_cols)
+
+   # delete the first row that contains NaN values due to lag and rolling calculations
+   daily = daily.dropna()
+
+   # Feature columns: a set of list thatcontains the features you want to use for training and prediction, 
+   # you can add or remove features based on your own dataset and requirements.
+   # so change this list to suit your dataset and requirements, but make sure the features you choose are actually present in your dataset.
+   feature_cols = ["PJME_MW", "dayofweek", "month", "is_weekend",
+                  "lag_1", "lag_7", "lag_14", "rolling_mean_7", "rolling_std_7"]
+   # example of other feature_cols:
+   # ["Global_active_power", "Global_reactive_power", "Voltage",
+               #    "Global_intensity", "Sub_metering_1", "Sub_metering_2",
+               #   "Sub_metering_3", "dow_sin", "dow_cos"]
+   # feature_cols = ["daily_sales", "is_promo", "is_holiday", "dow_sin", "dow_cos",
+                  #  "lag_7", "lag_14", "rolling_mean_7"]
+
+   main_model = IntegratedPipeline(
+   memory_name=memory_name,  # memory name for the AI you already initialized
+   use_async=True, # local asynchronous prediction is permitted, if not PipelineAsyncManager wont start asynchronous prediction.
+   agent_port=5001, # this port is used to set AgentDistributedInference server (optional)
+   ssl_cert_file=None, ssl_key_file=None,# provide your cert_file path or key_file path (optional)
+   ssl_context=None, # used by the Agent server. (optional)
+   client_ssl_context=None # used by the client. (optional)
+   ) 
+
+
+   main_prediction = PipelinePredictionManager(
+      main_model, # your initialized pipeline
+      label_csv='energy_training.txt', 
+      # your filename that contains the csv and contains the CSV format.
+      # the Agent will automatically searched the nearby folder like: downloads, data, and desktop folder.
+      target_title='window_title', label='label')
+
+   # Prepare dataset using prepare_dataset() method, this will create the X and y samples for training and prediction.
+   # argument description: 
+   # daily: the dataset you want to use for training and prediction, in this case we use the daily dataset/dataframe we created earlier.
+   # feature_cols: the list of features you want to use for training and prediction, in this case we use the feature_cols list we created earlier.
+   # target_col_name: the name of the target column you want to predict, in this case we use "PJME_MW" as the target column.
+   # window_size: the number of past days you want to use for training and prediction, in this case we use 30 days.
+   # horizon: the number of days you want to predict into the future, in this case we use 5 days.
+   X, y, config = main_prediction.prepare_dataset(daily, feature_cols, target_col_name="PJME_MW",
+                                       window_size=30, horizon=5)
+
+   # activate explainability capability to explain uncertainty:
+   main_model.show_explainability_details = True
+   main_model.distribution.predict_manager = main_prediction # set PipelinePredictionManager to AgentDistributedInference for asynchronous prediction later (Very important for asynchronous prediction)
+   # main_model.use_transformer = True if you want to use transformer, this will notify all modules that used advanced_prediction_method will initiate prediction with both transformer and MLP.
+
+   # set IntegratedPipeline Penalty rate when it output wrong answer:
+   main_model.error_decay = 0.75
+   main_model.use_lstm = True
+   main_model.use_transformer = True
+   # error_decay > 0.5 means old errors fade quickly — a class that was wrong 3 predictions ago matters less than one wrong just now, making the model less likely to output repetitive wrong answer.
+   # this a flexible tunable-knob for the model recovery after error regarding wrong answers, this will propagate through prediction layers to inform about the model repetitive answer and the model calibrate its prediction immediately.
+
+
+   # load your label_map from your .txt file that contains CSV format, this will be used for training and prediction.
+   # window_title: the column name in your .txt file that contains the window title, 
+   # label: the column name in your .txt file that contains the label.
+   titles, _, label_map = main_prediction.load_labels_from_csv(
+      'energy_training.txt',  # the name of your .txt file with CSV format.
+      'window_title', 'label')
+
+   # NOTE:
+   # set input_dim and num_classes based on the shape of X and the number of unique labels in label_map.
+   # this are important for the MLP and Transformer model to know how many input features and output classes it has to handle.
+   input_dim = X.shape[1] if X.ndim > 1 else 1
+   num_classes = max(len(label_map), int(np.max(y)) + 1)
+
+   main_model.model_setup(mlp_train_epochs=1000, tf_train_epochs=10, tf_lr=0.1, mlp_lr=0.5,
+   lstm_train_epochs=50, lstm_lr=5e-1, lstm_hidden_dim=64, tf_heads=4, tf_d_model=32,
+   error_decay=0.75)
+
+   # use_qat argument set to False because Quantization distorts regression samples.
+   # MLP Initialization is important.
+   main_model.initialize_mlp_model(titles=None, rules=None, label_map=label_map, input_dim=input_dim, output_dim=num_classes, hidden_layers=[12, 17, 35], use_qat=False, qcfg=None)
+
+   # set task to regression
+   # vocab_size MUST be 1,
+   # n_features is passed with len(feature_cols) of your dataset
+   main_model.initialize_transformer_model(titles=None, rules=None, label_map=label_map, vocab_size=1, num_classes=num_classes, d_model=128, n_heads=4, n_features=len(feature_cols),
+         attn_dropout=0.1, ffn_dropout=0.05, weight_decay=1e-4, task='regression')
+   
+   # LSTM input, hidden sizes and output remains flexible in regression task.
+   main_model.initialize_lstm_model(input_size=1, hidden_size=32, output_size=1, dropout_rate=0.1, seed=42)
+
+   # Memory Loading Block: This is where you load the model memory if you have previously saved it, this will allow you to continue training or prediction from where you left off.
+   # This function will automatically adds the loaded weights to the current model, so you can continue training or prediction without losing any progress.
+   memory_loaded, lstm_weights, transformer_weights, mlp_weights, = main_model.load_model_memory()
+
+   # EXAMPLE WORKFLOW
+   if not memory_loaded:
+      # MLP Training can be skipped
+      main_model.train_mlp_model(titles=None, rules=None, label_map=label_map, X=X, y=y, task='regression', train_epochs=500, momentum=0.9, lr=0.01)
+
+      # Use dynamic_backward for regression task for better learning capabilities.
+      main_model.train_transformer(titles=None, rules=None, label_map=label_map, X=X, y=y,  task='regression', d_model=128, train_epochs=10, 
+         mode='dynamic_backward', lr=0.5, batch_size=4)
+
+      main_model.train_lstm(titles=None, rules=None, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+   else:
+      print('[>] Memory is loaded -> skipped Training')
+
+   results, chosen_label, confidence = main_prediction.advanced_prediction_method(
+   titles=None, label_map=label_map, rules=None, # titles and rules can be set to None (Optional samples), but label_map must NOT be None.
+      X=X, y=y, # you could create your own X and y samples and put it here (Optional, y sample must already be one hot encoded first).
+      top_k=3, batch_size=4)
+   # NOTE:
+   # MLP Prediction results will not be Showed in the Terminal, MLP Training can be skipped, but MLP MUST be initialized first to avoid any Errors.
+
+   # save Weights as a memory to the SQLite database, this will allow you to load the model memory later for further prediction.
+   main_model.save_weights(memory_name, model_type='Pipeline') 
+
+
    - Note: This script setup can be downloaded here: [usage_script](scripts/usage_scripts.py)
+
+
    
 4. B. Using Standalone IntegratedPipeline Transformer:
    ```python
    # if you want to use the IntegratedPipeline Transformer only, you can use this setup:
    # ideal when you want blazing Fast Transformer Training and prediction, and the Transformer weights are loaded using JSON, this made Transformer Training much more feasible and easily intuitive for Beginners who wants Complex abstraction models that can run on cheap Edge devices.
 
-   vocab_size = # <your actual vocab size>.
+   vocab_size = main_model.vocab_size# <your actual vocab size>.
    model_transformer = Transformer(
                   vocab_size=vocab_size
                   d_model=main_model.transformer_d_model,
                   n_heads=pipeline.transformer_heads,
                   num_classes=num_classes
+                  n_features=None, # set to len(feature_cols) for regression.
+                  task='classification'
               )
+   # or just get your old Transformer:
+   # model_transformer = main_model.model2
 
    sequence_inputs = main_model._features_to_sequence(X, d_model=pipeline.transformer_d_model) # Converts X samples into sequences that the Transformer can recognize.
    # embedded=True will ensure that Transformer forward method will put a correct mask for the samples.
@@ -814,11 +1064,19 @@ from AbstractIntegratedModule import PipelineAsyncManager
 from AbstractIntegratedModule import SecurityConfig
 from AbstractIntegratedModule import SecurityLevel
 
+# NOTE:
+# All the three Models (MLP, Transformer, LSTM MUST be Initialized, Trained before initiating Asynchronous Prediction, the Initialization workflow can be seen above.)
+# Replace the regular advanced_prediction_method() with this asynchronous setups:
+
+
 print(" = TESTING ASYNCHRONOUS PREDICTION MANAGER = ")
 # Set discovery secret (in production, use environment variable)
 secret_key = 'my-ultra-safe-secret-key-for-authentication' # you can customize this key
 
-
+# max_text_length: the maximum length of the text you want to allow for prediction, in this case we use 10000 (changeable).
+# max_queue_size: the maximum number of requests you want to allow in the queue, in this case we use 100 (changeable).
+# rate_limit_requests: the maximum number of requests you want to allow per minute, in this case we use 60 (changeable).
+# require_api_key: whether to require an API key for prediction or not, in this case we use True for safety (changeable).
 security_config = SecurityConfig(
       max_text_length=10000, # can be extended
       max_queue_size=100, # can be extended
@@ -833,32 +1091,47 @@ security_config = SecurityConfig(
       require_bootstrap_auth = False # true for better security (Not recommended, cause less flexibility)
   )
 
+# NOTE:
+# Asynchronous Prediction Block: This is where you set up the PipelineAsyncManager for asynchronous predictions, this will allow you to make predictions without blocking the main thread and allows you to handle multiple requests concurrently.
+# pass the PipelinePredictionManager of yours (main_prediction in this case), and the IntegratedPipeline of yours (here its main_model), 
+# the SecurityConfig as config, and the api_key as api_key, and the max_workers of 4, more worker, means more concurrent requests (changeable), 
+# the task_timeout as 30 (changeable), and the max_retries as 3 (changeable).
 async_manager = PipelineAsyncManager(main_model, 
         main_prediction, # your previous initialized PipelinePredictionManager
         config=security_config, 
         state_file=None, # state file is used to load known security logs ex: ip used, ip blacklisted, etc.
         security_level=SecurityLevel.PRODUCTION, # production level security initiated
         api_key=secret_key  #set secret key you initialized
-        max_workers=4, # workers to initiate asynchronous tasks, more workers, more capabilities to process asynchronous prediction requests.
+        max_workers=4, # workers to initiate asynchronous tasks, more workers, lower memory usage.
         task_timeout=30, 
-        max_retries=3 ) # retries after failure during prediction
+        max_retries=3) # retries after failure during prediction
 
 async_manager.start(method='Transformer_included', bootstrap_token=None) # boothstrap token is optional for better security
 
-texts = {'test_titles': test_titles, 'label_map': label_map, 'rules': example_rules, # test_titles and rules can be set to None here since they are Optional samples.
-                                                                                     # but label_map must not be None.
-          'X': None, 'y':None, 'use_transformer': True} # all samples needed for advanced prediction method. (X and y are optional samples)
-# Important Note: If you set titles and rules to None, you must provide X and y samples for prediction, otherwise the models cant predict anything.
 
-regular_predict = async_manager.predict(
-   texts=texts,
-   timeout=60,
-   retries=None,
-   api_key=secret_key) # advanced prediction method for asynchronous prediction.
+# NOTE:
+# Asynchronous Prediction Example: This is where you make an asynchronous prediction using the PipelineAsyncManager, this will allow you to make predictions without blocking the main thread and allows you to handle multiple requests concurrently.
+# payloads: this is the dictionary of payloads you want to send to the PipelineAsyncManager for prediction, in this case we use the test_titles, label_map, rules, and use_transformer as True (changeable).
+# pass X and y samples for prediction, in this case we use the X and y we created earlier (Not changeable and X and y samples are must be passed here).
+# api_key can be passed or set to None, if you set require_api_key to True in the SecurityConfig, then you must pass the api_key here.
+# chunk_size: this is the chunk size you want to use for the prediction, in this case we use 1000 because our sample is large, and we require larger chunks to save memory and prevent memory overhead (changeable).
+# client_ip (optional): this is the client IP you want to use for the prediction, in this case we set it to None (changeable, client_ip is a string, not listsor dicts).
+# max_predictions: this is the maximum number of predictions you want to allow for the model to predict on each samples you have provided, in this case we use 3 max predictions, after that the model will abort all predictions (changeable).
+# stop_on_error: this is the boolean flag you want to use for the prediction, in this case we set it to False, meaning if its False, when the model encounters an error during prediction, it will continue to predict the next sample, set to True if you want the model to stop on the first error (changeable).
+# overall_timeout: this is the overall timeout you want to use for the prediction, in this case we set it to 20000 seconds, meaning if the model takes longer than 20000 seconds to predict, it will abort the prediction (changeable).
 
-# with retries: async_manager.predict(texts, timeout=60, retries=5, api_key=secret_key) # 5 times retry if failed
+# IMPORTANT NOTE: the async_predict variable will return all the prediction results, prediction success, failures, so you can directly see how the model predicts each batch of the given sample.
 
-# NOTE: This function below must require test_titles or titles, label_map and example rules:
+payloads = {'test_titles': test_titles, 'label_map': label_map, 'rules': rules, 'use_transformer': True}
+async_predict = wrapper.prediction_method(payloads, X, y_samples=y, chunk_size=1000,
+                 max_predictions=3, task="auto", timeout=1000,
+                 api_key=api_key, client_ip=None, overall_timeout=20000,
+                 stop_on_error=False)
+
+print(f'[=] Results: {async_predict}')
+
+
+# NOTE: This function below MUST require test_titles or titles, label_map and example rules:
 print('[==] Initiating advanced batch prediction')
          predicted_output = async_manager.advanced_batch_prediction(test_titles, label_map, example_rules, 
          X=None, y=None, # provide your initialized X and y samples (Also Optional, can be set to None)
@@ -899,129 +1172,147 @@ print("=== SECURE PEER-TO-PEER CLUSTER ===")
 # if you already set an SSL cert and key, CohesiveAgentDeployment will use the SSL directly from AgentDistributedInference
 # allowing secure socket to be used directly by CohesiveAgentDeployment
 
-main_model.distribution.enable_ssl = False # set to false if you dont have SSL key and CERT, this code would instruct AgentDistributedInference that you don't have SSL, and provide you a regular unsecured socket (Not necessary for production)
-secondary_model.distribution.enable_ssl = False
 
-# Agent 1 - Primary (Port 5555)
-agent1 = CohesiveAgentDeployment(
-     pipeline=main_model, # main_model is your initialized integrated pipeline
-     memory_name="agent_primary", # any name you want for the agent.
-     filename=<filename>, # name of your .txt file that contains the CSV format and training labels
-     target_title=<title_name>, 
-     label_name=<label_name>,
-     security_level="PRODUCTION", # production level security
-     enable_peers=True, # allow peer discovery
-     trusted_networks=['127.0.0.1/32', '192.168.1.0/24'], # for trusted networks, you need to provide the list of IPs of your peers.
-     peer_discovery_port=5555, # peer port to start P2P
-     secret_key=secret_key, # your secret key
-     shared_auth_token=secret_key, # your previous initialized secret_key
-     predict_manager=prediction_manager, # your prediction manager
-     peer_config = <'your_peer_ip_lists.json'> # you need to create .json file that contains your peer IP and Port lists
-     consecutive_peer_config = <'your_second_fallback_peer_ip_lists.json'> # same for this one too, but for fallback.
-     )
- 
-# Agent 2 - Secondary (Port 5556)
-agent2 = CohesiveAgentDeployment(
-     pipeline=secondary_model,
-     memory_name="agent_secondary",
-     filename=<filename>,
-     target_title=<title_name>,
-     label_name=<label_name>,
-     security_level="PRODUCTION",
-     enable_peers=True, # agent is allowed to find peers
-     trusted_networks=['127.0.0.1/32', '192.168.1.0/24'],
-     peer_discovery_port=5556,
-     secret_key=secret_key,
-     shared_auth_token=secret_key,
-     predict_manager=prediction_manager,
-     peer_config = <'your_peer_ip_lists.json'> # you need to create .json file that contains your peer IP and Port lists
-     consecutive_peer_config = <'your_second_fallback_peer_ip_lists.json'> # same for this one too, but for fallback.
-     )
+# example task (change to regression if yours are regression task)
+# function must be async to use the await syntax (Non-blocking)
+async def p2p_tasks(task='classification')
+   main_model.distribution.enable_ssl = False # set to false if you dont have SSL key and CERT, this code would instruct AgentDistributedInference that you don't have SSL, and provide you a regular unsecured socket (Not necessary for production)
+   secondary_model.distribution.enable_ssl = False
 
-# Note: CohesiveAgentDeployment contains ConsecutivePeerAgent that can start a server once ensemble prediction from peer is started
-# be advised to stop the server too before shutdown-ing CohesiveAgentDeployment cluster
+   # NOTE:
+      # shared_auth_token : the secret_key you have alread made
+      # trusted networks is a list (must be list), that contain allowed IPs for networking.
+      # pass IntegratedPipeline (here its main_model), and PipelinePredictionManager (here its main_prediction).
+      # agent memory_name can be anything you want.
+      # pass target_titles and label_name (matches the target_title you used during loading your label_map inside your .txt file.)
 
-# example peer_Ip_lists_config.json (de-comment to use)
-# {
-      # you must put "known_peers" in the config so python can identify the list of IPs and Ports 
-      #  "known_peers": [ 
-        #    ["127.0.0.1", 5555], can be modified using real IP or local IP.
-        #    ["127.0.0.1", 5556],
-             # more ip and port lists...
-     #   ]
-    # }
-
-
-try:
-     # Start both agents
-     print("\n🚀 Starting Agent 1...")
-     await agent1.start()
-     print("✅ Agent 1 started on port 5555")
-     
-     print("\n🚀 Starting Agent 2...")
-     await agent2.start()
-     print("✅ Agent 2 started on port 5556")
-     
-     # Give servers time to fully bind
-     await asyncio.sleep(2)
-     
-     # Get API keys
-     api_key = agent1.get_api_key()
-     print(f"\n🔑 Using API Key: {api_key[:20]}...")
-
-     texts = {"test_titles": test_titles, "label_map": label_map, "rules": rules, # test_titles and rules are Optional samples, can be set to None.
-'X': None, "y":None, "use_transformer": True, "agent_id": agent_id} # (X and y are optional samples here too)
-     # Important Note: If you set titles and rules to None, you must provide X and y samples for prediction, otherwise the models cant predict anything.
-
-     # texts dictionary must contain test_titles, label_map, and rules that you can assign,
-     # agent ID can be strings, int, or floats, recommendded to make it long for better security.
-     agent1.pipeline.use_transformer = False # set agent1 pipeline to not use transformer for efficient processing in ARM64 env.
-     agent2.pipeline.use_transformer = False
-      
-      # Make prediction with peer ensemble
-      # Connection will be guaranteed successfull during discovery.
-     result = await agent1.multi_modal_peer_ensemble_prediction(
-          texts=texts,
-          api_key=api_key,
-          method='advanced',
-          disable_sync=True
-      )  # await using asyncio, multi_modal_peer_ensemble is already async by design (Inside ConsecutivePeerAgent), no need to put asyncio.run()
-
-     # must have agent2 peer ensemble function after agent1 peer ensemble prediction function, 
-     # so agent1 can receive agent2 peer ensemble prediction request.
-     result2 = await agent2.multi_modal_peer_ensemble_prediction(
-          texts=texts,
-          api_key=api_key,
-          method='advanced',
-          disable_sync=True
+      # enable_peers : allow an agent to communicate with other agent.
+      # security_level:
+         # PRODUCTION: secure for P2P networking,
+         # DEVELOPMENT: not-secure for P2P networking (use this for testing)
+   # Agent 1 - Primary (Port 5555)
+   agent1 = CohesiveAgentDeployment(
+      pipeline=main_model, # main_model is your initialized integrated pipeline
+      memory_name="agent_primary", # any name you want for the agent.
+      filename=<filename>, # name of your .txt file that contains the CSV format and training labels
+      target_title=<title_name>, 
+      label_name=<label_name>,
+      security_level="PRODUCTION", # production level security
+      enable_peers=True, # allow peer discovery
+      trusted_networks=['127.0.0.1/32', '192.168.1.0/24'], # for trusted networks, you need to provide the list of IPs of your peers.
+      peer_discovery_port=5555, # peer port to start P2P
+      shared_auth_token=secret_key, # your previous initialized secret_key
+      predict_manager=prediction_manager, # your prediction manager
+      peer_config = <'your_peer_ip_lists.json'> # you need to create .json file that contains your peer IP and Port lists
+      consecutive_peer_config = <'your_second_fallback_peer_ip_lists.json'> # same for this one too, but for fallback.
+      )
+   
+   # Agent 2 - Secondary (Port 5556)
+   agent2 = CohesiveAgentDeployment(
+      pipeline=secondary_model,
+      memory_name="agent_secondary",
+      filename=<filename>,
+      target_title=<title_name>,
+      label_name=<label_name>,
+      security_level="PRODUCTION",
+      enable_peers=True, # agent is allowed to find peers
+      trusted_networks=['127.0.0.1/32', '192.168.1.0/24'],
+      peer_discovery_port=5556,
+      shared_auth_token=secret_key,
+      predict_manager=prediction_manager,
+      peer_config = <'your_peer_ip_lists.json'> # you need to create .json file that contains your peer IP and Port lists
+      consecutive_peer_config = <'your_second_fallback_peer_ip_lists.json'> # same for this one too, but for fallback.
       )
 
-     print(f"\n📊 Ensemble Result for Agent 1:")
-     print(f"   Prediction: {result.get('prediction', 'N/A')}")
-     print(f"   Confidence: {result.get('confidence', 0):.2%}")
+   # Note: CohesiveAgentDeployment contains ConsecutivePeerAgent that can start a server once ensemble prediction from peer is started
+   # be advised to stop the server too before shutdown-ing CohesiveAgentDeployment cluster
 
-     print(f"\n📊 Ensemble Result for Agent 2:")
-     print(f"   Prediction: {result2.get('prediction', 'N/A')}")
-     print(f"   Confidence: {result2.get('confidence', 0):.2%}")
+   # example peer_Ip_lists_config.json (de-comment to use)
+   # {
+         # you must put "known_peers" in the config so python can identify the list of IPs and Ports 
+         #  "known_peers": [ 
+         #    ["127.0.0.1", 5555], can be modified using real IP or local IP.
+         #    ["127.0.0.1", 5556],
+               # more ip and port lists...
+      #   ]
+      # }
 
-     # Keep running briefly
-     print("\n⏳ Cluster stable. Waiting 5 seconds before shutdown...") # 5 seconds before shutdown.
 
-     # stop ConsecutivePeerAgent servers inside CohesiveAgentDeployment.
-     agent1._peer_agent.stop_server() # ._peer_agent is ConsecutivePeerAgent
-     agent2._peer_agent.stop_server()
+   try:
+      # Start both agents
+      print("\n🚀 Starting Agent 1...")
+      await agent1.start()
+      print("✅ Agent 1 started on port 5555")
+      
+      print("\n🚀 Starting Agent 2...")
+      await agent2.start()
+      print("✅ Agent 2 started on port 5556")
+      
+      # Give servers time to fully bind
+      await asyncio.sleep(2)
+      
+      # Get API keys
+      api_key = agent1.get_api_key()
+      print(f"\n🔑 Using API Key: {api_key[:20]}...")
 
-     await asyncio.sleep(5)
+      texts = {"test_titles": test_titles, "label_map": label_map, "rules": rules, # test_titles and rules are Optional samples, can be set to None.
+   'X': None, "y":None, "use_transformer": True, "agent_id": agent_id} # (X and y are optional samples here too)
+      # Important Note: If you set titles and rules to None, you must provide X and y samples for prediction, otherwise the models cant predict anything.
 
-except Exception as e:
-     print(f"\n❌ Error in cluster: {e}")
-     traceback.print_exc()
-     
-finally:
-     print("\n🛑 Shutting down cluster...")
-     await agent1.shutdown()
-     await agent2.shutdown()
-     print("✅ Cluster shutdown complete")
+      # texts dictionary must contain test_titles, label_map, and rules that you can assign,
+      # agent ID can be strings, int, or floats, recommendded to make it long for better security.
+      agent1.pipeline.use_transformer = False # set agent1 pipeline to not use transformer for efficient processing in ARM64 env.
+      agent2.pipeline.use_transformer = False
+         
+         # Make prediction with peer ensemble
+         # Connection will be guaranteed successfull during discovery.
+      result = await agent1.multi_modal_peer_ensemble_prediction(
+            texts=texts,
+            api_key=api_key,
+            method='advanced',
+            disable_sync=True
+         )  # await using asyncio, multi_modal_peer_ensemble is already async by design (Inside ConsecutivePeerAgent), no need to put asyncio.run()
+
+      # must have agent2 peer ensemble function after agent1 peer ensemble prediction function, 
+      # so agent1 can receive agent2 peer ensemble prediction request.
+      result2 = await agent2.multi_modal_peer_ensemble_prediction(
+            texts=texts,
+            api_key=api_key,
+            method='advanced',
+            disable_sync=True
+         )
+
+      print(f"\n📊 Ensemble Result for Agent 1:")
+      print(f"   Prediction: {result.get('prediction', 'N/A')}")
+      print(f"   Confidence: {result.get('confidence', 0):.2%}")
+
+      print(f"\n📊 Ensemble Result for Agent 2:")
+      print(f"   Prediction: {result2.get('prediction', 'N/A')}")
+      print(f"   Confidence: {result2.get('confidence', 0):.2%}")
+
+      # Keep running briefly
+      print("\n⏳ Cluster stable. Waiting 5 seconds before shutdown...") # 5 seconds before shutdown.
+
+      # stop ConsecutivePeerAgent servers inside CohesiveAgentDeployment.
+      agent1._peer_agent.stop_server() # ._peer_agent is ConsecutivePeerAgent
+      agent2._peer_agent.stop_server()
+
+      await asyncio.sleep(5)
+
+   except Exception as e:
+      print(f"\n❌ Error in cluster: {e}")
+      traceback.print_exc()
+      
+   finally:
+      print("\n🛑 Shutting down cluster...")
+      await agent1.shutdown()
+      await agent2.shutdown()
+      print("✅ Cluster shutdown complete")
+
+# Initiate tasks:
+if __name__ == '__main__':
+   # match to your own task (classification or regression based on your samples)
+   p2p_tasks(task='classification')
 
 ```
 [=] Important Note: 
@@ -1034,55 +1325,65 @@ finally:
    - [=] for probability coordination, locally, get peers data from database or via socket.
 ```python
 # step 4
-dataset, _ = main_model.data_preparation(test_titles, label_map)
+# X_generated is an X samples generated from using dataset converted into Vectors.
+dataset, X_generated = main_model.data_preparation(test_titles, label_map)
+# sequence inputs for Transformer
 sequence_inputs = main_model.sequence_encoding(dataset)
-X_raw_generation, y, n_classes, input_dim = main_model.mlp_training_features(example_rules, dataset)
+# NOTE:
+# if you have X samples:
+# sequence_inputs = main_model._features_to_sequence(X)
+# ignore the dataset version.
 
-main_model.initialize_fitting(dataset)
-X_raw_features = main_model.tfidf.transform(X_raw_generation).toarray()
-transformer_features = main_model.transformer_pooled_features(sequence_inputs)
-X_features = np.concatenate([X_raw_features, transformer_features], axis=-1)
 
-peer_probability_calibration = main_model.predict_proba(sequence_inputs, X_features, type='Hybrid', embedded=True) # peer-to-peer calibration is inside this function
+# type='Hybrid' = Transformer probabilities will be present for ensemble weighting with MLp probabilities
+# type='others' = Transformer probabilities will be ignored, and ensemble weighting will not be initiated as MLP probs will be used.
+peer_probability_calibration = main_model.predict_proba(sequence_inputs, X, type='Hybrid', embedded=True) # peer-to-peer calibration is inside this function
 ```
 [~] Note: the peer calibration coordination has a chance of triggering if both MLP and Transformer prediction doesn't agree on certain output. Consider using this setup below for using stand-alone peer-to-peer main function without being wrapped in other parent function, allowing flexible and auditable peer-to-peer sharing for probability coordination:
 ```python
 from AbstractIntegratedModule import WeightedEnsemblePredictor
 from AbstractIntegratedModule import Transformer
 
-num_classes = len(label_map)
-# if you haven't fit the Tfidf:
-# main_model.initialize_fitting(dataset)
+# Initialize the ensemble helper class:
+# main_model.distribution is the AgentDistributedInference for Handling samples:
+ensemble_method = WeightedEnsemblePredictor(main_model, main_model.distribution, memory_name) # consider using the same memory name used in your previous pipeline
 
-ensemble_method = WeightedEnsemblePredictor(main_model, memory_name) # consider using the same memory name used in your previous pipeline
-transformer = Transformer(main_model.vocab_size, d_model=32, n_heads=4, num_classes=num_classes) # you can audit how much parameter the transformer needs.
-main_model.model2 = transformer # overwrite previous transformer initialization
+
+# Suit based on what samples you have, n_features can be set to None for classification, or used in regression samples.
+# use your own vocab_size, in this case we use the old initialized vocab_size:
+transformer = Transformer(
+   vocab_size=main_model.vocab_size, d_model=32, n_heads=4, num_classes=num_classes, learning_rate=0.1, n_features=None, task='classification') # you can audit how much parameter the transformer needs.
+main_model.model2 = transformer # overwrite previous transformer initialization in IntegratedPipeline
 
 # main_model.distribution is AgentDistributedInference() class
 # consider using ssl for secure peer to peer coordination
-main_model.distribution.ssl_cert_file = <path_to_your_ssl_cert_file> 
-main_model.distribution.ssl_key_file = <path_to_your_ssl_key_file>
+# main_model.distribution.ssl_cert_file = <path_to_your_ssl_cert_file> 
+# main_model.distribution.ssl_key_file = <path_to_your_ssl_key_file>
 
-dataset, _ = main_model.data_preparation(titles, label_map)
-sequence_input = main_model.sequence_encoding(dataset)
-_, attn_weights = transformer.forward(sequence_input)
+# Create Sequence input that Transformer can Process:
+sequence_input = main_model._features_to_sequence(X)
+transformer_probs, attn_weights = transformer.forward(sequence_input)
 
-probs = ensemble_method.predict_ensemble(sequence_input, X_features, y, method='dynamic', embedded=True)
+# use your X and y samples here samples here
+# set embedded to always True for Transformer forward method.
+probs = ensemble_method.predict_ensemble(sequence_input, X, y, method='dynamic', embedded=True)
 # 3 options for ensemble weighting method:
 # 1. dynamic: allow flexible, efficient weighting from both transformer and MLP,
 # 2. meta: for a much more in-depth weighting from both model,
 # 3. calibration: allow calibrating probability for both model outputs based on both best weights assembling.
 
+# Get Models Agreement from previous ensemble prediction:
 agreement = main_model.agreement
 
 # start server to initiate socket for P2P listener
 main_model.distribution.start_server()
 
 # set connection timeout (Optional)
-main_model.distribution.connection_timeout = 30 # 30 seconds before timeout
+main_model.distribution.connection_timeout = 150 # 150 seconds before timeout
 calibrated_probability = main_model._handle_distributed_connections(probs, attn_weights, sequence_input, agreement)
 
 # if an Agent experience a failure on tasks, consider using this function to reduce peer trust for safer flexible coordination:
+
 # main_model.distribution.report_failure(id(main_model), '<task_name>', reason='<unknown>') # you can add the task_name and reason
 # main_model.distribution.print_network_status() # to show other peers info.
 ```
@@ -1288,8 +1589,8 @@ Purpose: Implements categorical crossentropy loss and its gradient for training 
 4. Transformer 
 Purpose: A complete transformer implementation with multi-head attention, positional embeddings, feed-forward networks, layer normalization, and custom backpropagation. Includes both fixed (stable) and dynamic (adaptive) training modes necessary for Scarce data environment using algorithm such as Alpha based computing directly during forward pass.
 ---
-5. Dense
-Purpose: A geometric-aware dense layer that adapts its weights based on input data geometry and handles variable input dimensions automatically.
+5. Dense and QATDense:
+Purpose: A regular dense layer and a Dense layer that specifically handles Quantization-Aware method for Training that is flexible.
 ---
 6. SoftmaxOutput  
 Purpose: A simple wrapper around softmax activation that stores the output and passes gradients through unchanged (since softmax + crossentropy gradient is handled elsewhere).
@@ -1344,6 +1645,7 @@ purpose: handling LSTM Feed-forward layer, Training and Samples handling.
 ---
 23. LSTMEngine
 purpose: handles Proper LSTM Confidence and calibration layer.
+---
 
 ## Full Documentation Features
 - [Go to IntegratedPipeline-Specialized-AI-Agent-library](#IntegratedPipeline-Specialized-AI-Agent-library)
