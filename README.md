@@ -580,7 +580,12 @@ ________________________________________________________________________________
    import numpy as np
 
    # SETUP BLOCK.
+   # NOTE:
+   # if you want the Model to continuously learn from every input, Consider changing the memory name to match the exact input where the Model has been trained on that specific input, This allows Flexibility while making the Model deterministic in behavior.
    memory_name = 'agent_memory'
+   # example: 
+   # if model is trained in Input B, change memory name to 'sec_agent_memory', or whatever memory name you want.
+   
    cert_file = <your_cert_file_dir> # your .crt file
    key_file = <your_key_file_dir> # your .key file
 
