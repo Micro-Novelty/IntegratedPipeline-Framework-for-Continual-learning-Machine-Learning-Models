@@ -573,7 +573,7 @@ ________________________________________________________________________________
 
 
 4. A. Use IntegratedPipeline as in this example:
-   - A. [CLASSIFICATION TASK ONLY] 
+   - A. ### [CLASSIFICATION TASK ONLY] 
    ```python
    from AbstractIntegratedModule import IntegratedPipeline
    from AbstractIntegratedModule import PipelinePredictionManager
@@ -815,7 +815,7 @@ ________________________________________________________________________________
    # ... more features you can add
    ```
 
-   B. [REGRESSION TASK ONLY]
+   B. ### [REGRESSION TASK ONLY]
    ```python
 
    # Here we used a dataset specifically predicting how much Electricity is used (You can see and inspect this .csv in kagglehub):
@@ -954,8 +954,9 @@ ________________________________________________________________________________
    main_model.save_weights(memory_name, model_type='Pipeline') 
 
 
-   - Note: This script setup can be downloaded here: [usage_script](scripts/usage_scripts.py)
-
+  - Note:
+    - Classification Task workflow script setup can be downloaded here: [usage_script](scripts/classification_usage_scripts.py)
+    - Regression task workflow example can be downloaded here: [usage_script](scripts/regression_usage_scripts.py)
 
    
 4. B. Using Standalone IntegratedPipeline Transformer:
