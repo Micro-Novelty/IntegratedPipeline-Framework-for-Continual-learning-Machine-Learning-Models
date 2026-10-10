@@ -1,3 +1,5 @@
+# REGRESSION WORKFLOW WITH REGRESSION BASED SAMPLES/DATA
+
 
 # Here we used a dataset specifically predicting how much Electricity is used (You can see and inspect this .csv in kagglehub):
 # the dataset MUST be in .csv format like in example below, The Framework doesnt accept .txt, or any other format (Safety restriction to avoid Data Scraping):
