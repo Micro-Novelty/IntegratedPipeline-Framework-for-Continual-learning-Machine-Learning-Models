@@ -156,11 +156,11 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
    User can control this behavior such as: 
    - Ex pseudocode:
       - ```python
-      if memory_is_loaded:
-         stop_training()
-      else:
-         continue_training()
-        ```
+        if memory_is_loaded:
+           stop_training()
+        else:
+           continue_training()
+          ```
 
    this Continous learning behavior is efficient because its not relying on weights saved in RAM for memory, allowing flexible and predictable behavior inside a given environment.
    
