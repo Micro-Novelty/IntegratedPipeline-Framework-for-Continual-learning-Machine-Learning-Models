@@ -1154,6 +1154,9 @@ print('[==] Initiating advanced batch prediction')
 ```python
 
 # step 3
+
+# NOTE:
+# All three Models (MLP, Transformer and LSTM) must be Initialized and Trained first before initiating P2P.
 from AbstractIntegratedModule import CohesiveAgentDeployment
 from AbstractIntegratedModule import PipelinePredictionManager
 import asyncio
