@@ -573,7 +573,7 @@ ________________________________________________________________________________
 
 
 4. A. Use IntegratedPipeline as in this example:
-   - A. ### [CLASSIFICATION TASK ONLY] 
+   -  ### [CLASSIFICATION TASK ONLY] 
    ```python
    from AbstractIntegratedModule import IntegratedPipeline
    from AbstractIntegratedModule import PipelinePredictionManager
@@ -815,7 +815,7 @@ ________________________________________________________________________________
    # ... more features you can add
    ```
 
-   B. ### [REGRESSION TASK ONLY]
+   - ### [REGRESSION TASK ONLY]
    ```python
 
    # Here we used a dataset specifically predicting how much Electricity is used (You can see and inspect this .csv in kagglehub):
