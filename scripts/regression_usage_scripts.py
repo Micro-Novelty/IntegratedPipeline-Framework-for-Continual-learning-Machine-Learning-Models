@@ -1,5 +1,3 @@
-# REGRESSION WORKFLOW WITH REGRESSION BASED SAMPLES/DATA
-
 
 # Here we used a dataset specifically predicting how much Electricity is used (You can see and inspect this .csv in kagglehub):
 # the dataset MUST be in .csv format like in example below, The Framework doesnt accept .txt, or any other format (Safety restriction to avoid Data Scraping):
@@ -70,6 +68,9 @@ X, y, config = main_prediction.prepare_dataset(daily, feature_cols, target_col_n
 main_model.show_explainability_details = True
 main_model.distribution.predict_manager = main_prediction # set PipelinePredictionManager to AgentDistributedInference for asynchronous prediction later (Very important for asynchronous prediction)
 # main_model.use_transformer = True if you want to use transformer, this will notify all modules that used advanced_prediction_method will initiate prediction with both transformer and MLP.
+
+main_model.autonomous = True
+# Autonomous mode makes the Model autonomous to prevent any EOF Error during Github CI workflow usage, or etc, this will prevent the Model from requesting input from you. 
 
 # set IntegratedPipeline Penalty rate when it output wrong answer:
 main_model.error_decay = 0.75
