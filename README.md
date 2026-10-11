@@ -671,6 +671,9 @@ ________________________________________________________________________________
    main_model.error_decay = 0.75
    # error_rate > 0.5 means old errors fade quickly — a class that was wrong 3 predictions ago matters less than one wrong just now, making the model less likely to output repetitive wrong answer.
    # this a flexible tunable-knob for the model judgement regarding wrong answer, this will propagate through prediction layers to inform about the model repetitive answer and calibrate it immediately.
+   
+   main_model.autonomous = True
+   # Autonomous mode makes the Model autonomous to prevent any EOF Error during Github CI workflow usage, or etc, this will prevent the Model from requesting input from you. 
 
    # NOTE:
    # (OPTIONAL) You can also define your own QuantConfig for quantization-aware training (QAT), 
@@ -893,6 +896,9 @@ ________________________________________________________________________________
    main_model.distribution.predict_manager = main_prediction # set PipelinePredictionManager to AgentDistributedInference for asynchronous prediction later (Very important for asynchronous prediction)
    # main_model.use_transformer = True if you want to use transformer, this will notify all modules that used advanced_prediction_method will initiate prediction with both transformer and MLP.
 
+   main_model.autonomous = True
+   # Autonomous mode makes the Model autonomous to prevent any EOF Error during Github CI workflow usage, or etc, this will prevent the Model from requesting input from you. 
+
    # set IntegratedPipeline Penalty rate when it output wrong answer:
    main_model.error_decay = 0.75
    main_model.use_lstm = True
@@ -1024,28 +1030,49 @@ ________________________________________________________________________________
    Note: kNN-Augmented Transformer doesn't have its own Prediction pipeline flow, meaning after the Transformer forward method is called, the probabilities of the kNN Transformer will be returned and no prediction is made, We decided to be better this way because it grants Flexibility over how Prediction will be made in your favour:
    - Example Code:
    - ```python
-      # knn_forward_inference() lives inside PipelinePredictionManager, so you need to call this class to initiate the knn_forward_inference() function.
-      losses, accs, _ = main_prediction.knn_forward_inference(X, y,
-      label_map=None, # Label map can be safely set to None during Training phase.
-      memory_metric='euclidean', training=True, batch_size=2,
-      train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
+
+      # Initialize kNN Transformer:
+      knn_tf = sec_main_prediction.initialize_knn_transformer(
+       vocab_size=1, task='<your_task>', num_classes=num_classes, d_model=32,
+       n_heads=4, n_features=len(feature_cols), # pass len(feature_cols) if your task is regression, set to None if classification
+       memory_capacity=10000,
+       memory_k=5, memory_metric='euclidian')
+     # NOTE:
+     - vocab_size and num_classes is a MUST, meaning you have to pass the number of classes of your samples, and vocab_size of your data (can be set to vocab_size=1 for regression task)
+     - memory_capacity = the amount of memory for the kNN to hold
+     - memory_k = "K" is the central hyperparameter that defines the number of nearby training data points the algorithm looks at to make a prediction, more memory_k => more nearby training points the model can look up.
      
-      transformer_probs, attn_weights, prediction = main_prediction.knn_forward_inference(X, y,
-      label_map=label_map, # Label map can be inserted in here, or you Can set this to None,
+     
+     # knn_forward_inference() lives inside PipelinePredictionManager, so you need to call this class to initiate the knn_forward_inference() function.
+     losses, accs, _ = main_prediction.knn_forward_inference(X, y,
+     label_map=None, # Label map can be safely set to None during Training phase.
+     memory_metric='euclidean', training=True, batch_size=2,
+     train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
+     
+     transformer_probs, attn_weights, prediction = main_prediction.knn_forward_inference(X, y,
+     label_map=label_map, # Label map can be inserted in here, or you Can set this to None,
                             if set to None this function will only returns Transformer prob and attn_weights.
-      memory_metric='euclidean',
-      training=False) # for returning kNN Transformer probabilities and attention weights only.
-      # Note: - train_mode can be set to 'dynamic_backward' if you have very large dataset, this makes Transformer Q, K, V be much more dynamic and grants flexible learning behavior for large dataset.
-              # - train_mode can be set to 'fixed_backward' if you have small dataset, this makes Transformer Q, K, V to stay frozen so the FFN flow will handle the Training, making Learning in very little samples possible and deterministic in behavior.
-              # - y sample must be one-hot encoded manually before its passed to the function, since the function above will not automatically one-hot encode the y-sample.
-     
+     memory_metric='euclidean',
+     training=False) # for returning kNN Transformer probabilities and attention weights only.
+     # Note: - train_mode can be set to 'dynamic_backward' if you have very large dataset, this makes Transformer Q, K, V be much more dynamic and grants flexible learning behavior for large dataset.
+            # - train_mode can be set to 'fixed_backward' if you have small dataset, this makes Transformer Q, K, V to stay frozen so the FFN flow will handle the Training, making Learning in very little samples possible and deterministic in behavior.
+            # - y sample must be one-hot encoded manually before its passed to the function, since the function above will not automatically one-hot encode the y-sample.
+
+      # ==== SAVING MEMORY BLOCK =====
       main_prediction.pipeline.storage.save_hnsw_memory(memory_name) # This function saves the HNSW setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
       main_prediction.pipeline.storage.save_memory_head(memory_name) # This function saves the Per-Head memory setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
-     
+
+      # Get binary blob to save target memory:
+      blob = main_model.model2.target_memory_to_bytes()
+      main_model.storage.save_target_memory_row(memory_name, blob) # Save target memory row for kNN Transformer usage later
+
+
+      # === LOADING MEMORY BLOCK ===
       main_prediction.pipeline.storage.load_hnsw_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
       main_prediction.pipeline.storage.load_head_memory_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
+      main_model.storage.load_target_memory_row(memory_name) # load target memory row for kNN Transformer
 
-     # .... # your own custom prediction block.
+     # .... # your own custom kNN prediction block.
      ```
       
      
@@ -1404,6 +1431,8 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
 
 10. SNN Prediction Usage (Separated from IntegratedPipeline):
     - Example usage:
+    - NOTE: (Our SNN cant handle Regression samples):
+    - ### [CLASSIFICATION TASK ONLY] :
     - ```python
       from AbstractIntegratedModule import train_snn_network
       from AbstractIntegratedModule import snn_predict
@@ -1416,6 +1445,7 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
       # This function already includes diagnostic modules for the Whole SNN network to give you a Clearer picture of the SNN Condition before Prediction.
       # Very High Dead neurons is a sign of Bad development, consider to Increase hidden layers or learning rate in order for the Model to improve.
 
+      # x must be a two dimensional sample, if X.ndim > 2, consider reshaping the X to be a 2D sample safely.
       results = snn_predict(X=X, y=y, label_map=label_map, encoder=encoder, net=net)
       # net is the SNNNetwork Class, and Encoder is PoissonEncoder, both are required for Prediction and must be passed in this function, consider saving the SNN net and the encoder using json for later use.
       # Small Note:
