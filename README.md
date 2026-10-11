@@ -568,7 +568,7 @@ ________________________________________________________________________________
       "Amazon.com -> Chrome",personal-work
       ```
       Note = window_title is target_title and label is target_label, check step below to use it.
-      # NOTE:
+      ### NOTE:
       - There must be no space between ',' and words to prevent missing labels during label_map extraction.
 
 
@@ -890,6 +890,8 @@ ________________________________________________________________________________
    # horizon: the number of days you want to predict into the future, in this case we use 5 days.
    X, y, config = main_prediction.prepare_dataset(daily, feature_cols, target_col_name="PJME_MW",
                                        window_size=30, horizon=5)
+   # NOTE:
+   # the total horizon must match the total labels you have in your label_map, if your label_map is 5, you need to set the horizon=5.
 
    # activate explainability capability to explain uncertainty:
    main_model.show_explainability_details = True
