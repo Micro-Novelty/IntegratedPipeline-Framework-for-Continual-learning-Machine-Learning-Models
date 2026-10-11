@@ -3,7 +3,12 @@ from AbstractIntegratedModule import PipelinePredictionManager
 import numpy as np
 
 # SETUP BLOCK.
+# NOTE:
+# if you want the Model to continuously learn from every input, Consider changing the memory name to match the exact input where the Model has been trained on that specific input, This allows Flexibility while making the Model deterministic in behavior.
 memory_name = 'agent_memory'
+# example: 
+# if model is trained in Input B, change memory name to 'sec_agent_memory', or whatever memory name you want.
+
 cert_file = <your_cert_file_dir> # your .crt file
 key_file = <your_key_file_dir> # your .key file
 
@@ -89,6 +94,9 @@ main_model.distribution.predict_manager = main_prediction # set PipelinePredicti
 main_model.error_decay = 0.75
 # error_rate > 0.5 means old errors fade quickly — a class that was wrong 3 predictions ago matters less than one wrong just now, making the model less likely to output repetitive wrong answer.
 # this a flexible tunable-knob for the model judgement regarding wrong answer, this will propagate through prediction layers to inform about the model repetitive answer and calibrate it immediately.
+
+main_model.autonomous = True
+# Autonomous mode makes the Model autonomous to prevent any EOF Error during Github CI workflow usage, or etc, this will prevent the Model from requesting input from you. 
 
 # NOTE:
 # (OPTIONAL) You can also define your own QuantConfig for quantization-aware training (QAT), 
