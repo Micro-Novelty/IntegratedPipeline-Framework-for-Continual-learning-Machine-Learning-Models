@@ -170,7 +170,7 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
        agent_1 with memory_name 'A' -> task A (Classification task)
        change memory_name to 'B"
        agent_1 with memory_name 'B" -> task B (Regression task)
-       regression task requires slight modification to the required samples (Easy modification)
+       regression task requires slight modification to match the required samples and argument (Easy modification)
        ```
      - Example 2: Worflow (Multiple models):
      - ```txt
@@ -1173,7 +1173,7 @@ async_manager.start(method='Transformer_included', bootstrap_token=None) # booth
 # overall_timeout: this is the overall timeout you want to use for the prediction, in this case we set it to 20000 seconds, meaning if the model takes longer than 20000 seconds to predict, it will abort the prediction (changeable).
 
 # IMPORTANT NOTE: the async_predict variable will return all the prediction results, prediction success, failures, so you can directly see how the model predicts each batch of the given sample.
-
+# test_titles and rules are needed for asynchonous prediction.
 payloads = {'test_titles': test_titles, 'label_map': label_map, 'rules': rules, 'use_transformer': True}
 async_predict = wrapper.prediction_method(payloads, X, y_samples=y, chunk_size=1000,
                  max_predictions=3, task="auto", timeout=1000,
