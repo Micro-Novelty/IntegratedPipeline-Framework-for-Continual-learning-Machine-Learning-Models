@@ -18,7 +18,7 @@ ________________________________________________________________________________
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
-- Development Stage on PyPi: 1.2.5 Official Release.
+- Development Stage on PyPi: 1.2.6 Official Release.
 - Author and Maintainer: Micro-Novelty and EpsitronNet-bot.
 - library Source-Code is Open-sourced with MIT License.
 - Purpose: Specifically Designed for providing Non-LLM AI Agent Framework for edge Devices, Optimized for ARM64 architecture.
@@ -67,11 +67,6 @@ ________________________________________________________________________________
    - Reworked Prediction and Training method for User convenience in controlling the Model's capabilities and reducing Black-boxness
 -----
   - Changelog:
-     - v1.2.4:
-       - Fixed 2 months old Bug where similarity matching in Correct answer cache reach beyond 100%.
-       - Advanced prediction method now returns the most frequently Predicted labels instead of the prediction over the first sample only.
-       - Reworks confidence and agreement counts handling to match the most frequently predicted label instead of only the first sample agreement from MLP and Transformer prediction inside Advanced prediction.
-       - SNN predicted labels print reports now cant reach 50 times to avoid print flooding the IDE terminal.
      - v1.2.5 [MAJOR REWORKS]:
        - Reworks Advanced Prediction method to separate Training and prediction to provide User's control.
        - Reworks Regression Training for MLP, and LSTM.
@@ -81,6 +76,9 @@ ________________________________________________________________________________
        - Reworks Asynchronous function to predict chunked X samples instead of all X samples to prevent Memory overflow for edge devices.
        - Reworks Numerous important Functions inside IntegratedPipeline that handles number of classes, dataset creation from test titles.
        - Saving and Loading Weights as memory to SQLite database is now separated, meaning you can handle Continuous Training or stop Training when memory is present and not present.
+     - v1.2.6:
+        - Separate SNN initialization from train SNN function
+        - added Regression based training and prediction for SNN
 
     
      - Note: if you want to see the Changelog history of the library Older versions consider visiting this link:
@@ -154,15 +152,34 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
 2. Continously Learning behavior for an Agent:
    - different from LLM that is static and cannot improve beyond its given training condition, AI Models using IntegratedPipeline has a dynamic, flexible continously learning behavior with conditional training algorithms included in the library that has both supervised and unsupervised learning present, The learned input and predicted Output will be stored in the database as a Memory, allowing it to recall its memory during processing and find matching known prediction given if input matched with the stored input inside the database. 
    User can control this behavior such as: 
-   - Ex pseudocode:
-      - ```python
+   - Ex. pseudocode:
+      - ```txt
+        memory_name = 'agent1_memory'
+        memory_loaded = load_memory(memory_name)
         if memory_is_loaded:
            stop_training()
         else:
            continue_training()
           ```
+     - Benefit of this approach:
+     - Allow flexible Training and model task allocation better:
+     - Deterministic behavior for Pragmatic Continual learning behavior for MANN type Models.
+     
+     - Example 1: Workflow (Single model):
+     - ```txt
+       agent_1 with memory_name 'A' -> task A (Classification task)
+       change memory_name to 'B"
+       agent_1 with memory_name 'B" -> task B (Regression task)
+       regression task requires slight modification to the required samples (Easy modification)
+       ```
+     - Example 2: Worflow (Multiple models):
+     - ```txt
+       agent_1 with memory_name "A" -> task A (Classification)
+       agent_2 with memory_name "C" -> task C (Regression)
+       ```  
 
-   this Continous learning behavior is efficient because its not relying on weights saved in RAM for memory, allowing flexible and predictable behavior inside a given environment.
+    - Note: this Continous learning behavior is efficient because its not relying on weights saved in RAM for memory, allowing flexible and predictable behavior inside a given environment.
+    - Tradeoff: This approach is deterministic and Memory modification or removal requires Manual audit directly to the Model's SQlite database (Named activity_log.db).
    
 3. Robust Specialized MLP, Transformer and LSTM Architecture with ensemble weighting architecture:
   - IntegratedPipeline usually used 1 Model for regular advanced prediction, but in some Conditions, it used 2 Different type's of AI Architecture stacked together, and one architecture to weight their confidence and probability fairly (ensemble method) to get the final prediction for the problem it faced, Specialized MLP for Noise robustness And Specialized Transformer that used Alpha-based Computing algorithm for contextual reasoning, LSTM architecture to provides proof-of-credibility over a certain output, acting as a support mechanism rather than Main orchestrator like MLP and Transformer. The reason why those Models complement and used together:
@@ -1202,7 +1219,7 @@ secondary_model = IntegratedPipeline(memory_name=memory_name,
                 use_async=True, agent_port=8080, 
                 ssl_cert_file=cert_file, ssl_key_file=key_file) # provide cert_file path or key_file path (optional)
 # secondary model of integrated pipeline is critical for ARM64 environment to prevent socket conflict during P2P with the first Integrated pipeline instance.
-# make sure that the agent_port in secondary_model must be different from agent_port in first IntegratedPipeline instance you initialized.
+# make sure that the agent_port in secondary_model must be different from agent_port in first IntegratedPipeline instance you initialized to prevent address already in use error [Errno 48].
 
 print("=== SECURE PEER-TO-PEER CLUSTER ===")
 
@@ -1434,21 +1451,30 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
 10. SNN Prediction Usage (Separated from IntegratedPipeline):
     - Example usage:
     - NOTE: (Our SNN cant handle Regression samples):
-    - ### [CLASSIFICATION TASK ONLY] :
+    - ### [CLASSIFICATION TASK AND REGRESSION TASK] :
     - ```python
       from AbstractIntegratedModule import train_snn_network
       from AbstractIntegratedModule import snn_predict
+      from AbstractIntegratedModule import initialize_snn_network
 
-      encoder, net, reports, warnings = train_snn_network(X=X, y=y, epochs=50, # passed samples and Training epochs
+      # if your X samples (for regression and classification) has large values, consider re-scaling your X samples to lower range to [-1, 1] to prevent Exploding gradients.
+      # X = main_model._safe_to_2d_float(X) if your X samples has len(shape) > 2
+
+      # n_hidden and seed can be changed and flexible.
+      # X, y, and label map is a must samples to pass.
+      net, hidden_layer, utility = initialize_snn_network(X, y, label_map, n_hidden=64, seed=42)
+    
+      encoder, net, reports, warnings = train_snn_network(X=X, y=y, epochs=50,
+            net=net, hidden_layer=hidden_layer, task='<your_task>', # pass your net, hidden_layer and task (can be classification and regression)
             batch_size=32, n_steps=20, # n number of steps for Input encoding for Noise robustness, higher steps, higher robustness from Noise.
-            n_hidden=64, lr=2e-3,  # pass hidden layers (n_hidden) for the SNN Network, and learning rate for the SNN network.
+            n_hidden=64, lr=2e-3,  # pass hidden layers (n_hidden) for the SNN Network (n_hidden must match the previous initialized n_hidden), and learning rate for the SNN network.
             pretrain_steps=200, unsupervised_stdp=False # pretrain steps can be set to 0 if unsupervised_std is set to False (This is for STDP Unsupervised leearning for the SNN before BPTT Training in order to shape better Weights)
             )
       # This function already includes diagnostic modules for the Whole SNN network to give you a Clearer picture of the SNN Condition before Prediction.
       # Very High Dead neurons is a sign of Bad development, consider to Increase hidden layers or learning rate in order for the Model to improve.
 
       # x must be a two dimensional sample, if X.ndim > 2, consider reshaping the X to be a 2D sample safely.
-      results = snn_predict(X=X, y=y, label_map=label_map, encoder=encoder, net=net)
+      results = snn_predict(X=X, y=y, task='your_task', label_map=label_map, encoder=encoder, net=net)
       # net is the SNNNetwork Class, and Encoder is PoissonEncoder, both are required for Prediction and must be passed in this function, consider saving the SNN net and the encoder using json for later use.
       # Small Note:
       # - This architecture is not guaranteed to work best for Classifying tabular datas, its good for time series event based activity classification.
