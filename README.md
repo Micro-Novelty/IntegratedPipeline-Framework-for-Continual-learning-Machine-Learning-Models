@@ -18,7 +18,7 @@ ________________________________________________________________________________
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
-- Development Stage on PyPi: 1.2.6 Official Release.
+- Development Stage on PyPi: 1.2.7 Official Release.
 - Author and Maintainer: Micro-Novelty and EpsitronNet-bot.
 - library Source-Code is Open-sourced with MIT License.
 - Purpose: Specifically Designed for providing Non-LLM AI Agent Framework for edge Devices, Optimized for ARM64 architecture.
@@ -79,6 +79,9 @@ ________________________________________________________________________________
      - v1.2.6:
         - Separate SNN initialization from train SNN function
         - added Regression based training and prediction for SNN
+     - v1.2.7:
+       - test_titles and rules is not a must required samples for Asynchronous prediction.
+        
 
     
      - Note: if you want to see the Changelog history of the library Older versions consider visiting this link:
@@ -1173,7 +1176,7 @@ async_manager.start(method='Transformer_included', bootstrap_token=None) # booth
 # overall_timeout: this is the overall timeout you want to use for the prediction, in this case we set it to 20000 seconds, meaning if the model takes longer than 20000 seconds to predict, it will abort the prediction (changeable).
 
 # IMPORTANT NOTE: the async_predict variable will return all the prediction results, prediction success, failures, so you can directly see how the model predicts each batch of the given sample.
-# test_titles and rules are needed for asynchonous prediction.
+# test_titles and rules are can be set to None if not needed.
 payloads = {'test_titles': test_titles, 'label_map': label_map, 'rules': rules, 'use_transformer': True}
 async_predict = wrapper.prediction_method(payloads, X, y_samples=y, chunk_size=1000,
                  max_predictions=3, task="auto", timeout=1000,
