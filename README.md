@@ -18,7 +18,7 @@ ________________________________________________________________________________
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
-- Development Stage on PyPi: 1.2.7 Official Release.
+- Development Stage on PyPi: 1.2.8 Official Release.
 - Author and Maintainer: Micro-Novelty and EpsitronNet-bot.
 - library Source-Code is Open-sourced with MIT License.
 - Purpose: Specifically Designed for providing Non-LLM AI Agent Framework for edge Devices, Optimized for ARM64 architecture.
@@ -56,17 +56,17 @@ ________________________________________________________________________________
       ```
     - Note: This Optimization would help AbstractIntegratedModule with faster JSON parsing and much more flexible database handling handled efficiently using Rust programming language.
    
-- Proven Capabilities:
-   - The library has been thoroughly tested in Multiple Environments from Windows to ARM64 Environment. The library is now Robust for Wider use and Deployment.
-   - Proven Works on ARM64 Environment, Training and Prediction works efficient on Docker ARM64 environment with QEMU, good parallelizing behavior is guaranteed.
+- Proven Capabilities [Frameworks entire Journey]:
+   - The library has been thoroughly first successfully tested in Multiple Environments from Windows to ARM64 QEMU Based Environment. The library is now Robust for Small usages for Toy projects.
+   - Proven Works on ARM64 Environment using Github runners, Training and Prediction works efficient on Docker ARM64 environment with QEMU, good parallelizing behavior is guaranteed.
    - P2P Works efficiently in ARM64 Docker + QEMU, No conflicting socket and all prediction works efficiently.
    - AWE setup Proven Efficient on Hard-uncontrolled dataset such as Activity Recognition from the given Database.
    - LSTM is Optimized efficiently for scarce data with AWE method.
    - Robust Advanced prediction capabilities proven effective on ARM64 Using MLP + LSTM Architectures.
    - Transformer Optimized using Cython, reduced Memory overhead and Reduce CPU Usage, With Reduced Training Time is guaranteed.
-   - Reworked Prediction and Training method for User convenience in controlling the Model's capabilities and reducing Black-boxness
+   - Reworked Prediction and Training method for User convenience in controlling the Model's capabilities and reducing Blackbox-ness.
 -----
-  - Changelog:
+  - Recent Changelogs [Will be reset each new +0.0.5 versions]:
      - v1.2.5 [MAJOR REWORKS]:
        - Reworks Advanced Prediction method to separate Training and prediction to provide User's control.
        - Reworks Regression Training for MLP, and LSTM.
@@ -81,7 +81,9 @@ ________________________________________________________________________________
         - added Regression based training and prediction for SNN
      - v1.2.7:
        - test_titles and rules is not a must required samples for Asynchronous prediction.
-        
+     - v1.2.8:
+       - Fixed rigid logic in _handle_async method function where a missing test titles and rules stops the whole async process.
+       - Fixed rigid logic where a crash can occur in advanced prediction if lstm_predictions results are None.
 
     
      - Note: if you want to see the Changelog history of the library Older versions consider visiting this link:
