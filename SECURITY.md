@@ -2,8 +2,12 @@
 ### Note:
    - This section actively Documents regarding AbstractIntegratedModule Unpatched vulnerabilities (that is probably in progress of fixing) and Patched vulnerabilities in newer Versions of the library.
 
+   ### [=] Note:
+   - Unpatched vulnerabilities = shows lists of Unpatched ongoing Vulnerabilities in some Versions of AbstractIntegratedModule
+   - Patched vulnerabilities = shows lists of Patched vulnerabilities
+
 __________________________________________________________________________________________________________
-### [UNPATCHED]:
+### [UNPATCHED VULNERABILITIES]:
   - None.
 
 _____________________________________________________________________________________________________________
