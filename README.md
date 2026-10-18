@@ -1,7 +1,7 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 
 ### [INTRO] :
-- Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each Agent memory is Auditable, Transparent, and you can Create different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights from different Tasks, User can firstly Train the Model, and load the required Weights for that specific memory name for later use.
+- Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows User to Create a different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights inside the SQlite database from different Tasks, User can firstly Train the Model, and load the required Weights for that specific memory name for later usage.
 - The Framework's Models are handled by Numpy library, allowing The Models to be used efficiently from High-end embedded systems to regular consumed Based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 ----------------------------------
 
