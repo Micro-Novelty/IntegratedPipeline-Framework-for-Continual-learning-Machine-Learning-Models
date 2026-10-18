@@ -492,7 +492,22 @@ ________________________________________________________________________________
    # save Weights as a memory to the SQLite database, this will allow you to load the model memory later for further prediction.
    main_model.save_weights(memory_name, model_type='Pipeline') 
 
+  ### [>] Continue Training with previously Loaded weights:
+   ```python
+   # Initialize MLP, Transformer, LSTM and samples.....
 
+   # Load Memory from Database:
+   memory_loaded, lstm_weights, transformer_weights, mlp_weights, = main_model.load_model_memory()
+
+   # Train specific Model you want to Continue Training with previously saved Weights (Make sure Samples are the same shape that is used previously from previous Training to prevent shape errors) :
+   main_model.train_mlp_model(titles=None, rules=None, label_map=label_map, X=X, y=y, task='regression', train_epochs=500, momentum=0.9, lr=0.01)
+
+   # Use dynamic_backward for regression task for better learning capabilities.
+   main_model.train_transformer(titles=None, rules=None, label_map=label_map, X=X, y=y,  task='regression', d_model=128, train_epochs=10, 
+       mode='dynamic_backward', lr=0.5, batch_size=4)
+  
+   main_model.train_lstm(titles=None, rules=None, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+   ```
   - Note:
     - Classification Task workflow script setup can be downloaded here: [classification_usage_script](scripts/classification_usage_scripts.py)
     - Regression task workflow example can be downloaded here: [regression_usage_script](scripts/regression_usage_scripts.py)
