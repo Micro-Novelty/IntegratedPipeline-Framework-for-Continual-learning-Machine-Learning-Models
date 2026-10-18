@@ -1,7 +1,7 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 
 <img width="400" height="400" alt="WhatsApp Image 2026-10-18 at 12 47 50" src="https://github.com/user-attachments/assets/57d0a356-3f42-4b84-9b0f-2da1ecd06ec1" />
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/AbstractIntegratedModule?period=total&units=international_system&left_color=black&right_color=green&left_text=downloads)](https://pepy.tech/projects/abstractintegratedmodule)
+
 
 
 [~] Introduction:
