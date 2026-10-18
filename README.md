@@ -3,11 +3,13 @@
 
 <img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
 <img width="400" height="200" alt="WhatsApp Image 2026-10-18 at 12 47 50" src="https://github.com/user-attachments/assets/57d0a356-3f42-4b84-9b0f-2da1ecd06ec1" />
+<img width="400" height="200" alt="WhatsApp Image 2026-10-18 at 13 07 38" src="https://github.com/user-attachments/assets/99d0d728-09a3-44e7-adcf-8443b21da8fe" />
+
 
 -----------------------------------
 
 
-[~] Introduction:
+### [~] Introduction:
 - AbstractIntegratedModule or IntegratedPipeline in short, is a standalone Specialized AI Agent Framework for Non-LLM memory Augmented Local Agentic orchestrator - Specifically designed to provide Local Agentic capability for any Autonomous Agentic Framework as single Instance or Coordinatively that runs efficiently from consumer based machine to High-end embedded systems, where the Model Can directly and continously learn, with minimal and efficient compute, built-in augmented memory, Secure Peer-To-Peer (Multi-Agent) Coordination with security layers as an option, And Explainability capability based on proof from in it's internal metrics, reducing Black-Box condition necessary for reliability. 
 - AbstractIntegratedModule Contains specialized MLP using Its Own specialized geometric Weight encoding (AWE) that is used for Quantization-Aware-Training (QAT) for lower memory Usage, Specialized efficient Transformer and LSTM (Long-short term memory) architecture for Scarce Data training/prediction with Alpha-based computation, specifically designed for low-amount samples environment or Messy environments.
   - IntegratedPipeline Use-Case:
