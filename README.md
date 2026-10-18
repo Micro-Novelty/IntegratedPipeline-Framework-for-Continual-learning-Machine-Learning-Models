@@ -1,7 +1,7 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 
 ### [INTRO] :
-- Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each Agent memory is Auditable, Transparent, and you can Create different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights from different Tasks. 
+- Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each Agent memory is Auditable, Transparent, and you can Create different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights from different Tasks, User can firstly Train the Model, and load the required Weights for that specific memory name for later use.
 ----------------------------------
 
 <img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
