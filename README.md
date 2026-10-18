@@ -1,6 +1,7 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 
-### [INTRO] Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite to store Weights, in which each Agent memory is Auditable, Transparent, and you can Create different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights from different Tasks.
+### [INTRO] :
+- Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each Agent memory is Auditable, Transparent, and you can Create different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights from different Tasks. 
 ----------------------------------
 
 <img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
@@ -11,7 +12,7 @@
 -----------------------------------
 
 
-### [~] Introduction:
+### [~] Introductory Explanation:
 - AbstractIntegratedModule or IntegratedPipeline in short, is a standalone Specialized AI Agent Framework for Non-LLM memory Augmented Local Agentic orchestrator - Specifically designed to provide Local Continuous Learning capability for any Autonomous Model as single Instance or Coordinatively that runs efficiently from consumer based machine to High-end embedded systems, where the Model Can directly and continously learn using SQlite database as External memory, with minimal and efficient compute, built-in  automatic augmented memory handler, Secure Peer-To-Peer (Multi-Agent) Coordination with security layers as an option, And Explainability capability based on proof from in it's internal metrics, reducing Black-Box condition necessary for reliability. 
 - AbstractIntegratedModule Contains specialized MLP using Its Own specialized geometric Weight encoding (AWE) that is used for Quantization-Aware-Training (QAT) for lower memory Usage, Specialized efficient Transformer and LSTM (Long-short term memory) architecture for Scarce Data training/prediction with Alpha-based computation, specifically designed for low-amount samples environment or Messy environments.
   - IntegratedPipeline Use-Case:
