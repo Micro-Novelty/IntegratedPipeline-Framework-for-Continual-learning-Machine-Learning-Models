@@ -1,9 +1,8 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 ----------------------------------
 
+<img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
 <img width="400" height="200" alt="WhatsApp Image 2026-10-18 at 12 47 50" src="https://github.com/user-attachments/assets/57d0a356-3f42-4b84-9b0f-2da1ecd06ec1" />
-<img width="400" height="200" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
-
 
 -----------------------------------
 
