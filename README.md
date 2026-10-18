@@ -1118,10 +1118,11 @@ ________________________________________________________________________________
       - Example without transformer:
    ```python
    prediction_result = main_prediction.advanced_prediction_method( 
-            [t[0] for t in test_titles],  # titles is enough for MLP Classification.
+            [t[0] for t in test_titles],  # titles is enough for MLP Classification / or can be set to None.
             label_map,
-            example_rules,
-            show_proba=True
+            example_rules, # can be set to None
+            X=X, y=y, # X, and Y samples can be passed here if titles and rules is None.
+            top_k=3, batch_size=4
             )
    
    ```
