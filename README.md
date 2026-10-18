@@ -1,7 +1,7 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 
 ### [INTRO] :
-- Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights inside the SQlite database from different Tasks, users can firstly Train the Model and load the required Weights for that specific memory name for later usage, and use the current Model to learn another task while Preserving the previous Trained weights as memory inside the SQlite database.
+- Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights inside the SQlite database from different Tasks, users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, and Train the current Model with another task while Preserving the previous Trained weights as memory inside the SQlite database. Users can continue Training their previous Model with previous weights by simply loading the weights, and Train the Model with the loaded weights, the Model will start Training with a previously refined weights.
 - The Framework's Models are handled by Numpy library, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 ----------------------------------
 
@@ -1008,6 +1008,24 @@ ________________________________________________________________________________
 
    # save Weights as a memory to the SQLite database, this will allow you to load the model memory later for further prediction.
    main_model.save_weights(memory_name, model_type='Pipeline') 
+   ```
+
+   ### [>] Continue Training with previously Loaded weights:
+   ```python
+   # Initialize MLP, Transformer, LSTM and samples.....
+
+   # Load Memory from Database:
+   memory_loaded, lstm_weights, transformer_weights, mlp_weights, = main_model.load_model_memory()
+
+   # Train specific Model you want to Continue Training with previously saved Weights (Make sure Samples are the same shape that is used previously from previous Training to prevent shape errors) :
+   main_model.train_mlp_model(titles=None, rules=None, label_map=label_map, X=X, y=y, task='regression', train_epochs=500, momentum=0.9, lr=0.01)
+
+   # Use dynamic_backward for regression task for better learning capabilities.
+   main_model.train_transformer(titles=None, rules=None, label_map=label_map, X=X, y=y,  task='regression', d_model=128, train_epochs=10, 
+       mode='dynamic_backward', lr=0.5, batch_size=4)
+  
+   main_model.train_lstm(titles=None, rules=None, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+   ```
 
 
   - Note:
