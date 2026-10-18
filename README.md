@@ -141,6 +141,11 @@ ________________________________________________________________________________
 ## [+] Abstract Weight Encoder (AWE) Intro
 [=] AWE is a specialized custom weight shaping or encoding method Specifically designed for MLP Architecture that excels in Quantization-Aware-Training method in MLP dense Layers, using eigenvalue and spectral methods as base equations to calculate covariance inside a given input data, and calibrate the correct Weight from the given eigenvalue, AWE Works by processing input and then captures the necessary eigenvalue to shape a properly initialized Weight that aligns with input data complexity, With this approach, MLP training will be much more consistent especially during Quantization-Aware-Training.
 
+[~] For a much In-Depth Explanation You can visit This repository to learn more about AWE and its performance results:
+- Link: https://github.com/Micro-Novelty/Specialized-MLP-for-noise-robustness
+- Note:
+  - The explanation itself inside the link repository is Outdated, since AWE has been improved over time.
+
 ## [+] LSTM And Transformer Intro:
 A. LSTMs (Long Short-Term Memory) and Transformers are foundational deep learning architectures built to process sequential data (like text or time series). While both handle the flow of time and context, they do so using completely different mechanisms.
 - LSTM (Long Short-Term Memory):
@@ -156,9 +161,6 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
 - Limitations: Transformers require massive amounts of training data and computing power to work effectively.
 - Data Hungry when Analyzing Images.
 
-
-[~] For a much In-Depth Explanation You can visit This repository to learn more about AWE and its performance results:
-- Link: https://github.com/Micro-Novelty/Specialized-MLP-for-noise-robustness
 
 ## [+] Why IntegratedPipeline?
 [~] IntegratedPipeline is a great choice for a sophisticated Non-LLM AI Model Program for The Main Orchestrator of a Distributed MANN-Type Model Agent Working in Edge-device/Consumer-Based machine Where LLM isn't a great fit for Messy, Unpredictable environments. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
