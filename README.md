@@ -1,7 +1,8 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 
-<img width="400" height="200" alt="WhatsApp Image 2026-10-18 at 12 47 50" src="https://github.com/user-attachments/assets/57d0a356-3f42-4b84-9b0f-2da1ecd06ec1" />
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/abstractintegratedmodule?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/abstractintegratedmodule)
+<img width="400" height="400" alt="WhatsApp Image 2026-10-18 at 12 47 50" src="https://github.com/user-attachments/assets/57d0a356-3f42-4b84-9b0f-2da1ecd06ec1" />
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/AbstractIntegratedModule?period=total&units=international_system&left_color=black&right_color=green&left_text=downloads)](https://pepy.tech/projects/abstractintegratedmodule)
+
 
 [~] Introduction:
 - AbstractIntegratedModule or IntegratedPipeline in short, is a standalone Specialized AI Agent Framework for Non-LLM memory Augmented Local Agentic orchestrator - Specifically designed to provide Local Agentic capability for any Autonomous Agentic Framework as single Instance or Coordinatively that runs efficiently from consumer based machine to High-end embedded systems, where the Model Can directly and continously learn, with minimal and efficient compute, built-in augmented memory, Secure Peer-To-Peer (Multi-Agent) Coordination with security layers as an option, And Explainability capability based on proof from in it's internal metrics, reducing Black-Box condition necessary for reliability. 
