@@ -262,6 +262,7 @@ ________________________________________________________________________________
 ____________________________________________________________________________________________________________________
 ## [=] Requirements
 [~] To run and execute IntegratedPipeline, Requirement's include Or see [Requirements](installation_guides/usage_needs.txt):
+- Python 3.10 -> Python 3.14.
 - pip install for quick usage:
 - ```bash
   pip install AbstractIntegratedModule # or
@@ -273,6 +274,8 @@ ________________________________________________________________________________
      pip install abstractintegratedmodule --extra-index-url https://Micro-Novelty.github.io/abstract-modules/whl/ --break-system-packages
      ```
      Note: using this installation method grants you a much safer, predictable behavior, and more secure AbstractIntegratedModule library rather than a pure binary file.
+     
+- X and y samples or titles and rules samples for Training and prediction (see Library in depth usage instructions below).
 
 - [OPTIONAL] For using AbstractIntegratedModule Binaries for users who doesnt have pip Installed:
   - NOTE:
