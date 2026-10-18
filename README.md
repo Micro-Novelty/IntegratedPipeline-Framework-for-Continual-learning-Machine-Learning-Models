@@ -1,7 +1,7 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 
 ### [INTRO] :
-- Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights inside the SQlite database from different Tasks, User can firstly Train the Model, and load the required Weights for that specific memory name for later usage.
+- Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights inside the SQlite database from different Tasks, users can firstly Train the Model and load the required Weights for that specific memory name for later usage.
 - The Framework's Models are handled by Numpy library, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 ----------------------------------
 
@@ -18,7 +18,7 @@
 - AbstractIntegratedModule Contains specialized MLP using Its Own specialized geometric Weight encoding (AWE) that is used for Quantization-Aware-Training (QAT) for lower memory Usage and faster convergence during Training, Specialized efficient Transformer and LSTM (Long-short term memory) architecture for Scarce Data training/prediction with Alpha-based computation, specifically designed for low-amount samples environment or Messy environments.
   - IntegratedPipeline Best Use-Case:
     - Tabular Data Prediction: Finding patterns in structured spreadsheets or rows of numerical and categorical features.
-    - Classification Tasks: Separating data into groups, such as spam detection, customer churn, or disease diagnosis.
+    - Classification Tasks: Separating data into groups, such as spam detection, customer churn, or disease diagnosis/classification.
     - Regression Tasks: Predicting continuous numerical values like house prices, sensors output, sales numbers, or weather metrics.
 
 ___________________________________________________________________________________________________________________
