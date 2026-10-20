@@ -4,6 +4,9 @@
 - Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights inside the SQlite database from different Tasks, users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, and Train the current Model with another task while Preserving the previous Trained weights as memory inside the SQlite database. Users can continue Training their previous Model with previous weights by simply loading the weights, and Train the Model with the loaded weights, the Model will start Training with a previously saved and refined weights instead of starting from scratch.
 - The Framework's Models are handled by Numpy library, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 
+- Consider check our other projects:
+  - [View Create continual learning pytorch model skill for claude Code](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/create-clm-model)
+
 ----------------------------------
 
 <img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
