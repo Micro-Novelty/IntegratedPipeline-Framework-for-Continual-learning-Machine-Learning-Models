@@ -214,7 +214,7 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
 3. Robust Specialized MLP, Transformer and LSTM Architecture with ensemble weighting architecture:
   - IntegratedPipeline usually used 1 Model for regular advanced prediction, but in some Conditions, it used 2 Different type's of AI Architecture stacked together, and one architecture to weight their confidence and probability fairly (ensemble method) to get the final prediction for the problem it faced, Specialized MLP for Noise robustness And Specialized Transformer that used Alpha-based Computing algorithm for contextual reasoning, LSTM architecture to provides proof-of-credibility over a certain output, acting as a support mechanism rather than Main orchestrator like MLP and Transformer. The reason why those Models complement and used together:
       - Specialized MLP Provides synchronous robust classification Against noise with its specialized Weight Encoder (AWE) to handle noise using eigenvalue based computing that is lightweight and efficient. This allows MLP performance to improve Even during Quantization-Aware-Training, This Method can't be replicated Inside Transformer FFN (Feed-forward-network) because of Transformer dynamic brute force computing where AWE-Based generated weight's get diluted over time by Transformer dynamic projection embedding, making AWE Generated weight causes inefficient inside Transformer dynamic FFN/QKV projection.
-      - Specialized Transformer provides robust synchronous advanced contextual relationships, efficient data processing using Alpha based computing, The Transformer is tuned towards to be as flexible as possible to provide dynamic projection or fixed FFN projection training with minimal head's and dimension's to reduce computational power.
+     - Specialized Transformer provides robust synchronous advanced contextual relationships, efficient data processing using Alpha based computing, The Transformer is tuned towards to be as flexible as possible to provide dynamic projection or fixed FFN projection training with minimal head's and dimension's to reduce computational power.
       - Our library also provides setup for kNN (k-Nearest-neighbor) Augmented Transformer for Users who Wants to use a much More Advanced Transformer, This Transformer is'nt used in the Main prediction flow inside IntegratedPipeline due to it being Memory heavy to run, instead this Transformer can be used separately if You have Larger Dataset and wants A small Transformer Model that can Remember longer contexts Using HNSW (Hierarchical Navigable Small World) Architecture and apply it on edge Devices.
         - Honest Limitation: Our Transformer can still analyze Images, by receiving Input that is an Image converted into X samples, its accuracy is expected to be much lower since Analyzing images requires larger datasets -> more computation -> more memory usage.
           
@@ -230,9 +230,9 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
    - Alpha rate limiting,
    - HMAC secret key for authentication,
    - and IP validation.
-   [~] Each agent has double roles during P2P:
-        - Server provider: the peer Agent can start a server to listen for peer client's
-        - Connecting Agent: the peer Agent which happens to connect to other peer that has or have opened and provided a server listener to act as a receiver.
+   > [~] Each agent has double roles during P2P:
+    >    - Server provider: the peer Agent can start a server to listen for peer client's
+    >    - Connecting Agent: the peer Agent which happens to connect to other peer that has or have opened and provided a server listener to act as a receiver.
 
 5. Cross-Session memory availability:
    - IntegratedPipeline offers share-able Memory capability, included capability below:
@@ -242,13 +242,18 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
        - [=] Note: socket Syncing is unsecure witout additional security layer wrapped, For a safer syncing, directly transfer the .json file memory to the target machine via other ways such as manual send.
      - list sessions: listing available sessions using model's memory name.
 
-[=] With its Specialized Multi-Layer-Perceptron (using AWE Encoder) and Optimized Transformer module with optimized Embedding, IntegratedPipeline can directly improve overtime, including in ambiguous data, using Weighted Confidence assembling from both specialized MLP and Transformer for better reliability during training and prediction over Unpredictable environments, such as:
+[=] With its Specialized Multi-Layer-Perceptron (using AWE Encoder) and Optimized Transformer module with optimized Embedding, IntegratedPipeline can directly improve 
+overtime, including in ambiguous data, using Weighted Confidence assembling from both specialized MLP and Transformer for better reliability during training and 
+prediction over Unpredictable environments, such as:
 
-[1.] User data's : User data is often messy and ambiguous, Specialized MLP with AWE will do the job for shaping and calibrating the necessary Weight to complement for the Ambiguous pattern, AWE MLP is proven to help in Quantization-Aware-Training in MLP that helps reduce Memory usage -> proven in synthetic Environment such as scikit-learn Make-Classification scarce and Noisy Input robustness during generalization test. making it a great fit for messy, Scarce data.
+> [>] User data's : User data is often messy and ambiguous, Specialized MLP with AWE will do the job for shaping and calibrating the necessary Weight to complement for the >Ambiguous pattern, AWE MLP is proven to help in Quantization-Aware-Training in MLP that helps reduce Memory usage -> proven in synthetic Environment such as scikit-learn >Make-Classification scarce and Noisy Input robustness during generalization test. making it a great fit for messy, Scarce data.
 
-[2.] Small Dataset's : We often don't have enough Dataset to train a Transformer Model, Thats Why IntegratedPipeline Offers a Highly optimized Transformer that supports scarce dataset processing, Using Alpha-Based computing as a Warm-up for training, it provides a direct Boost for the transformer to be efficient during training in scarce-data Environment.
+> [>] Small Dataset's : We often don't have enough Dataset to train a Transformer Model, Thats Why IntegratedPipeline Offers a Highly optimized Transformer that supports
+>  scarce dataset processing, Using Alpha-Based computing as a Warm-up for training, it provides a direct Boost for the transformer to be efficient during training in 
+> scarce-data Environment.
 
-[3.] Non-Representative data (Undersampled) : IntegratedPipeline Support's ambiguous data that come's from file with format such as CSV Format to extract title's and label's necessary to create automatic Dataset for Later use in Training, making it optimized for specific task's and easier dataset creation with lower overfitting rate for reliability.
+> [>] Non-Representative data (Undersampled) : IntegratedPipeline Support's ambiguous data that come's from file with format such as CSV Format to extract title's and 
+> label's necessary to create automatic Dataset for Later use in Training, making it optimized for specific task's and easier dataset creation with lower overfitting rate > for reliability.
 
 _____________________________________________________________________________________________________________
 [=] Architectural-Overview
@@ -289,23 +294,24 @@ ________________________________________________________________________________
      
 - X and y samples or titles and rules samples for Training and prediction (see Library in depth usage instructions below).
 
-- [OPTIONAL] For using AbstractIntegratedModule Binaries for users who doesnt have pip Installed:
-  - NOTE:
-  - The binaries inside the releases section might be Outdated in terms of version, so we advised to use the pip installation method.
-  - (Optional) Download AbstractIntegratedModule Compiled Binary file extension manually in the repository for Users who can't use pip install (Choose one minimal, specified for your needs):
-     - AbstractOptimizedModules for Optimizing Transformer using Cython (Optional)
-     - AbstractIntegratedModule (Main library)
-     - Compiled Binaries can be downloaded from release section in the Main repo or You can use this link:
-       - Release section: https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework/releases
-       - Supported OS: Mac-Os, linux x86-64 and Windows.   
-   - (Optional) Install AbstractIntegratedModule Compiled binaries from release section:
-   - (Optional) Libraries needed if pip is not installed (For using Compiled binary, not python wheels):
-     - Pandas
-     - aiohttp
-     - scikit-learn
-     - numpy
-     - psutil
-     - cryptography
+> - [OPTIONAL] For using AbstractIntegratedModule Binaries for users who doesnt have pip Installed:
+>  - NOTE:
+>  - The binaries inside the releases section might be Outdated in terms of version, so we advised to use the pip installation method.
+>  - (Optional) Download AbstractIntegratedModule Compiled Binary file extension manually in the repository for Users who can't use pip install (Choose one minimal, 
+> specified for your needs):
+>    - AbstractOptimizedModules for Optimizing Transformer using Cython (Optional)
+>    - AbstractIntegratedModule (Main library)
+>     - Compiled Binaries can be downloaded from release section in the Main repo or You can use this link:
+>       - Release section: https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework/releases
+>       - Supported OS: Mac-Os, linux x86-64 and Windows.   
+>   - (Optional) Install AbstractIntegratedModule Compiled binaries from release section:
+>   - (Optional) Libraries needed if pip is not installed (For using Compiled binary, not python wheels):
+>     - Pandas
+>     - aiohttp
+>     - scikit-learn
+>     - numpy
+>     - psutil
+>     - cryptography
      
     
 [=] for labels assignation:
@@ -375,12 +381,12 @@ ________________________________________________________________________________
      sudo docker build -t integrated-agent.
      ```
 2. Download library dependencies for binaries usage:
-   - [Optional]: Required libraries (when using binary, not python wheel provided in the library):
-   - Numpy
-   - Scikit-learn
-   - pandas
-   - aiohttp
-   - psutil
+   > - [Optional]: Required libraries (when using binary, not python wheel provided in the library):
+   > - Numpy
+   > - Scikit-learn
+   > - pandas
+   > - aiohttp
+   > - psutil
      
 4. Run IntegratedPipeline in a Container:
     - Install AbstractIntegratedModule via PIP or Compiled binaries:
@@ -1669,10 +1675,10 @@ A_final = α · A_fixed + (1 − α) · A_learned.
 - α ∈ [0, 1] → controls how much each path contributes
   
 [~] Forward Pass -> Controlling Information Flow:
-During the forward pass, alpha determines what representation the model uses.
-If α is high (e.g., 0.8–1.0): Model relies mostly on stable attention
-→ outputs are consistent → less noise → safer early training, If α is low (e.g., 0.0–0.3), Model relies mostly on learned attention, → more expressive → but unstable early on.
-So in forward propagation, alpha is essentially, “How much do I trust learned attention vs safe attention?”
+> During the forward pass, alpha determines what representation the model uses.
+> If α is high (e.g., 0.8–1.0): Model relies mostly on stable attention
+> → outputs are consistent → less noise → safer early training, If α is low (e.g., 0.0–0.3), Model relies mostly on learned attention, → more expressive → but unstable early on.
+> So in forward propagation, alpha is essentially, “How much do I trust learned attention vs safe attention?”
 
 [~] Backward Pass -> Controlling Gradient Flow:
 When gradients flow backward:
