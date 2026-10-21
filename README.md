@@ -38,8 +38,8 @@ ________________________________________________________________________________
   - This framework is intended for Engineers who is early in ML Engineering in order to provide a Clearer picture of How edge AI Should operate, Low memory management, and Also how it can be Made continuously learn using Pragmatic solution by using SQLite to save Weights to prevent continuous catasthropic forgetting, IntegratedPipeline source code is open-sourced and can be found in our github repository, Meaning you can modify the Source code however You liked it to be, and help Us Grow the first Community!
 
 ### Important Note:
-- All of the files provided here can be found in the main Github repository, if You are seeing this on PyPi and wanted to try out the provided .py, .sh or Dockerfile scripts below, consider visiting the official github repository:
-- link: https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework
+> - All of the files provided here can be found in the main Github repository, if You are seeing this on PyPi and wanted to try out the provided .py, .sh or Dockerfile scripts below, consider visiting the official github repository:
+> - link: https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
@@ -54,7 +54,7 @@ ________________________________________________________________________________
   ```
 
 ### Github Link (for Visiting and cloning)
-- https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework
+> - https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework
 
 - The library also includes precompiled binaries for:
  - aarch64 manylinux (accepts version 2.17+) architecture, accepts python version 3.10, 3.11 only.
@@ -82,8 +82,8 @@ ________________________________________________________________________________
     - Note: This Optimization would help AbstractIntegratedModule with faster JSON parsing and much more flexible database handling handled efficiently using Rust programming language.
    
 > - Proven Capabilities [Frameworks entire Journey]:
->   - The library has been thoroughly first successfully tested in Multiple Environments from Windows to ARM64 QEMU Based Environment. The library is now Robust for Small > usages for Toy projects.
->   - Proven Works on ARM64 Environment using Github runners, Training and Prediction works efficient on Docker ARM64 environment with QEMU, good parallelizing behavior is > guaranteed.
+>   - The library has been thoroughly first successfully tested in Multiple Environments from Windows to ARM64 QEMU Based Environment. The library is now Robust for Small  usages for Toy projects.
+>   - Proven Works on ARM64 Environment using Github runners, Training and Prediction works efficient on Docker ARM64 environment with QEMU, good parallelizing behavior is  guaranteed.
 >   - P2P Works efficiently in ARM64 Docker + QEMU, No conflicting socket and all prediction works efficiently.
 >   - AWE setup Proven Efficient on Hard-uncontrolled dataset such as Activity Recognition from the given Database.
 >   - LSTM is Optimized efficiently for scarce data with AWE method.
@@ -111,8 +111,8 @@ ________________________________________________________________________________
        - Fixed rigid logic where a crash can occur in advanced prediction if lstm_predictions results are None.
 
     
-     - Note: if you want to see the Changelog history of the library Older versions consider visiting this link:
-       - PyPi history: https://pypi.org/project/AbstractIntegratedModule/#history
+     > - Note: if you want to see the Changelog history of the library Older versions consider visiting this link:
+     >  - PyPi history: https://pypi.org/project/AbstractIntegratedModule/#history
        
 ________________________________________________________________________________________________________________________
 ### [>] Full Documentation Features
@@ -155,8 +155,8 @@ ________________________________________________________________________________
 
 [~] For a much In-Depth Explanation You can visit This repository to learn more about AWE and its performance results:
 - Link: https://github.com/Micro-Novelty/Specialized-MLP-for-noise-robustness
-- Note:
-  - The explanation itself inside the link repository is Outdated, since AWE has been improved over time.
+> - Note:
+>  - The explanation itself inside the link repository is Outdated, since AWE has been improved over time.
 
 ## [+] LSTM And Transformer Intro:
 A. LSTMs (Long Short-Term Memory) and Transformers are foundational deep learning architectures built to process sequential data (like text or time series). While both handle the flow of time and context, they do so using completely different mechanisms.
@@ -193,9 +193,9 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
         else:
            continue_training()
           ```
-     - Benefit of this approach:
-     - Allow flexible Training and model task allocation better:
-     - Deterministic behavior for Pragmatic Continual learning behavior for MANN type Models.
+     > - Benefit of this approach:
+     > - Allow flexible Training and model task allocation better:
+     > - Deterministic behavior for Pragmatic Continual learning behavior for MANN type Models.
      
      - Example 1: Workflow (Single model):
      - ```txt
@@ -210,8 +210,8 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
        agent_2 with memory_name "C" -> task C (Regression)
        ```  
 
-    - Note: this Continous learning behavior is efficient because its not relying on weights saved in RAM for memory, allowing flexible and predictable behavior inside a given environment.
-    - Tradeoff: This approach is deterministic and Memory modification or removal requires Manual audit directly to the Model's SQlite database (Named activity_log.db).
+    > - Note: this Continous learning behavior is efficient because its not relying on weights saved in RAM for memory, allowing flexible and predictable behavior inside a given environment.
+    >- Tradeoff: This approach is deterministic and Memory modification or removal requires Manual audit directly to the Model's SQlite database (Named activity_log.db).
    
 3. Robust Specialized MLP, Transformer and LSTM Architecture with ensemble weighting architecture:
   - IntegratedPipeline usually used 1 Model for regular advanced prediction, but in some Conditions, it used 2 Different type's of AI Architecture stacked together, and one architecture to weight their confidence and probability fairly (ensemble method) to get the final prediction for the problem it faced, Specialized MLP for Noise robustness And Specialized Transformer that used Alpha-based Computing algorithm for contextual reasoning, LSTM architecture to provides proof-of-credibility over a certain output, acting as a support mechanism rather than Main orchestrator like MLP and Transformer. The reason why those Models complement and used together:
@@ -241,21 +241,18 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
      - Exportable memory: this allows a flexible memory saving for later use, such as cross transfer memory between model, the memory is saved as .json file after exporting.
      - Importable Memory: allowing to import memory from the exported .json file directly for the model to use.
      - syncing with other model: socket-based communication to export memory to other external machine.
-       - [=] Note: socket Syncing is unsecure witout additional security layer wrapped, For a safer syncing, directly transfer the .json file memory to the target machine via other ways such as manual send.
-     - list sessions: listing available sessions using model's memory name.
+      > - [=] Note: socket Syncing is unsecure witout additional security layer wrapped, For a safer syncing, directly transfer the .json file memory to the target machine via other ways such as manual send.
+      > - list sessions: listing available sessions using model's memory name.
 
 [=] With its Specialized Multi-Layer-Perceptron (using AWE Encoder) and Optimized Transformer module with optimized Embedding, IntegratedPipeline can directly improve 
 overtime, including in ambiguous data, using Weighted Confidence assembling from both specialized MLP and Transformer for better reliability during training and 
 prediction over Unpredictable environments, such as:
 
-> [>] User data's : User data is often messy and ambiguous, Specialized MLP with AWE will do the job for shaping and calibrating the necessary Weight to complement for the >Ambiguous pattern, AWE MLP is proven to help in Quantization-Aware-Training in MLP that helps reduce Memory usage -> proven in synthetic Environment such as scikit-learn >Make-Classification scarce and Noisy Input robustness during generalization test. making it a great fit for messy, Scarce data.
+> [>] User data's : User data is often messy and ambiguous, Specialized MLP with AWE will do the job for shaping and calibrating the necessary Weight to complement for the Ambiguous pattern, AWE MLP is proven to help in Quantization-Aware-Training in MLP that helps reduce Memory usage -> proven in synthetic Environment such as scikit-learn Make-Classification scarce and Noisy Input robustness during generalization test. making it a great fit for messy, Scarce data.
 
-> [>] Small Dataset's : We often don't have enough Dataset to train a Transformer Model, Thats Why IntegratedPipeline Offers a Highly optimized Transformer that supports
->  scarce dataset processing, Using Alpha-Based computing as a Warm-up for training, it provides a direct Boost for the transformer to be efficient during training in 
-> scarce-data Environment.
+> [>] Small Dataset's : We often don't have enough Dataset to train a Transformer Model, Thats Why IntegratedPipeline Offers a Highly optimized Transformer that supports scarce dataset processing, Using Alpha-Based computing as a Warm-up for training, it provides a direct Boost for the transformer to be efficient during training in scarce-data Environment.
 
-> [>] Non-Representative data (Undersampled) : IntegratedPipeline Support's ambiguous data that come's from file with format such as CSV Format to extract title's and 
-> label's necessary to create automatic Dataset for Later use in Training, making it optimized for specific task's and easier dataset creation with lower overfitting rate > for reliability.
+> [>] Non-Representative data (Undersampled) : IntegratedPipeline Support's ambiguous data that come's from file with format such as CSV Format to extract title's and label's necessary to create automatic Dataset for Later use in Training, making it optimized for specific task's and easier dataset creation with lower overfitting rate for reliability.
 
 _____________________________________________________________________________________________________________
 [=] Architectural-Overview
@@ -299,8 +296,7 @@ ________________________________________________________________________________
 > - [OPTIONAL] For using AbstractIntegratedModule Binaries for users who doesnt have pip Installed:
 >  - NOTE:
 >  - The binaries inside the releases section might be Outdated in terms of version, so we advised to use the pip installation method.
->  - (Optional) Download AbstractIntegratedModule Compiled Binary file extension manually in the repository for Users who can't use pip install (Choose one minimal, 
-> specified for your needs):
+>  - (Optional) Download AbstractIntegratedModule Compiled Binary file extension manually in the repository for Users who can't use pip install (Choose one minimal, specified for your needs):
 >    - AbstractOptimizedModules for Optimizing Transformer using Cython (Optional)
 >    - AbstractIntegratedModule (Main library)
 >     - Compiled Binaries can be downloaded from release section in the Main repo or You can use this link:
@@ -526,12 +522,12 @@ _______________________________________
 - [=] Separated Modules of AbstractIntegratedModule With proper Documentation: [separated_module](separated_module)
 - [=] up-to-date Source code: [AbstractIntegratedModule.pyx](src/AbstractIntegratedModule.pyx) and [AbstractOptimizedModules.pyx](src/AbstractOptimizedModules.pyx) files for independent compilation or direct compiling on real ARM64 device or if you want to see the up-to-date, undocumented version of AbstractIntegratedModule library.
 - [lib.rs](rust_optimization_setups/lib.rs) that contains Rust optimization for Models weight handling.
-- [~] Note:
-   - The source code is open and Free to anyone who:
-   - Use it: Run the software for any personal, academic, or commercial purpose.
-   - Modify it: Change the source code to fit their needs.
-   - Distribute it: Share the original or modified code with others.
-   - Commercialize it: Package, brand, and sell the software for profit.
+> - [~] Note:
+>   - The source code is open and Free to anyone who:
+>   - Use it: Run the software for any personal, academic, or commercial purpose.
+>   - Modify it: Change the source code to fit their needs.
+>   - Distribute it: Share the original or modified code with others.
+>   - Commercialize it: Package, brand, and sell the software for profit.
 
 ______________________________________________________________________________________________________________________
 ## [=] Step's for library in-depth Usage
