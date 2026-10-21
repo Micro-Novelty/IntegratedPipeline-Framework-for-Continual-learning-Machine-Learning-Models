@@ -232,7 +232,7 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
    - Alpha rate limiting,
    - HMAC secret key for authentication,
    - and IP validation.
-   > [~] Each agent has double roles during P2P:
+   [~] Each agent has double roles during P2P:
     >    - Server provider: the peer Agent can start a server to listen for peer client's
     >    - Connecting Agent: the peer Agent which happens to connect to other peer that has or have opened and provided a server listener to act as a receiver.
 
@@ -259,10 +259,10 @@ ________________________________________________________________________________
 
 <img width="1600" height="859" alt="Gemini_Generated_Image_nlxggenlxggenlxg" src="https://github.com/user-attachments/assets/21cb2e3a-a801-449b-a621-974b1ea097fe" />
 ---
-[=] Contextual meaning:
-   1. - Sequence encoding is a machine learning technique that transforms a sequential input (like text, time-series data, or audio) into a compact, fixed-length numerical vector, often called a context vector
-   2. - HashingVectorizer is a text feature extraction tool in scikit-learn that converts a collection of text documents into a numerical sparse matrix. It uses the hashing trick (applying a hash function like Murmurhash3 to map token strings directly to feature indices) rather than building and storing an explicit vocabulary dictionary.
-   3. - Explainability provides deeper transparency of why a model thought about a detail by showing its internal metrics like attention quality, from distributed peer memory or Ensemble prediction result's.
+- [=] Contextual meaning:
+    - Sequence encoding is a machine learning technique that transforms a sequential input (like text, time-series data, or audio) into a compact, fixed-length numerical vector, often called a context vector
+    - HashingVectorizer is a text feature extraction tool in scikit-learn that converts a collection of text documents into a numerical sparse matrix. It uses the hashing trick (applying a hash function like Murmurhash3 to map token strings directly to feature indices) rather than building and storing an explicit vocabulary dictionary.
+    - Explainability provides deeper transparency of why a model thought about a detail by showing its internal metrics like attention quality, from distributed peer memory or Ensemble prediction result's.
 
 
 ### Introduction and demo
@@ -273,7 +273,7 @@ ________________________________________________________________________________
     - [multi_agent_client.py](P2P_Setups/multi_agent_client.py)
     - [multi_agent_server.py](P2P_Setups/multi_agent_server.py)
     - [P2PDirectTest.py](P2P_Setups/P2PDirectTest.py)
-    - Purpose: let you demonstrate simple P2P using AbstractIntegratedModule quickly, there may be bugs in this P2P setup so feel free to share it in issues.
+    > - Purpose: let you demonstrate simple P2P using AbstractIntegratedModule quickly, there may be bugs in this P2P setup so feel free to share it in issues.
 
 ____________________________________________________________________________________________________________________
 ## [=] Requirements
