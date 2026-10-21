@@ -4,9 +4,12 @@ A [Claude Code](https://code.claude.com/docs/en/skills) skill that builds **PyTo
 
 Ask Claude Code for an MLP, Transformer or LSTM. It generates a small project in which the trained weights are saved under a *memory name* after training, and restored later by that name, so a model can skip retraining, keep refining the same weights, or start a new task from old knowledge.
 
-
 It is inspired by the memory design of the NumPy-based **AbstractIntegratedModule** framework, but generates only the parts needed for a PyTorch model, not the whole framework.
 
+- Note:
+  - Create continual learning Model skill can be downloaded here [create continual learning model skill](create-cl-model.zip)
+  - Follow instruction below
+    
 ```python
 database_init()
 model = create_mlp_with_sqlite_memory(input_dim=10, output_dim=3)
