@@ -70,7 +70,8 @@ The generated project (default folder name `<memory_name>_<arch>/`) contains:
 
 ### 1. Install the skill
 
-Copy the `pytorch-sqlite-memory` folder into your Claude Code skills directory.
+- Install Create continual learning Model skill here [create continual learning model skill](create-cl-model.zip)
+- Extract the .zip -> Copy the `create-cl-model` folder into your Claude Code skills directory.
 
 **Personal (all your projects)**
 
