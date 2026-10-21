@@ -93,6 +93,8 @@ Claude Code picks up new skills in a running session. If the `skills` directory 
 
 Requirements for the generated code: **PyTorch 2.x** and **NumPy**. SQLite comes with Python.
 
+- Quick start file can be downloaded here: [Quick start](Quick_start_cl_model.md)
+
 ### 2. Ask for a model
 
 A request that already contains the spec is built straight away:
