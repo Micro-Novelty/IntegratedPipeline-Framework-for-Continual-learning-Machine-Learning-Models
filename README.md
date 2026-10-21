@@ -5,7 +5,8 @@
 - The Framework's Models are handled by Numpy library, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 
 - Consider check our other projects:
-  - [View Create continual learning pytorch model skill for claude Code](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/create-clm-model)
+  - Claude code skill specifically for Creating a pytorch Model that mimics AbstractIntegratedModule memory management system that Continuously learn:
+  - Branch: [View Create continual learning pytorch model skill for claude Code](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/create-clm-model)
 
 ----------------------------------
 
