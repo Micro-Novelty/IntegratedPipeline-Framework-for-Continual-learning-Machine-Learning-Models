@@ -2,11 +2,11 @@
 
 ### [INTRO] :
 - Machine Learning Framework that Creates a Model that can Continuously learn, backed by augmented memory from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the previous saved Trained weights inside the SQlite database from different Tasks, users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, and Train the current Model with another task while Preserving the previous Trained weights as memory inside the SQlite database. Users can continue Training their previous Model with previous weights by simply loading the weights, and Train the Model with the loaded weights, the Model will start Training with a previously saved and refined weights instead of starting from scratch.
-- The Framework's Models are handled by Numpy library, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
+ The Framework's Models are handled by Numpy library, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 
-- Consider check our other projects:
-  - Claude code skill specifically for Creating a pytorch Model (MLP, Transformer, LSTM all in pytorch) that mimics AbstractIntegratedModule memory management system that Continuously learn:
-  - Branch: [View Create continual learning pytorch model skill for claude Code](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/create-clm-model)
+> Consider check our other projects:
+> - Claude code skill specifically for Creating a pytorch Model (MLP, Transformer, LSTM all in pytorch) that mimics AbstractIntegratedModule memory management system that > Continuously learn:
+>  - Branch: [View Create continual learning pytorch model skill for claude Code](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/create-clm-model)
 
 ----------------------------------
 
@@ -19,11 +19,12 @@
 
 
 ### [~] Introductory Explanation:
-- AbstractIntegratedModule or IntegratedPipeline in short, is a standalone Specialized Machine-Learning Framework for Non-LLM memory Augmented Local Agentic orchestrator - Specifically designed to provide Local Continuous Learning capability for any Autonomous Model as single Instance or Coordinatively that runs efficiently from consumer based machine to High-end embedded systems, where the Model Can directly and continously learn using SQlite database as External memory, with minimal and efficient compute, built-in automatic augmented memory handler, Secure Peer-To-Peer (Multi-Agent) Coordination with security layers as an option, And Explainability capability based on proof from in it's internal metrics, reducing Black-Box condition necessary for reliability. 
+- AbstractIntegratedModule or IntegratedPipeline in short, is a standalone Specialized Machine-Learning Framework for Non-LLM memory Augmented Local Agentic orchestrator - Specifically designed to provide Local Continuous Learning capability for any Autonomous Model as single Instance or Coordinatively that runs efficiently from consumer based machine to High-end embedded systems, where the Model Can directly and continously learn using SQlite database as External memory, with minimal and efficient compute, built-in automatic augmented memory handler, Secure Peer-To-Peer (Multi-Agent) Coordination with security layers as an option, And Explainability capability based on proof from in it's internal metrics, reducing Black-Box condition necessary for reliability.
 - AbstractIntegratedModule Contains specialized MLP using Its Own specialized geometric Weight encoding (AWE) that is used for Quantization-Aware-Training (QAT) for lower memory Usage and faster convergence during Training, Specialized efficient Transformer and LSTM (Long-short term memory) architecture for Scarce Data training/prediction with Alpha-based computation, specifically designed for low-amount samples environment or Messy environments.
-- NOTE:
-  - Weights are reloaded using Memory name that is written by users, so when users is trying to load the Weights, users can simply reuse the same Memory name that was used to Train the models in a specific task, when users call load_memory(), the Models will automatically load all Memories for MLP, Transformer, and LSTM automatically, if memory was empty, Memory will not be loaded, and Training is required before saving the Memory to the SQlite database.
-  - The model will initialize an SQlite Database called "activity_log.db", users is NOT allowed to change the name of the SQlite database, this is used to create Unique 'fingerprint' for the Library.
+> - NOTE:
+>  - Weights are reloaded using Memory name that is written by users, so when users is trying to load the Weights, users can simply reuse the same Memory name that was 
+> used to Train the models in a specific task, when users call load_memory(), the Models will automatically load all Memories for MLP, Transformer, and LSTM automatically, > if memory was empty, Memory will not be loaded, and Training is required before saving the Memory to the SQlite database.
+>  - The model will initialize an SQlite Database called "activity_log.db", users is NOT allowed to change the name of the SQlite database, this is used to create Unique 'fingerprint' for the Library.
   
 - IntegratedPipeline Best Use-Case:
   - Tabular Data Prediction: Finding patterns in structured spreadsheets or rows of numerical and categorical features.
@@ -78,15 +79,15 @@ ________________________________________________________________________________
       ```
     - Note: This Optimization would help AbstractIntegratedModule with faster JSON parsing and much more flexible database handling handled efficiently using Rust programming language.
    
-- Proven Capabilities [Frameworks entire Journey]:
-   - The library has been thoroughly first successfully tested in Multiple Environments from Windows to ARM64 QEMU Based Environment. The library is now Robust for Small usages for Toy projects.
-   - Proven Works on ARM64 Environment using Github runners, Training and Prediction works efficient on Docker ARM64 environment with QEMU, good parallelizing behavior is guaranteed.
-   - P2P Works efficiently in ARM64 Docker + QEMU, No conflicting socket and all prediction works efficiently.
-   - AWE setup Proven Efficient on Hard-uncontrolled dataset such as Activity Recognition from the given Database.
-   - LSTM is Optimized efficiently for scarce data with AWE method.
-   - Robust Advanced prediction capabilities proven effective on ARM64 Using MLP + LSTM Architectures.
-   - Transformer Optimized using Cython, reduced Memory overhead and Reduce CPU Usage, With Reduced Training Time is guaranteed.
-   - Reworked Prediction and Training method for User convenience in controlling the Model's capabilities and reducing Blackbox-ness.
+> - Proven Capabilities [Frameworks entire Journey]:
+>   - The library has been thoroughly first successfully tested in Multiple Environments from Windows to ARM64 QEMU Based Environment. The library is now Robust for Small > usages for Toy projects.
+>   - Proven Works on ARM64 Environment using Github runners, Training and Prediction works efficient on Docker ARM64 environment with QEMU, good parallelizing behavior is > guaranteed.
+>   - P2P Works efficiently in ARM64 Docker + QEMU, No conflicting socket and all prediction works efficiently.
+>   - AWE setup Proven Efficient on Hard-uncontrolled dataset such as Activity Recognition from the given Database.
+>   - LSTM is Optimized efficiently for scarce data with AWE method.
+>   - Robust Advanced prediction capabilities proven effective on ARM64 Using MLP + LSTM Architectures.
+>   - Transformer Optimized using Cython, reduced Memory overhead and Reduce CPU Usage, With Reduced Training Time is guaranteed.
+>   - Reworked Prediction and Training method for User convenience in controlling the Model's capabilities and reducing Blackbox-ness.
 -----
   - Recent Changelogs [Will be reset each new +0.0.5 versions]:
      - v1.2.5 [MAJOR REWORKS]:
@@ -160,15 +161,15 @@ A. LSTMs (Long Short-Term Memory) and Transformers are foundational deep learnin
 - LSTM (Long Short-Term Memory):
   - LSTMs are an advanced class of Recurrent Neural Networks (RNNs) introduced to solve the problem of traditional RNNs forgetting earlier data.
   - How it works: LSTMs process data sequentially—one word or time-step at a time. They regulate information using "gates" (forget, input, and output) that determine what information from the sequence to keep or discard.
-  - Use Cases: Ideal for tasks with strictly continuous chronological data like time-series forecasting (e.g., stock market or weather prediction) or speech recognition.
-  - Limitations: Because they process data in a strict chain, it is difficult to parallelize training, making them slow and prone to forgetting long contexts.
+>  - Use Cases: Ideal for tasks with strictly continuous chronological data like time-series forecasting (e.g., stock market or weather prediction) or speech recognition.
+>  - Limitations: Because they process data in a strict chain, it is difficult to parallelize training, making them slow and prone to forgetting long contexts.
 
 B. Transformer:
 Transformers are the modern standard for AI, introduced in 2017 with the famous "Attention Is All You Need" paper.
 - How it works: Instead of reading sequences linearly, Transformers read the entire sequence all at once. They utilize a self-attention mechanism, which calculates how much "attention" or weight every part of the sequence should give to every other part, understanding the global context instantly.
-- Use Cases: The backbone of Large Language Models (LLMs) like ChatGPT or BERT, making them perfect for machine translation, text generation, and summarization.
-- Limitations: Transformers require massive amounts of training data and computing power to work effectively.
-- Data Hungry when Analyzing Images.
+> - Use Cases: The backbone of Large Language Models (LLMs) like ChatGPT or BERT, making them perfect for machine translation, text generation, and summarization.
+> - Limitations: Transformers require massive amounts of training data and computing power to work effectively.
+> - Data Hungry when Analyzing Images.
 
 
 ## [+] Why IntegratedPipeline?
