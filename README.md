@@ -87,7 +87,10 @@ New-Item -ItemType Directory -Force "$env:USERPROFILE\.claude\skills"
 Copy-Item -Recurse create-cl-model "$env:USERPROFILE\.claude\skills\"
 ```
 
-**One project only:** copy it to `<your-repo>/.claude/skills/` instead and commit it.
+**One project only:** copy it to `<your-folder>/.claude/skills/` instead and commit it.
+
+> Note: pass the create-clm-model that has no recursion, meaning if inside the create-clm-model theres another create-clm-model folder, pass the create-clm-model that contains SKILL.md directly to `<your-folder>/.claude/skills/`.
+
 
 Claude Code picks up new skills in a running session. If the `skills` directory did not exist when the session started, restart Claude Code once. See the [Claude Code skills docs](https://code.claude.com/docs/en/skills) for details.
 
