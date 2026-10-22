@@ -78,13 +78,13 @@ The generated project (default folder name `<memory_name>_<arch>/`) contains:
 ```bash
 # macOS / Linux
 mkdir -p ~/.claude/skills
-cp -r pytorch-sqlite-memory ~/.claude/skills/
+cp -r create-cl-model ~/.claude/skills/
 ```
 
 ```powershell
 # Windows (PowerShell)
 New-Item -ItemType Directory -Force "$env:USERPROFILE\.claude\skills"
-Copy-Item -Recurse pytorch-sqlite-memory "$env:USERPROFILE\.claude\skills\"
+Copy-Item -Recurse create-cl-model "$env:USERPROFILE\.claude\skills\"
 ```
 
 **One project only:** copy it to `<your-repo>/.claude/skills/` instead and commit it.
