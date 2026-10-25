@@ -13,7 +13,7 @@ ________________________________________________________________________________
 _____________________________________________________________________________________________________________
 ### [PATCHED]:
 ### Vulnerabilities includes:
-✅ Vulnerability 1 — pickle.loads() before signature verification (line 6797)
+✅ Vulnerability 1 (CVE-2026-97386) — pickle.loads() before signature verification (line 6797)
    CONFIRMED. The exact sequence is:
    message = pickle.loads(data)          # line 6797 — deserializes first
    if not self._verify_signature(...):   # line 6802 — verifies AFTER
@@ -21,7 +21,7 @@ ________________________________________________________________________________
    Any attacker who can reach the socket can send crafted pickle
    data that executes arbitrary code BEFORE the signature is ever checked.
 
-✅ Vulnerability 2 — allowed_ips empty = allow all (line 5714)
+✅ Vulnerability 2 (CVE-2026-97385) — allowed_ips empty = allow all (line 5714)
    CONFIRMED. The logic:
    if self.allowed_ips and ip not in self.allowed_ips:
        return False
@@ -30,10 +30,10 @@ ________________________________________________________________________________
    This is by design per the comment "Empty = allow all" but combined
    with claim 1, means ANY IP can trigger the unsafe deserialization.
 
-✅ Vulnerability 3 — binds to 0.0.0.0 (line 6010)
+✅ Vulnerability 3 (CVE-2026-97384) — binds to 0.0.0.0 (line 6010)
    CONFIRMED. No IP restriction at the bind level.
 
-✅ Vulnerability 4 — auth token logged in plaintext (line 5929)
+✅ Vulnerability 4 (CVE-2026-97383) — auth token logged in plaintext (line 5929)
    CONFIRMED:
    print(f'|| Authenticating agent: {agent_id} with token: {token}')
    logger.info(f"[==] Authenticating agent: {agent_id} with token: {token}")
