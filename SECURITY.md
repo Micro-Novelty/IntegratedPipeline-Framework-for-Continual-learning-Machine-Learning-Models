@@ -1,4 +1,4 @@
-## [-] Security Vulnerabilities for AbstractIntegratedModule reports.
+## [-] Security Vulnerabilities report for AbstractIntegratedModule.
 ### Note:
    - This section actively Documents regarding AbstractIntegratedModule Unpatched vulnerabilities (that is probably in progress of fixing) and Patched vulnerabilities in newer Versions of the library.
 
