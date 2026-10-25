@@ -7,7 +7,7 @@
 - The Framework's Models are handled by Numpy library while most O(n2) heavy algorithms are accelerated using Cython, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 
 > Consider check our other projects:
-> - Claude code skill specifically for Creating a pytorch Model (MLP, Transformer, LSTM all in pytorch) that mimics AbstractIntegratedModule memory management system that > Continuously learn:
+> - Claude code skill specifically for Creating a pytorch Model (MLP, Transformer, LSTM all in pytorch) that mimics AbstractIntegratedModule memory management system that Continuously learn:
 >  - Branch: [View Create continual learning pytorch model skill for claude Code](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/create-clm-model)
 
 ----------------------------------
