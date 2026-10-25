@@ -252,7 +252,7 @@ torch_weight_storage(id, memory_name, model_type, config, weights, is_active, cr
 
 Read these before relying on it.
 
-**It is persistence, not a continual-learning algorithm.**
+**It is a continual learning by memory persistence only, not a new standalone continual-learning Deep-learning algorithm.**
 SQLite memory preserves *saved* weights. It does not stop a model from forgetting task A while it trains on task B under the same memory name. The per-task memory name is what protects old knowledge. There is no replay buffer, regularisation (such as EWC) or other anti-forgetting method.
 
 **Weights only.**
