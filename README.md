@@ -1,6 +1,6 @@
 # pytorch-sqlite-memory
 
-A [Claude Code](https://code.claude.com/docs/en/skills) skill that builds **PyTorch models with a persistent, named weight memory stored in SQLite**.
+A [Claude Code](https://code.claude.com/docs/en/skills) skill that lets you build **PyTorch models with a persistent, named weight memory stored in SQLite**.
 
 --------------------------------------------------------------------------
 <img width="800" height="400" alt="✳ Continual learning model skill 21_10_2026 06_41_50" src="https://github.com/user-attachments/assets/360da0e4-969b-45eb-be51-8db9eb9865b8" />
