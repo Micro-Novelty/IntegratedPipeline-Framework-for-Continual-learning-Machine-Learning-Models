@@ -3,7 +3,11 @@
 ### [INTRO] :
 - Machine Learning Framework that **Creates a Model that can Continuously learn, backed by *augmented memory* from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the *previous saved, Trained weights* inside the SQlite database from different Tasks**. users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, Train the current Model with another task while Preserving the previous Trained weights as memory inside the SQlite database.
 
-- Users can continue Training their previous Model with previous weights by simply loading the *weights* using the same memory name, and Train the Model with the loaded weights, the Model will start Training with a previously saved and refined weights instead of starting from scratch.
+- workflow:
+  - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real Prediction.
+  - workflow = ```[one model -> train on Task A -> save weights -> train on task B -> save weights -> user prefer to load memory for task A before prediction -> load weights for task A -> weights for task B remains unchanged and not deleted.]```
+  - Note: this method is scalable and supports multiple Models sharing the same Memory name.
+  
 - The Framework's Models are handled by Numpy library while most >O(n2)+ heavy algorithms are accelerated using Cython, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 
 > Consider check our other project:
