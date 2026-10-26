@@ -37,13 +37,11 @@ jobs:
       - name: Cythonize .pyx files
         run: |
           cython --version
-          # Generate C files from all .pyx files under src/
           find src/ -name "*.pyx" | while read f; do
             echo "Cythonizing $f..."
             cython "$f"
           done
 
-      # Upload generated .c files so every build job uses them
       - name: Upload Cython C files
         uses: actions/upload-artifact@v7
         with:
@@ -64,11 +62,21 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]
+    env:
+      CARGO_TARGET_DIR: ${{ runner.os == 'Windows' && 'D:/a/rust-target' || format('{0}/rust-target', github.workspace) }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Fix Windows long-path / linker issue
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          git config --system core.longpaths true
+          Remove-Item -Recurse -Force "D:\a\rust-target" -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path "D:\a\rust-target" | Out-Null
 
       - name: Cache Rust build
         uses: Swatinem/rust-cache@v2
@@ -80,12 +88,12 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-           python-version: '3.10'
+          python-version: '3.10'
 
       - uses: actions/setup-python@v5
         with:
-           python-version: '3.11'
-         
+          python-version: '3.11'
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -106,7 +114,13 @@ jobs:
             echo "⚠️ sccache unavailable, building without cache"
           fi
 
+          # Use a short target directory on Windows to avoid LNK1104 / long-path linker issues
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            export CARGO_TARGET_DIR='D:/a/rust-target'
+          fi
+
           maturin build --release \
+            --target-dir "${CARGO_TARGET_DIR:-$PWD/target}" \
             --interpreter python3.10 python3.11 python3.12
 
       - name: sccache stats
@@ -115,13 +129,16 @@ jobs:
         run: sccache --show-stats || true
 
       # FIX: force git-bash on Windows so the `[ -f ... ]` / `cp` syntax
-      # below works the same on all four matrix OSes — Windows runners
-      # default `run:` steps to pwsh, which doesn't understand this.
+      # below works the same on all four matrix OSes.
       - name: Copy opt-README into Rust wheels output
         shell: bash
         run: |
           if [ -f "readme-docs/opt-README.md" ]; then
-            cp readme-docs/opt-README.md rust_optimization_/target/wheels/opt-README.md
+            if [[ "${{ runner.os }}" == "Windows" ]]; then
+              cp readme-docs/opt-README.md "D:/a/rust-target/wheels/opt-README.md"
+            else
+              cp readme-docs/opt-README.md rust_optimization_/target/wheels/opt-README.md
+            fi
             echo "✅ opt-README.md bundled with Rust wheels"
           else
             echo "⚠️ readme-docs/opt-README.md not found, skipping"
@@ -132,8 +149,8 @@ jobs:
         with:
           name: rust-wheels-${{ matrix.os }}
           path: |
-            rust_optimization_/target/wheels/*.whl
-            rust_optimization_/target/wheels/opt-README.md
+            ${{ runner.os == 'Windows' && 'D:/a/rust-target/wheels/*.whl' || 'rust_optimization_/target/wheels/*.whl' }}
+            ${{ runner.os == 'Windows' && 'D:/a/rust-target/wheels/opt-README.md' || 'rust_optimization_/target/wheels/opt-README.md' }}
           retention-days: 7
 
   # ─────────────────────────────────────────────
@@ -159,12 +176,6 @@ jobs:
       CIBW_ARCHS: x86_64
       CIBW_BUILD: "cp310-* cp311-* cp312-*"
       CIBW_BUILD_FRONTEND: "build[uv]"
-      # FIX: bind-mount the runner's /tmp/rust-wheels into the manylinux/
-      # musllinux container at /host/rust-wheels. Without this, nothing
-      # inside the container can see the wheels downloaded onto the host,
-      # and every "pip install $RUST_WHEEL_DIR/*.whl" below silently
-      # no-ops (masked by `|| true`), so the Rust extension never
-      # actually ends up in the built wheels.
       CIBW_CONTAINER_ENGINE: "docker; create_args: -v /tmp/rust-wheels:/host/rust-wheels:ro"
       CIBW_ENVIRONMENT: >
         RUST_WHEEL_DIR=/host/rust-wheels
@@ -191,12 +202,8 @@ jobs:
         else
           echo "No rust wheels found in ${RUST_WHEEL_DIR:-/host/rust-wheels}"
         fi
-      # FIX: use the same (container-side, mounted) path as CIBW_ENVIRONMENT
-      # instead of the host-only /tmp/rust-wheels.
       CIBW_BEFORE_BUILD: >
         pip install "${RUST_WHEEL_DIR:-/host/rust-wheels}"/*.whl || true
-      # Use manylinux_2_28 image — produces clean manylinux_2_28_x86_64 tag
-      # without the legacy manylinux2014 compat dual tag
       CIBW_MANYLINUX_X86_64_IMAGE: "quay.io/pypa/manylinux_2_28_x86_64"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
         auditwheel repair -w {dest_dir} {wheel} --only-plat
@@ -231,10 +238,6 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
-      # FIX: removed the step-level `env:` override that used to duplicate
-      # (and contradict) the job-level CIBW_ENVIRONMENT / CIBW_BEFORE_BUILD
-      # above with a different, unmounted path. The job-level env is
-      # sufficient and now consistent, so cibuildwheel just inherits it.
       - name: Build wheels (${{ matrix.aim }})
         uses: pypa/cibuildwheel@v4.3.0
         with:
@@ -262,9 +265,8 @@ jobs:
   # ─────────────────────────────────────────────
   build-linux-aarch64:
     name: Build Linux wheels (aarch64)
-    runs-on: ubuntu-24.04-arm  # ✅ native ARM64, not emulated
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 500
-    # Skip aarch64 on PRs — only run on push/tag/manual
     if: github.event_name != 'pull_request'
     needs: [cythonize, build-rust-wheels]
     strategy:
@@ -280,7 +282,6 @@ jobs:
       CIBW_ARCHS: aarch64
       CIBW_BUILD: "cp310-* cp311-* cp312-*"
       CIBW_BUILD_FRONTEND: "build[uv]"
-      # FIX: same bind-mount fix as the x86_64 job above.
       CIBW_CONTAINER_ENGINE: "docker; create_args: -v /tmp/rust-wheels:/host/rust-wheels:ro"
       CIBW_ENVIRONMENT: >
         RUST_WHEEL_DIR=/host/rust-wheels
@@ -307,10 +308,8 @@ jobs:
         else
           echo "No rust wheels found in ${RUST_WHEEL_DIR:-/host/rust-wheels}"
         fi
-      # FIX: use the mounted container path, consistent with CIBW_ENVIRONMENT.
       CIBW_BEFORE_BUILD: >
         pip install "${RUST_WHEEL_DIR:-/host/rust-wheels}"/*.whl || true
-      # Use manylinux_2_28 image with GCC 14+ for NumPy 2.5.1+ compatibility
       CIBW_MANYLINUX_AARCH64_IMAGE: "quay.io/pypa/manylinux_2_28_aarch64"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
         auditwheel repair -w {dest_dir} {wheel}
@@ -345,7 +344,6 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
-      # FIX: removed the contradicting step-level env override (see x86_64 job note above).
       - name: Build wheels (${{ matrix.aim }})
         uses: pypa/cibuildwheel@v4.3.0
         with:
@@ -382,7 +380,6 @@ jobs:
       CIBW_ARCHS: aarch64
       CIBW_BUILD: "cp310-* cp311-* cp312-*"
       CIBW_BUILD_FRONTEND: "build[uv]"
-      # FIX: same bind-mount fix as the other Linux jobs above.
       CIBW_CONTAINER_ENGINE: "docker; create_args: -v /tmp/rust-wheels:/host/rust-wheels:ro"
       CIBW_ENVIRONMENT: >
         RUST_WHEEL_DIR=/host/rust-wheels
@@ -409,10 +406,8 @@ jobs:
         else
           echo "No rust wheels found in ${RUST_WHEEL_DIR:-/host/rust-wheels}"
         fi
-      # FIX: use the mounted container path, consistent with CIBW_ENVIRONMENT.
       CIBW_BEFORE_BUILD: >
         pip install "${RUST_WHEEL_DIR:-/host/rust-wheels}"/*.whl || true
-      # Use manylinux_2_28 image with GCC 14+ for NumPy 2.5.1+ compatibility
       CIBW_MANYLINUX_AARCH64_IMAGE: "quay.io/pypa/manylinux_2_28_aarch64"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
         auditwheel repair -w {dest_dir} {wheel}
@@ -447,7 +442,6 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
-      # FIX: removed the contradicting step-level env override (see x86_64 job note above).
       - name: Build wheels (regular aarch64)
         uses: pypa/cibuildwheel@v4.3.0
         with:
@@ -484,13 +478,10 @@ jobs:
       CIBW_BUILD_FRONTEND: "build[uv]"
       CIBW_BEFORE_ALL_MACOS: >
         pip install numpy scikit-learn psutil aiohttp pandas
-      # Note: macOS builds run natively on the runner (no container), so
-      # /tmp/rust-wheels is directly visible here — no mount needed.
       CIBW_BEFORE_BUILD: >
         pip install /tmp/rust-wheels/*.whl || true
       CIBW_TEST_COMMAND: >
         python -c "import sys; print('✓ Python', sys.version, 'OK')"
-      # Skip test for cross-compiled x86 wheels on ARM runner
       CIBW_TEST_SKIP: "*-macosx_x86_64"
     steps:
       - uses: actions/checkout@v4
@@ -550,13 +541,8 @@ jobs:
       CIBW_BUILD_FRONTEND: "build[uv]"
       CIBW_BEFORE_ALL_WINDOWS: >
         pip install numpy scikit-learn psutil aiohttp pandas
-      # Windows runners build natively (no container) like macOS, so the
-      # downloaded rust-wheels/ dir is directly visible here — no mount
-      # needed. Installing via a small python -c snippet (rather than a
-      # shell glob) avoids cmd/pwsh vs bash quoting differences for the
-      # `*.whl || true` pattern used on Linux/macOS.
       CIBW_BEFORE_BUILD: >
-        python -c "import glob, subprocess, sys; wheels = glob.glob('rust-wheels/*.whl'); subprocess.run([sys.executable, '-m', 'pip', 'install', *wheels]) if wheels else print('No rust wheels found in rust-wheels/')"
+        python -c "import glob, subprocess, sys; wheels = glob.glob('rust-wheels/*.whl'); subprocess.run([sys.executable, '-m', 'pip', 'install', *wheels]) if wheels else print('No rust wheels found')"
       CIBW_TEST_COMMAND: >
         python -c "import sys; print('OK Python', sys.version, 'OK')"
     steps:
@@ -624,9 +610,6 @@ jobs:
       - name: List built wheels and docs
         run: |
           echo "=== Built artifacts (top-level) ==="
-          # FIX: "-Rall" is not a valid combination of ls flags; this was
-          # silently doing something other than the intended recursive,
-          # long-format, all-files listing.
           ls -laR all-wheels/ || true
           echo "=== Found wheels count ==="
           find all-wheels -name '*.whl' -print | wc -l || true
