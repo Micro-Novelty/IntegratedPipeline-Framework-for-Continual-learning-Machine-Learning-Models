@@ -79,6 +79,14 @@ jobs:
         uses: mozilla-actions/sccache-action@v0.0.11
 
       - uses: actions/setup-python@v5
+      with:
+         python-version: '3.10'
+
+      - uses: actions/setup-python@v5
+      with:
+         python-version: '3.11'
+         
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
