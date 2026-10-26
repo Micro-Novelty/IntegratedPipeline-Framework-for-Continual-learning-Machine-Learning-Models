@@ -286,11 +286,11 @@ ________________________________________________________________________________
   python -m pip install AbstractIntegratedModule
   ```
   
-- NOTE: for Mac-OS or linux x86-64 Users, consider downloading the correct python wheel for your setup in here for a much flexible installation:
+- NOTE: for Mac-OS or Linux x86-64 Users, consider downloading the correct python wheel for your setup in here for a much flexible installation:
    - ```bash
      pip install abstractintegratedmodule --extra-index-url https://Micro-Novelty.github.io/abstract-modules/whl/ --break-system-packages
      ```
-     Note: using this installation method grants you a much safer, predictable behavior, and more secure AbstractIntegratedModule library rather than a pure binary file.
+     Note: using this installation method grants you an up-to-date AbstractIntegratedModule library specifically for Mac-OS and Linux x86-64 users.
      
 - X and y samples or titles and rules samples for Training and prediction (see Library in depth usage instructions below).
 
@@ -315,7 +315,7 @@ ________________________________________________________________________________
     
 [=] for labels assignation:
 - CSV file that contains training labels and titles used for training and prediction label map, example will be provided below, Go to Step's for in-depth Usage below.
-
+- [Go to Step's to use IntegratedPipeline](#-steps-for-library-in-depth-usage)
 _______________________________________________________________________________________________________________________
 ### [=] Requirements for Docker container
 - Dockerfile (For Container assembler) 
