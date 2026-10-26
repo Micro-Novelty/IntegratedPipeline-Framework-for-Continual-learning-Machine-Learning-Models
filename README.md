@@ -286,7 +286,7 @@ ________________________________________________________________________________
   python -m pip install AbstractIntegratedModule
   ```
   
-- NOTE: for Mac-OS or Linux x86-64 Users, consider downloading the correct python wheel for your setup in here for a much flexible installation:
+- NOTE: for Mac-OS or Linux x86-64 Users, consider downloading the correct python wheel for your setup using this command:
    - ```bash
      pip install abstractintegratedmodule --extra-index-url https://Micro-Novelty.github.io/abstract-modules/whl/ --break-system-packages
      ```
