@@ -5,7 +5,8 @@
 
 - workflow:
   - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real Prediction.
-  - workflow = ```[one model -> train on Task A -> save weights -> train on task B -> save weights -> user prefer to load memory for task A before prediction -> load weights for task A -> weights for task B remains unchanged and not deleted.]```
+  - workflow (this method is scalable and not restricted to one model):
+  - ```[model initialized -> train on Task A -> save weights -> train on task B -> save weights -> user prefer to load memory for prediction on task A -> load weights for task A -> weights for task B remains unchanged and not deleted -> ...]```
   - Note: this method is scalable and supports multiple Models sharing the same Memory name.
   
 - The Framework's Models are handled by Numpy library while most >O(n2)+ heavy algorithms are accelerated using Cython, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
