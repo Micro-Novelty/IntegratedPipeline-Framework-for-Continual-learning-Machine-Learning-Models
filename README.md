@@ -258,7 +258,7 @@ ________________________________________________________________________________
 [=] Architectural-Overview
 
 <img width="1600" height="859" alt="Gemini_Generated_Image_nlxggenlxggenlxg" src="https://github.com/user-attachments/assets/21cb2e3a-a801-449b-a621-974b1ea097fe" />
----------------------------------------------------------------------------
+_____________________________________________________________________________________________________________
 - [=] Contextual meaning:
   - Sequence encoding is a machine learning technique that transforms a sequential input (like text, time-series data, or audio) into a compact, fixed-length numerical vector, often called a context vector
   - HashingVectorizer is a text feature extraction tool in scikit-learn that converts a collection of text documents into a numerical sparse matrix. It uses the hashing trick (applying a hash function like Murmurhash3 to map token strings directly to feature indices) rather than building and storing an explicit vocabulary dictionary.
