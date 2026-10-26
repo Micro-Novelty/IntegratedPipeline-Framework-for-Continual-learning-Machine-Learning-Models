@@ -33,4 +33,4 @@ types-setuptools
 types-pkg-resources
 
 # ===== Profiling =====
-line-profiler>=5.0.2
+line-profiler>=5.1.0
