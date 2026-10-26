@@ -6,7 +6,7 @@ FROM alpine:3.24 AS arm64
 COPY AbstractIntegratedModule.cpython-39-aarch64-linux-gnu.so /libs/AbstractIntegratedModule.so
 
 # Stage 2: Final runtime
-FROM python:3.14-slim-bookworm
+FROM python:3.15-slim-bookworm
 
 # Create non-root user
 RUN useradd -m -u 1000 integratedpipelineuser
