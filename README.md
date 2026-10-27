@@ -48,7 +48,7 @@ ________________________________________________________________________________
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
-- Development Stage on PyPi: 1.2.8 Official Release.
+- Development Stage on PyPi: 1.2.9 Official Release.
 - Author and Maintainer: Micro-Novelty and EpsitronNet-bot.
 - library Source-Code is Open-sourced with MIT License.
 - Purpose: Specifically Designed for providing Non-LLM AI Agent Framework for edge Devices, Optimized for ARM64 architecture.
@@ -114,7 +114,9 @@ ________________________________________________________________________________
      - v1.2.8:
        - Fixed rigid logic in _handle_async method function where a missing test titles and rules stops the whole async process.
        - Fixed rigid logic where a crash can occur in advanced prediction if lstm_predictions results are None.
-
+     - v1.2.9:
+       - Change most [>] to [TRAIN] or [DATABASE] for better understanding of the mechanism for each print.
+       - Added expected calibration error after MLP Validation scoring to help better understanding regarding model generalization.
     
      > - Note: if you want to see the Changelog history of the library Older versions consider visiting this link:
      >  - PyPi history: https://pypi.org/project/AbstractIntegratedModule/#history
