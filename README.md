@@ -1,6 +1,6 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 
-**Specialized Python framework that provides Continual based learning with persistence memory capability for Machine-learning Models**
+**Specialized Python framework for Continual based learning with persistence memory for Machine-learning Models**
 _________________________________________________________________________________________________
 
 <img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
@@ -1677,11 +1677,14 @@ Solution:
         async_manager.predict(...., ...., api_key=api_key, ...)
         ```
 
+_______________________________________________________________________________________________
 ## [=] Detailed process of Alpha-computing
 
 <img width="720" height="338" alt="WhatsApp Image 2026-05-04 at 17 43 35" src="https://github.com/user-attachments/assets/3d149dce-cf3b-44c9-80b0-fa68290a2019" />
 
 <img width="720" height="388" alt="WhatsApp Image 2026-05-04 at 17 44 04" src="https://github.com/user-attachments/assets/b1efedf6-5aa1-431e-89da-5f422549b453" />
+
+_________________________________________________________________________________________________
 🧠 What Alpha-Based Computation Actually Does
 
 At its core, alpha (α) is a control parameter that blends two different information paths inside a given transformer:
