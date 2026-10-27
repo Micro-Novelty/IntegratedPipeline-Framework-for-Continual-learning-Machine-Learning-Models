@@ -5,6 +5,7 @@ ________________________________________________________________________________
 
 <img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
 
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/abstractintegratedmodule?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/abstractintegratedmodule)
 _________________________________________________________________________________________________
 
 ### [INTRO] :
