@@ -1,6 +1,6 @@
 # [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
 
-**Specialized Python framework for Continual based learning with persistence memory for Machine-learning Models**
+**Specialized Python framework that provides Continual based learning with persistence memory capability for Machine-learning Models**
 _________________________________________________________________________________________________
 
 <img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
