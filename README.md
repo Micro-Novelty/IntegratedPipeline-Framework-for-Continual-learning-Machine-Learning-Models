@@ -7,7 +7,12 @@
   - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real Prediction.
   - Example workflow > (*this method is scalable and not restricted to one model*) :
   - ```[model initialized using 'memory-A' memory name -> train on Task A -> save weights -> change memory name to 'memory-B' -> train on task B -> save weights -> user prefer to load memory for prediction on task A -> load weights for task A -> weights for task B remains unchanged and not deleted -> ...]```
-  - Note: this method is scalable and supports multiple Models sharing the same Memory name.
+  - Note:
+    - This method is scalable and supports multiple Models sharing the same Memory name.
+
+  - Training happens and needed *when* switching between Tasks using different memory name (ex: from task A to task B with different memory name) *if* you have not Train the Model on task B, if you already trained the Model on task A and task B, Training is no longer needed and you can do prediction on task C (task C must have similar shapes and lengths like task A but with different values) using memory name 'memory-A', and prediction on task D (task D must have similar shapes and lengths like task B but with different values) using 'memory-B'.
+    - Workflow ->  ```[you want to switch from task A to task B for prediction, but you haven't train your model on task B -> train the model first on task B -> save the Weights to database -> you can load task B Weights for later prediction if you choose to train the model on task C -> ...]```
+    - Workflow -> ```[when you already trains the Model on both task A and B -> use memory name 'memory-A' for prediction on task C -> switch to memory name 'memory-B' if you want to do prediction on task D]```
   
 - The Framework's Models are handled by Numpy library while most >O(n2)+ heavy algorithms are accelerated using Cython, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 
