@@ -7,8 +7,7 @@
   - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real Prediction.
   - Example workflow > (*this method is scalable and not restricted to one model*) :
   - ```[model initialized using 'memory-A' memory name -> train on Task A -> save weights -> change memory name to 'memory-B' -> train on task B -> save weights -> user prefer to load memory for prediction on task A -> load weights for task A -> weights for task B remains unchanged and not deleted -> ...]```
-  - Note:
-    - This method is scalable and supports multiple Models sharing the same Memory name.
+  - Note -> This method is scalable and supports multiple Models sharing the same Memory name.
 
   - Training happens and needed *when* switching between Tasks using different memory name (ex: from task A to task B with different memory name) *if* you have not Train the Model on task B, if you already trained the Model on task A and task B, Training is no longer needed and you can do prediction on task C (task C must have similar shapes and lengths like task A but with different values) using memory name 'memory-A', and prediction on task D (task D must have similar shapes and lengths like task B but with different values) using 'memory-B'.
     - Workflow ->  ```[you want to switch from task A to task B for prediction, but you haven't train your model on task B -> train the model first on task B -> save the Weights to database -> you can load task B Weights for later prediction if you choose to train the model on task C -> ...]```
