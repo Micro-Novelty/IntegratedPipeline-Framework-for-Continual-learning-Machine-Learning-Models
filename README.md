@@ -560,6 +560,8 @@ _______________________________________
 
 ______________________________________________________________________________________________________________________
 ## [=] Step's for library in-depth Usage
+> - *Steps to use IntegratedPipeline Markdown file can be downloaded here:* [Download steps to use IntegratedPipeline](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/blob/main/split-READMEs/steps_to_use_integratedpipeline.md)
+
 0. Download via PIP:
    - Clone repository first:
      ```bash
@@ -659,8 +661,6 @@ ________________________________________________________________________________
 
 
 4. A. Use IntegratedPipeline as in this example:
-   - Steps to use IntegratedPipeline Markdown file can be downloaded here: [Download steps to use IntegratedPipeline](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/blob/main/split-READMEs/steps_to_use_integratedpipeline.md)
-
    -  ### [CLASSIFICATION TASK ONLY] :
    ```python
    from AbstractIntegratedModule import IntegratedPipeline
