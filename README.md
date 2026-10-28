@@ -146,31 +146,31 @@ ________________________________________________________________________________
        
 ________________________________________________________________________________________________________________________
 ### [>] Full Documentation Features
-- [Go to Library short description](#library-short-description)
-- [Go to MANN Intro](#-MANN-Intro)
-- [Go to Performance Overview](#both-performance-overview)
-- [Go to Abstract Weight Encoder (AWE) Intro](#-abstract-weight-encoder-awe-intro)
-- [Go to LSTM And Transformer Intro](#-lstm-and-transformer-intro)
-- [Go to Why IntegratedPipeline?](#-why-integratedpipeline)
-- [Go to Requirements](#-requirements)
-- [Go to System-Specific-Notes](#-system-specific-notes)
-- [Go to Quickstart with Docker](#-docker-container-application)
-- [Go to Performance in ARM64 Environment/Container](#performance-in-linux-arm64-docker-environmentcontainer)
-- [Go to Step's to use IntegratedPipeline](#-steps-for-library-in-depth-usage)
-- [Go to Troubleshooting](#-troubleshooting)
-- [Go to Detailed process of Alpha-computing](#-detailed-process-of-alpha-computing)
-- [Go to Main Components](#main-components)
-- [Go to Source code](#source-code-of-abstractintegratedmodule)
+[Go to Library short description](#library-short-description)
+[Go to MANN Intro](#-MANN-Intro)
+[Go to Performance Overview](#both-performance-overview)
+[Go to Abstract Weight Encoder (AWE) Intro](#-abstract-weight-encoder-awe-intro)
+[Go to LSTM And Transformer Intro](#-lstm-and-transformer-intro)
+[Go to Why IntegratedPipeline?](#-why-integratedpipeline)
+[Go to Requirements](#-requirements)
+[Go to System-Specific-Notes](#-system-specific-notes)
+[Go to Quickstart with Docker](#-docker-container-application)
+[Go to Performance in ARM64 Environment/Container](#performance-in-linux-arm64-docker-environmentcontainer)
+[Go to Step's to use IntegratedPipeline](#-steps-for-library-in-depth-usage)
+[Go to Troubleshooting](#-troubleshooting)
+[Go to Detailed process of Alpha-computing](#-detailed-process-of-alpha-computing)
+[Go to Main Components](#main-components)
+[Go to Source code](#source-code-of-abstractintegratedmodule)
 
 - Consider checking:
-  - [ROADMAP.md](ROADMAP.md)
-  - [SECURITY.md](SECURITY.md)
-  - [Contributing.md](Contributing.md)
-  - [changelog.md](changelog.md)
-  - [requirements-For-Dev](dev_needs.txt) for contributors requirements.
-  - [architecture_diagram.js](architecture_diagram.js).
-  - [steps_to_use_integratedpipeline](split-READMEs/steps_to_use_integratedpipeline.md) to use IntegratedPipeline
-  - Separated README contents for better understanding: [split-READMEs](split-READMEs)
+  [ROADMAP.md](ROADMAP.md)
+  [SECURITY.md](SECURITY.md)
+  [Contributing.md](Contributing.md)
+  [changelog.md](changelog.md)
+  [requirements-For-Dev](dev_needs.txt) for contributors requirements.
+  [architecture_diagram.js](architecture_diagram.js).
+  [steps_to_use_integratedpipeline](split-READMEs/steps_to_use_integratedpipeline.md) to use IntegratedPipeline
+  Separated README contents for better understanding: [split-READMEs](split-READMEs)
     
 ___________________________________________________________________________________________________       
 <img width="1280" height="600" alt="WhatsApp Image 2026-05-27 at 07 16 32" src="https://github.com/user-attachments/assets/4b58a556-45a3-419b-96fd-9c1b76cac574" />
@@ -560,7 +560,7 @@ _______________________________________
 
 ______________________________________________________________________________________________________________________
 ## [=] Step's for library in-depth Usage
-> - *Steps to use IntegratedPipeline Markdown file can be downloaded here:* [Download steps to use IntegratedPipeline](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/blob/main/split-READMEs/steps_to_use_integratedpipeline.md)
+> - *Steps to use IntegratedPipeline Markdown file can be downloaded here:* [Download steps to use IntegratedPipeline markdown file](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/blob/main/split-READMEs/steps_to_use_integratedpipeline.md)
 
 0. Download via PIP:
    - Clone repository first:
