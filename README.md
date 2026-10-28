@@ -34,10 +34,10 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
 > Consider check our other project:
 > - Claude code skill specifically for Creating a pytorch Model (MLP, Transformer, LSTM all in pytorch) that mimics AbstractIntegratedModule memory management system that Continuously learn:
 >  - Branch: [View Create continual learning pytorch model skill for claude Code](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/create-clm-model)
->  - Framework stress testing: [View github actions for Library stress tests](https://github.com/Micro-Novelty/abstract-modules/actions)
->    - The stress test includes testing the library using Github ARM64 and x86-64 runners. (Mac-OS runners might have issues).
->    - Check out any jobs that has "Test wheels" That's where the library is tested against Regular samples, P2P and asynchronous processing capabilities.
->    - The asynchronous test fails due to Github strict resource constraints, environment limits, and silent process terminations.
+>  - Framework stress testing: [View github actions for framework stress tests](https://github.com/Micro-Novelty/abstract-modules/actions)
+>    - The stress test includes testing the framework using Github ARM64 and x86-64 runners. (Mac-OS runners might have issues).
+>    - Check out any jobs that has "Test wheels" That's where the framework is tested against Regular samples, P2P and asynchronous processing capabilities.
+>    - The asynchronous test might fail due to Github strict resource constraints, environment limits, and silent process terminations.
 
 ----------------------------------
 
