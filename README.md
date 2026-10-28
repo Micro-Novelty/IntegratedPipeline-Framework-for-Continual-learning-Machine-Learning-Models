@@ -9,6 +9,8 @@ ________________________________________________________________________________
 [![PyPI version](https://img.shields.io/pypi/v/AbstractIntegratedModule.svg)](https://pypi.org/project/AbstractIntegratedModule/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.10|3.11|3.12|3.13](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?logo=python&logoColor=white)](https://www.python.org/)
+
+
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows%20%7C%20ARM64-lightgrey)](#)
 [![CI](https://img.shields.io/github/actions/workflow/status/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/ci.yml?branch=main)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/actions)
 [![GitHub stars](https://img.shields.io/github/stars/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models?style=social)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/stargazers)
@@ -25,7 +27,7 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
   - ```[model initialized using 'memory-A' memory name -> train on Task A -> save weights -> change memory name to 'memory-B' -> train on task B -> save weights -> user prefer to load memory for prediction on task A -> load weights for task A -> weights for task B remains unchanged and not deleted -> ...]```
   Note -> This method is scalable and supports multiple Models sharing the same Memory name.
 
-  - Training happens and needed *when* switching between Tasks using different memory name (ex: from task A to task B with different memory name) *if* you have not Train the Model on task B, if you already trained the Model on task A and task B, Training is no longer needed and you can do prediction on task C (task C must have similar shapes and lengths like task A but with different values) using memory name 'memory-A', or prediction on task D (task D must have similar shapes and lengths like task B but with different values) using 'memory-B'.
+  - Training happens and needed *when* switching between Tasks using different memory name (ex: from task A to task B with different memory name) *if* you have not Train the Model on task B. if you already trained the Model on task A and task B, Training is no longer needed and you can do prediction on task C (task C must have similar shapes and lengths like task A but with different values) using memory name 'memory-A', or prediction on task D (task D must have similar shapes and lengths like task B but with different values) using 'memory-B'.
     - Workflow ->  ```[you want to switch from task A to task B for prediction, but you haven't train your model on task B -> train the model first on task B -> save the Weights to database -> you can load task B Weights for later prediction if you choose to train the model on task C -> ...]```
     - Workflow -> ```[when you already trains the Model on both task A and B -> use memory name 'memory-A' for prediction on task C -> switch to memory name 'memory-B' if you want to do prediction on task D]```
   
