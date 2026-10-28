@@ -147,18 +147,18 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 ### [>] Full Documentation Features
 - [Go to Library short description](#library-short-description)
-- [Go to MANN Intro](#-MANN-Intro)
+- [Go to MANN Intro](#MANN-Intro)
 - [Go to Performance Overview](#both-performance-overview)
-- [Go to Abstract Weight Encoder (AWE) Intro](#-abstract-weight-encoder-awe-intro)
-- [Go to LSTM And Transformer Intro](#-lstm-and-transformer-intro)
-- [Go to Why IntegratedPipeline?](#-why-integratedpipeline)
-- [Go to Requirements](#-requirements)
-- [Go to System-Specific-Notes](#-system-specific-notes)
-- [Go to Quickstart with Docker](#-docker-container-application)
+- [Go to Abstract Weight Encoder (AWE) Intro](#abstract-weight-encoder-awe-intro)
+- [Go to LSTM And Transformer Intro](#lstm-and-transformer-intro)
+- [Go to Why IntegratedPipeline?](#why-integratedpipeline)
+- [Go to Requirements](#requirements)
+- [Go to System-Specific-Notes](#system-specific-notes)
+- [Go to Quickstart with Docker](#docker-container-application)
 - [Go to Performance in ARM64 Environment/Container](#performance-in-linux-arm64-docker-environmentcontainer)
-- [Go to Step's to use IntegratedPipeline](#-steps-for-library-in-depth-usage)
-- [Go to Troubleshooting](#-troubleshooting)
-- [Go to Detailed process of Alpha-computing](#-detailed-process-of-alpha-computing)
+- [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
+- [Go to Troubleshooting](#troubleshooting)
+- [Go to Detailed process of Alpha-computing](#detailed-process-of-alpha-computing)
 - [Go to Main Components](#main-components)
 - [Go to Source code](#source-code-of-abstractintegratedmodule)
 
@@ -344,7 +344,7 @@ ________________________________________________________________________________
     
 [>] for labels assignation:
 - CSV file that contains training labels and titles used for training and prediction label map, example will be provided below, Go to Step's for in-depth Usage below.
-- [Go to Step's to use IntegratedPipeline](#-steps-for-library-in-depth-usage)
+- [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
 _______________________________________________________________________________________________________________________
 ### Requirements for Docker container
 - Dockerfile (For Container assembler) 
