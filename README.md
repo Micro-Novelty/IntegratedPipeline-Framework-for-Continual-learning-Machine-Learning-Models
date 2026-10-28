@@ -15,7 +15,7 @@ ________________________________________________________________________________
 [![Last commit](https://img.shields.io/github/last-commit/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/commits)
 _________________________________________________________________________________________________
 
-### [INTRO] :
+### [Intro]:
 Machine Learning Framework that **Creates a Model that can Continuously learn, backed by *augmented memory* from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the *previous saved, Trained weights* inside the SQlite database from different Tasks**. users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, Train the current Model with another task while Preserving the previous Trained weights as memory inside the SQlite database.
 
 - Workflow:
@@ -48,7 +48,7 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
 -----------------------------------
 
 
-### [~] Introductory Explanation:
+### [Intro]:
 - AbstractIntegratedModule or IntegratedPipeline in short, is a standalone Specialized Machine-Learning Framework for Non-LLM memory Augmented Local Agentic orchestrator - Specifically designed to provide Local Continuous Learning capability for any Autonomous Model as single Instance or Coordinatively that runs efficiently from consumer based machine to High-end embedded systems, where the Model Can directly and continously learn using SQlite database as External memory, with minimal and efficient compute, built-in automatic augmented memory handler, Secure Peer-To-Peer (Multi-Agent) Coordination with security layers as an option, And Explainability capability based on proof from in it's internal metrics, reducing Black-Box condition necessary for reliability.
 - AbstractIntegratedModule Contains specialized MLP using Its Own specialized geometric Weight encoding (AWE) that is used for Quantization-Aware-Training (QAT) for lower memory Usage and faster convergence during Training, Specialized efficient Transformer and LSTM (Long-short term memory) architecture for Scarce Data training/prediction with Alpha-based computation, specifically designed for low-amount samples environment or Messy environments.
 > - NOTE:
@@ -62,7 +62,7 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
   - Regression Tasks: Predicting continuous numerical values like house prices, sensors output, sales numbers, or weather metrics.
 
 ___________________________________________________________________________________________________________________
-### [+] Framework's Purpose
+### Framework's Purpose
   - This framework is intended for Engineers who is early in ML Engineering in order to provide a Clearer picture of How edge AI Should operate, Low memory management, and Also how it can be Made continuously learn using Pragmatic solution by using SQLite to save Weights to prevent continuous catasthropic forgetting, IntegratedPipeline source code is open-sourced and can be found in our github repository, Meaning you can modify the Source code however You liked it to be, and help Us Grow the first Community!
 
 ### Important Note:
@@ -176,10 +176,10 @@ ________________________________________________________________________________
 <img width="1280" height="600" alt="WhatsApp Image 2026-05-27 at 07 16 32" src="https://github.com/user-attachments/assets/4b58a556-45a3-419b-96fd-9c1b76cac574" />
 
 ## MANN Intro
-[=] Memory augmented Neural network (MANN) is a neural network architecture coupled with an external, dynamic memory module, allowing it to store, retrieve, and update information similarly to a computer's RAM. Unlike traditional networks that store knowledge only in weight parameters, MANNs excel at fast learning, long-term dependency handling, and episodic recall, In IntegratedPipeline, Its memory is stored in a custom database inside your local machine, then later used for memory retrieval, transfered to the Model Dictionary where it can finnaly recall its memory when input condition matched with memory. 
+[>] Memory augmented Neural network (MANN) is a neural network architecture coupled with an external, dynamic memory module, allowing it to store, retrieve, and update information similarly to a computer's RAM. Unlike traditional networks that store knowledge only in weight parameters, MANNs excel at fast learning, long-term dependency handling, and episodic recall, In IntegratedPipeline, Its memory is stored in a custom database inside your local machine, then later used for memory retrieval, transfered to the Model Dictionary where it can finnaly recall its memory when input condition matched with memory. 
 
 ## Abstract Weight Encoder (AWE) Intro
-[=] AWE is a specialized custom weight shaping or encoding method Specifically designed for MLP Architecture that excels in Quantization-Aware-Training method in MLP dense Layers, using eigenvalue and spectral methods as base equations to calculate covariance inside a given input data, and calibrate the correct Weight from the given eigenvalue, AWE Works by processing input and then captures the necessary eigenvalue to shape a properly initialized Weight that aligns with input data complexity, With this approach, MLP training will be much more consistent especially during Quantization-Aware-Training.
+[>] AWE is a specialized custom weight shaping or encoding method Specifically designed for MLP Architecture that excels in Quantization-Aware-Training method in MLP dense Layers, using eigenvalue and spectral methods as base equations to calculate covariance inside a given input data, and calibrate the correct Weight from the given eigenvalue, AWE Works by processing input and then captures the necessary eigenvalue to shape a properly initialized Weight that aligns with input data complexity, With this approach, MLP training will be much more consistent especially during Quantization-Aware-Training.
 
 - For a much In-Depth Explanation You can visit This repository to learn more about AWE and its performance results:
 - Link: https://github.com/Micro-Novelty/Specialized-MLP-for-noise-robustness
@@ -469,7 +469,7 @@ ________________________________________________________________________________
 
 ________________________________________________________________________________________________________________________
 ## Performance in linux ARM64 Docker Environment/Container
-A. [=] [OLD DATA] Computational performance results during Training with Transformer included in regular classification tasks (Not regression).
+A. [OLD DATA] Computational performance results during Training with Transformer included in regular classification tasks (Not regression).
 ```txt
 == TIME == | CPU % | RAM / RAM LIMIT ||
 
@@ -489,8 +489,8 @@ A. [=] [OLD DATA] Computational performance results during Training with Transfo
 14:50:36.109 449.89% 116.8MiB / 3.71GiB
 14:50:38.123 423.56% 119MiB   / 3.71GiB
 ```
-- [=] Note: To read the full logs (For included Transformer performance): [performance_log_with_TF](performance_logs/performance_log_with_TF.txt)
-- [=] Explanation: 
+- [>] Note: To read the full logs (For included Transformer performance): [performance_log_with_TF](performance_logs/performance_log_with_TF.txt)
+- [>] Explanation: 
   - Average CPU Usage = 420% - 430% , Sustained roughlt 4.20 - 4.30 CPU Cores
     - Meaning = - Compute-Intensive workload
                 - reduced guaranteed of experiencing deadlocks, thread starvation, and major stalls
@@ -500,7 +500,7 @@ A. [=] [OLD DATA] Computational performance results during Training with Transfo
                 - Repeated 269 MiB suggests allocator settled, ndarray pools stabilized, workload reached steady state
                 - gradual, safe and steady batch accumulation, reduced possibility of leak explosion.
 
-B. [=] Advanced Prediction without Transformer, Only Specialized MLP + LSTM using AWE during Training.
+B. [>] Advanced Prediction without Transformer, Only Specialized MLP + LSTM using AWE during Training.
 ```txt
 == TIME == | CPU %  | RAM \ RAM LIMIT |
 10:01:37.456 100.44% 269.8MiB / 3.71GiB # initial round 1 training started
@@ -526,8 +526,8 @@ B. [=] Advanced Prediction without Transformer, Only Specialized MLP + LSTM usin
 10:02:16.873 98.84% 333.8MiB / 3.71GiB
 10:02:18.869 0.00%  132.7MiB / 3.71GiB # container stopped and round 2 finished
 ```
-- [=] Note: See full performance log in here: [performance_log_only_MLP](performance_logs/performance_log_only_MLP.txt)
-- [=] Explanation:
+- [>] Note: See full performance log in here: [performance_log_only_MLP](performance_logs/performance_log_only_MLP.txt)
+- [>] Explanation:
      - Average CPU Usage = 85-90% Used, sustained roughly 1 CPU Core saturated on average
          - Meaning: - Very efficient computation
                  - Much lighter CPU Usage than Transformer.
