@@ -146,47 +146,47 @@ ________________________________________________________________________________
        
 ________________________________________________________________________________________________________________________
 ### [>] Full Documentation Features
-[Go to Library short description](#library-short-description)
-[Go to MANN Intro](#-MANN-Intro)
-[Go to Performance Overview](#both-performance-overview)
-[Go to Abstract Weight Encoder (AWE) Intro](#-abstract-weight-encoder-awe-intro)
-[Go to LSTM And Transformer Intro](#-lstm-and-transformer-intro)
-[Go to Why IntegratedPipeline?](#-why-integratedpipeline)
-[Go to Requirements](#-requirements)
-[Go to System-Specific-Notes](#-system-specific-notes)
-[Go to Quickstart with Docker](#-docker-container-application)
-[Go to Performance in ARM64 Environment/Container](#performance-in-linux-arm64-docker-environmentcontainer)
-[Go to Step's to use IntegratedPipeline](#-steps-for-library-in-depth-usage)
-[Go to Troubleshooting](#-troubleshooting)
-[Go to Detailed process of Alpha-computing](#-detailed-process-of-alpha-computing)
-[Go to Main Components](#main-components)
-[Go to Source code](#source-code-of-abstractintegratedmodule)
+- [Go to Library short description](#library-short-description)
+- [Go to MANN Intro](#-MANN-Intro)
+- [Go to Performance Overview](#both-performance-overview)
+- [Go to Abstract Weight Encoder (AWE) Intro](#-abstract-weight-encoder-awe-intro)
+- [Go to LSTM And Transformer Intro](#-lstm-and-transformer-intro)
+- [Go to Why IntegratedPipeline?](#-why-integratedpipeline)
+- [Go to Requirements](#-requirements)
+- [Go to System-Specific-Notes](#-system-specific-notes)
+- [Go to Quickstart with Docker](#-docker-container-application)
+- [Go to Performance in ARM64 Environment/Container](#performance-in-linux-arm64-docker-environmentcontainer)
+- [Go to Step's to use IntegratedPipeline](#-steps-for-library-in-depth-usage)
+- [Go to Troubleshooting](#-troubleshooting)
+- [Go to Detailed process of Alpha-computing](#-detailed-process-of-alpha-computing)
+- [Go to Main Components](#main-components)
+- [Go to Source code](#source-code-of-abstractintegratedmodule)
 
 - Consider checking:
-  [ROADMAP.md](ROADMAP.md)
-  [SECURITY.md](SECURITY.md)
-  [Contributing.md](Contributing.md)
-  [changelog.md](changelog.md)
-  [requirements-For-Dev](dev_needs.txt) for contributors requirements.
-  [architecture_diagram.js](architecture_diagram.js).
-  [steps_to_use_integratedpipeline](split-READMEs/steps_to_use_integratedpipeline.md) to use IntegratedPipeline
-  Separated README contents for better understanding: [split-READMEs](split-READMEs)
+  - [ROADMAP.md](ROADMAP.md)
+  - [SECURITY.md](SECURITY.md)
+  - [Contributing.md](Contributing.md)
+  - [changelog.md](changelog.md)
+  - [requirements-For-Dev](dev_needs.txt) for contributors requirements.
+  - [architecture_diagram.js](architecture_diagram.js).
+  - [steps_to_use_integratedpipeline](split-READMEs/steps_to_use_integratedpipeline.md) to use IntegratedPipeline
+  - Separated README contents for better understanding: [split-READMEs](split-READMEs)
     
 ___________________________________________________________________________________________________       
 <img width="1280" height="600" alt="WhatsApp Image 2026-05-27 at 07 16 32" src="https://github.com/user-attachments/assets/4b58a556-45a3-419b-96fd-9c1b76cac574" />
 
-## [+] MANN Intro
+## MANN Intro
 [=] Memory augmented Neural network (MANN) is a neural network architecture coupled with an external, dynamic memory module, allowing it to store, retrieve, and update information similarly to a computer's RAM. Unlike traditional networks that store knowledge only in weight parameters, MANNs excel at fast learning, long-term dependency handling, and episodic recall, In IntegratedPipeline, Its memory is stored in a custom database inside your local machine, then later used for memory retrieval, transfered to the Model Dictionary where it can finnaly recall its memory when input condition matched with memory. 
 
-## [+] Abstract Weight Encoder (AWE) Intro
+## Abstract Weight Encoder (AWE) Intro
 [=] AWE is a specialized custom weight shaping or encoding method Specifically designed for MLP Architecture that excels in Quantization-Aware-Training method in MLP dense Layers, using eigenvalue and spectral methods as base equations to calculate covariance inside a given input data, and calibrate the correct Weight from the given eigenvalue, AWE Works by processing input and then captures the necessary eigenvalue to shape a properly initialized Weight that aligns with input data complexity, With this approach, MLP training will be much more consistent especially during Quantization-Aware-Training.
 
-[~] For a much In-Depth Explanation You can visit This repository to learn more about AWE and its performance results:
+- For a much In-Depth Explanation You can visit This repository to learn more about AWE and its performance results:
 - Link: https://github.com/Micro-Novelty/Specialized-MLP-for-noise-robustness
 > - Note:
 >  - The explanation itself inside the link repository is Outdated, since AWE has been improved over time.
 
-## [+] LSTM And Transformer Intro:
+## LSTM And Transformer Intro:
 A. LSTMs (Long Short-Term Memory) and Transformers are foundational deep learning architectures built to process sequential data (like text or time series). While both handle the flow of time and context, they do so using completely different mechanisms.
 - LSTM (Long Short-Term Memory):
   - LSTMs are an advanced class of Recurrent Neural Networks (RNNs) introduced to solve the problem of traditional RNNs forgetting earlier data.
@@ -202,10 +202,10 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
 > - Data Hungry when Analyzing Images.
 
 
-## [+] Why IntegratedPipeline?
-[~] IntegratedPipeline is a great choice for a sophisticated Non-LLM AI Model Program for The Main Orchestrator of a Distributed MANN-Type Model Agent Working in Edge-device/Consumer-Based machine Where LLM isn't a great fit for Messy, Unpredictable environments. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
+## Why IntegratedPipeline?
+- IntegratedPipeline is a great choice for a sophisticated Non-LLM AI Model Program for The Main Orchestrator of a Distributed MANN-Type Model Agent Working in Edge-device/Consumer-Based machine Where LLM isn't a great fit for Messy, Unpredictable environments. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
 
-[=] IntegratedPipeline offers:
+- IntegratedPipeline offers:
 1. Local-Based AI Orchestrator:
    - IntegratedPipeline Creates its own SQLite Database inside Your Computer once the library is executed, This database is used directly to store the AI Memory, Attention weights, predicted Output, and identified peer, all without leaving the machine, The Database will be created Automatically once you run the library, database name saved as activity_log.db. 
 
@@ -260,7 +260,8 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
    - Alpha rate limiting,
    - HMAC secret key for authentication,
    - and IP validation.
-   [~] Each agent has double roles during P2P:
+   
+   [NOTE] Each agent has double roles during P2P:
     >    - Server provider: the peer Agent can start a server to listen for peer client's
     >    - Connecting Agent: the peer Agent which happens to connect to other peer that has or have opened and provided a server listener to act as a receiver.
 
@@ -269,10 +270,10 @@ Transformers are the modern standard for AI, introduced in 2017 with the famous 
      - Exportable memory: this allows a flexible memory saving for later use, such as cross transfer memory between model, the memory is saved as .json file after exporting.
      - Importable Memory: allowing to import memory from the exported .json file directly for the model to use.
      - syncing with other model: socket-based communication to export memory to other external machine.
-      > - [=] Note: socket Syncing is unsecure witout additional security layer wrapped, For a safer syncing, directly transfer the .json file memory to the target machine via other ways such as manual send.
+      > - [NOTE] : socket Syncing is unsecure witout additional security layer wrapped, For a safer syncing, directly transfer the .json file memory to the target machine via other ways such as manual send.
       > - list sessions: listing available sessions using model's memory name.
 
-[=] With its Specialized Multi-Layer-Perceptron (using AWE Encoder) and Optimized Transformer module with optimized Embedding, IntegratedPipeline can directly improve 
+[>] With its Specialized Multi-Layer-Perceptron (using AWE Encoder) and Optimized Transformer module with optimized Embedding, IntegratedPipeline can directly improve 
 overtime, including in ambiguous data, using Weighted Confidence assembling from both specialized MLP and Transformer for better reliability during training and 
 prediction over Unpredictable environments, such as:
 
@@ -283,12 +284,12 @@ prediction over Unpredictable environments, such as:
 > [>] Non-Representative data (Undersampled) : IntegratedPipeline Support's ambiguous data that come's from file with format such as CSV Format to extract title's and label's necessary to create automatic Dataset for Later use in Training, making it optimized for specific task's and easier dataset creation with lower overfitting rate for reliability.
 
 _____________________________________________________________________________________________________________
-[=] Architectural-Overview
+[>] Architectural-Overview
 
 <img width="1600" height="859" alt="Gemini_Generated_Image_nlxggenlxggenlxg" src="https://github.com/user-attachments/assets/21cb2e3a-a801-449b-a621-974b1ea097fe" />
 _____________________________________________________________________________________________________________
 
-- [=] Contextual meaning:
+- [>] Contextual meaning:
   - Sequence encoding is a machine learning technique that transforms a sequential input (like text, time-series data, or audio) into a compact, fixed-length numerical vector, often called a context vector
   - HashingVectorizer is a text feature extraction tool in scikit-learn that converts a collection of text documents into a numerical sparse matrix. It uses the hashing trick (applying a hash function like Murmurhash3 to map token strings directly to feature indices) rather than building and storing an explicit vocabulary dictionary.
   - Explainability provides deeper transparency of why a model thought about a detail by showing its internal metrics like attention quality, from distributed peer memory or Ensemble prediction result's.
@@ -305,7 +306,7 @@ ________________________________________________________________________________
     > - Purpose: let you demonstrate simple P2P using AbstractIntegratedModule quickly, there may be bugs in this P2P setup so feel free to share it in issues.
 
 ____________________________________________________________________________________________________________________
-## [=] Requirements
+## Requirements
 [~] To run and execute IntegratedPipeline, Requirement's include Or see [Requirements](installation_guides/usage_needs.txt):
 - Python 3.10 -> Python 3.14.
 - pip install for quick usage:
@@ -341,16 +342,16 @@ ________________________________________________________________________________
 >     - cryptography
      
     
-[=] for labels assignation:
+[>] for labels assignation:
 - CSV file that contains training labels and titles used for training and prediction label map, example will be provided below, Go to Step's for in-depth Usage below.
 - [Go to Step's to use IntegratedPipeline](#-steps-for-library-in-depth-usage)
 _______________________________________________________________________________________________________________________
-### [=] Requirements for Docker container
+### Requirements for Docker container
 - Dockerfile (For Container assembler) 
 - Python scripts (Such as main.py for Dockerfile usage).
 - entrypoint.sh (for smart entry point for Dockerfile container usage).
   
-## [=] System-Specific Notes
+## System-Specific Notes
 1. Windows:
    - Requires Visual C++ Build Tools for compatibility
    - Use PowerShell or CMD (not WSL bash for best results)
@@ -364,7 +365,7 @@ ________________________________________________________________________________
    - Monitor system resources during installation
    - Consider using faster storage (USB SSD) for better performance
 
-## [=] Docker Container Application
+## Docker Container Application
 0. See [Docker_installation_Section](docker-setups/Docker_installation_Section.md) for an in-depth explanation, or [Quick_Docker_start](docker-setups/Quick_Docker_start.sh) for a quick start.
    - Note Consider checking:
      - [Dockerfile](docker-setups/Dockerfile) contains all the instructions need to assemble a Docker container.
@@ -559,7 +560,7 @@ _______________________________________
 >   - Commercialize it: Package, brand, and sell the software for profit.
 
 ______________________________________________________________________________________________________________________
-## [=] Step's for library in-depth Usage
+## Step's for library in-depth Usage
 > - *Steps to use IntegratedPipeline Markdown file can be downloaded here:* [Download steps to use IntegratedPipeline markdown file](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/blob/main/split-READMEs/steps_to_use_integratedpipeline.md)
 
 0. Download via PIP:
@@ -1460,14 +1461,14 @@ if __name__ == '__main__':
    p2p_tasks(task='classification')
 
 ```
-[=] Important Note: 
+[NOTE] Important Note: 
     - This setup outputs the given predicted label of an input directly, making P2P more flexible and fast.
     - This setup used Hybrid feature in prediction handling, Asynchronous prediction request, and Synchronous prediction handling. Synchronous prediction does block code execution for a few seconds, it was used for a few reason here, such as:
        - allowing a more slower traffic between agents, preventing other agent to get the same peer prediction over time, making each interaction equals and each peer can receive different peer prediction output.
        
-[=] You can download this setup here for a direct test: [P2PDirectTest.py](P2P_Setups/P2PDirectTest.py)
+[>] You can download this setup here for a direct test: [P2PDirectTest.py](P2P_Setups/P2PDirectTest.py)
 
-   - [=] for probability coordination, locally, get peers data from database or via socket.
+   - [>] for probability coordination, locally, get peers data from database or via socket.
 ```python
 # step 4
 # X_generated is an X samples generated from using dataset converted into Vectors.
@@ -1484,7 +1485,7 @@ sequence_inputs = main_model.sequence_encoding(dataset)
 # type='others' = Transformer probabilities will be ignored, and ensemble weighting will not be initiated as MLP probs will be used.
 peer_probability_calibration = main_model.predict_proba(sequence_inputs, X, type='Hybrid', embedded=True) # peer-to-peer calibration is inside this function
 ```
-[~] Note: the peer calibration coordination has a chance of triggering if both MLP and Transformer prediction doesn't agree on certain output. Consider using this setup below for using stand-alone peer-to-peer main function without being wrapped in other parent function, allowing flexible and auditable peer-to-peer sharing for probability coordination:
+[NOTE] Note: the peer calibration coordination has a chance of triggering if both MLP and Transformer prediction doesn't agree on certain output. Consider using this setup below for using stand-alone peer-to-peer main function without being wrapped in other parent function, allowing flexible and auditable peer-to-peer sharing for probability coordination:
 ```python
 from AbstractIntegratedModule import WeightedEnsemblePredictor
 from AbstractIntegratedModule import Transformer
@@ -1532,7 +1533,7 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
 # main_model.distribution.report_failure(id(main_model), '<task_name>', reason='<unknown>') # you can add the task_name and reason
 # main_model.distribution.print_network_status() # to show other peers info.
 ```
-[~] Note: this calibrated_probability is later used to calculate confidence and chosen output based on given label_map.
+[NOTE] Note: this calibrated_probability is later used to calculate confidence and chosen output based on given label_map.
    - Consider checking:
      - [multi_agent_client.py](P2P_Setups/multi_agent_client.py) for a In-depth start for client testing.
      - [multi_agent_server.py](P2P_Setups/multi_agent_server.py) for a In-depth start for server testing.
@@ -1579,22 +1580,22 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
 12. As an option, You can add more feature's directly to what it should predict, behave using rules you have given, Create a visual dashboard, create a distributed mesh of this agent, and much more features you can try.
 
 ________________________________________________________________________________________
-## [+] Troubleshooting
+## Troubleshooting
 1. Issue 1: "ModuleNotFoundError: No module named 'AbstractIntegratedModule'" When using the binary version of the library,
 Solution:
 
-   - [=] Verify the binary file is in the correct location:
+   - [>] Verify the binary file is in the correct location:
    ```
    ls -la AbstractIntegratedModule*.so  # Linux
    dir AbstractIntegratedModule.pyd     # Windows
    ```
    
 
-   - [=] Check Python path:
+   - [>] Check Python path:
    ```
    python -c "import sys; print('\n'.join(sys.path))"
    ```
-   - [~] Note: - Move binary to project root if not already there
+   - [NOTE] Note: - Move binary to project root if not already there
       - Ensure you're using Python 3.13 of the supported version.
       
 2. Issue 2: "ImportError: DLL load failed" when using binary version of the library (For Windows)
@@ -1607,7 +1608,7 @@ Solution:
 
 
 3. Issue 3: "Permission denied" when using binary version of the library (for Linux/Raspberry Pi)
-[=] Solution:
+[>] Solution:
    - ```
      # Make sure you have read permissions
      chmod 644 AbstractIntegratedModule.cpython-39-*.so
@@ -1616,7 +1617,7 @@ Solution:
     ```
 
 4. Issue 4: Missing Dependencies when using binary
-[=] Solution:
+[>] Solution:
     - ```
       # Reinstall all dependencies
       pip install --upgrade pip setuptools wheel
@@ -1627,7 +1628,7 @@ Solution:
       ```
 
 5. Issue 5: Virtual Environment Issues
-[=] Solution:
+[>] Solution:
     - ```
       # Deactivate current environment
       deactivate
@@ -1647,7 +1648,7 @@ Solution:
 
 6. Issue 6: Raspberry Pi - "Bus error" or Performance Issues
 Solution:
-   - [=] Ensure adequate swap space:
+   - [>] Ensure adequate swap space:
       ```
       free -h  # Check current swap
       sudo nano /etc/dphys-swapfile  # Increase if needed
@@ -1690,7 +1691,7 @@ Solution:
         ```
 
 _______________________________________________________________________________________________
-## [=] Detailed process of Alpha-computing
+## Detailed process of Alpha-computing
 
 <img width="720" height="338" alt="WhatsApp Image 2026-05-04 at 17 43 35" src="https://github.com/user-attachments/assets/3d149dce-cf3b-44c9-80b0-fa68290a2019" />
 
@@ -1701,18 +1702,18 @@ ________________________________________________________________________________
 
 At its core, alpha (α) is a control parameter that blends two different information paths inside a given transformer:
 A_final = α · A_fixed + (1 − α) · A_learned.
-[~] Where: 
+[>] Where: 
 - A_fixed → stable, non-trainable (or minimally changing) attention
 - A_learned → dynamic, trainable attention (Q, K, V)
 - α ∈ [0, 1] → controls how much each path contributes
   
-[~] Forward Pass -> Controlling Information Flow:
+[>] Forward Pass -> Controlling Information Flow:
 > During the forward pass, alpha determines what representation the model uses.
 > If α is high (e.g., 0.8–1.0): Model relies mostly on stable attention
 > → outputs are consistent → less noise → safer early training, If α is low (e.g., 0.0–0.3), Model relies mostly on learned attention, → more expressive → but unstable early on.
 > So in forward propagation, alpha is essentially, “How much do I trust learned attention vs safe attention?”
 
-[~] Backward Pass -> Controlling Gradient Flow:
+[>] Backward Pass -> Controlling Gradient Flow:
 When gradients flow backward:
 ```
 - dA_final → splits into two paths
@@ -1721,21 +1722,21 @@ When gradients flow backward:
         - dA_learned = (1 − α) · dA_final
 ```
 
-[~] Simple Explanation:
+[>] Simple Explanation:
 1. If α (alpha) is high: → most gradient goes to fixed path → learned attention gets very little update → training is stable but slow
 2. If α is low: → most gradient goes to learned attention → fast learning → but noisy / unstable
    
-[=] Why This Matters for Training
+[>] Why This Matters for Training
 1. Without alpha: attention starts random → gradients noisy → model stuck (~10% accuracy)
 2. With alpha: early stage -> rely on stable structure → meaningful gradients
 
 
 _____________________________________________________________________________________________________________
 ## Main Components
-[=] 1. - Consider checking and run: [IntegratedPipeline_Flow.html](IntegratedPipeline_Flow.html) regarding each function of the whole components and deep-dive mechanism.
+[>] 1. - Consider checking and run: [IntegratedPipeline_Flow.html](IntegratedPipeline_Flow.html) regarding each function of the whole components and deep-dive mechanism.
     2. - consider checking [ARCHITECTURE.md](ARCHITECTURE.md) for more explanation about the main components.
        
-[=] With 23 total architectures working together as a standalone library that is efficient and robust, Main components include:
+[>] With 23 total architectures working together as a standalone library that is efficient and robust, Main components include:
     
 1. GeometricWeightShaping
 Purpose: Analyzes the geometric structure of data (anisotropy, spectral properties, complexity) and generates optimal weight matrices based on that geometry. Essentially teaches the model how to "understand" the shape of data before processing it, Highly robust to noise, making it an excellent fit for messy environment.
@@ -1830,7 +1831,7 @@ purpose: handles Proper LSTM Confidence and calibration layer.
   - [architecture_diagram.js](architecture_diagram.js).
 
 ## License
-[=] LICENSE: - MIT (2026) || See [LICENSE](LICENSE) for more information.
+[>] LICENSE: - MIT (2026) || See [LICENSE](LICENSE) for more information.
 
 
 
