@@ -9,8 +9,6 @@ ________________________________________________________________________________
 [![PyPI version](https://img.shields.io/pypi/v/AbstractIntegratedModule.svg)](https://pypi.org/project/AbstractIntegratedModule/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.10|3.11|3.12|3.13](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?logo=python&logoColor=white)](https://www.python.org/)
-
-
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows%20%7C%20ARM64-lightgrey)](#)
 [![CI](https://img.shields.io/github/actions/workflow/status/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/ci.yml?branch=main)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/actions)
 [![GitHub stars](https://img.shields.io/github/stars/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models?style=social)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/stargazers)
@@ -36,6 +34,9 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
 > Consider check our other project:
 > - Claude code skill specifically for Creating a pytorch Model (MLP, Transformer, LSTM all in pytorch) that mimics AbstractIntegratedModule memory management system that Continuously learn:
 >  - Branch: [View Create continual learning pytorch model skill for claude Code](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/create-clm-model)
+>  - Framework stress testing: [View github actions on Library stress test](https://github.com/Micro-Novelty/abstract-modules/actions)
+>    - Check out any jobs that has "Test wheels" That's where the library is tested against Regular samples, P2P and asynchronous processing capabilities.
+>    - The asynchronous test fails due to Github strict resource constraints, environment limits, and silent process terminations.
 
 ----------------------------------
 
