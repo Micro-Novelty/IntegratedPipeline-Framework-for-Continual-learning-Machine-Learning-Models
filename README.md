@@ -1085,7 +1085,7 @@ ________________________________________________________________________________
    main_model.train_lstm(titles=None, rules=None, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
    ```
 
-  - ### [WORKFLOW EXAMPLE FOR CONTINUAL LEARNING WITH MEMORY PERSISTENCE] :
+  - ### [Workflow for Continual learning with Memory persistence] :
   - ```python
     # save as pipeline_setup.py
     # NOTE: this workflow is customizable specify to your needs.
@@ -1222,6 +1222,7 @@ ________________________________________________________________________________
         else:
             print('[>] Invalid task name')
     
+    # for prediction only.
     def predict(main_prediction, X, y, titles=None, rules=None, label_map=None):
         results, chosen_label, confidence = main_prediction.advanced_prediction_method(
         titles=None, label_map=label_map, rules=None, # titles and rules can be set to None (Optional samples), but label_map must NOT be None.
@@ -1230,7 +1231,7 @@ ________________________________________________________________________________
     
         return results, chosen_label, confidence
     
-    
+    # for training only
     def train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, 
                 new_memory=None, with_training=True):
         memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
@@ -1238,7 +1239,7 @@ ________________________________________________________________________________
         one_train_round(memory_name, main_model, db_path, X, y, with_training,
             task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
         
-    
+    # one full train -> predict.
     def one_run(db_path, X, y, task=None, pred_config=None, label_csv=None, feature_cols=None, 
                 new_memory=None, with_training=True):
         memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
