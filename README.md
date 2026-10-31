@@ -21,16 +21,21 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
 - Workflow:
   *the below workflow explanation is used to explain how user can use our framework*
   - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real Prediction.
+  - Note: *'model' here refers to a single Instance of IntegratedPipeline instance*
   - Example workflow > (*this method is scalable and not restricted to one model*) :
   - ```[model initialized using 'memory-A' memory name -> train on Task A -> save weights -> change memory name to 'memory-B' -> train on task B -> save weights -> user prefer to load memory for prediction on task A -> load weights for task A -> weights for task B remains unchanged and not deleted -> ...]```
   Note -> This method is scalable and supports multiple Models sharing the same Memory name.
 
   - Training happens and needed *when* switching between Tasks using different memory name (ex: from task A to task B with different memory name) *if* you have not Train the Model on task B. if you already trained the Model on task A and task B (task A and B is only used for Training), Training is no longer needed and you can do prediction on task C (task C must have similar shapes and lengths like task A but with different values) using memory name 'memory-A', or prediction on task D (task D must have similar shapes and lengths like task B but with different values) using memory name 'memory-B'.
-    - Workflow 1 ->  ```[you want to switch from task A to task B for prediction, but you haven't train your model on task B -> train the model first on task B -> save the Weights to database -> you can load task B Weights for later prediction if you choose to train the model on task C -> ...]```
-    - Workflow 2 ->  *(this only apply if task A have the same correlation as task C (ex: task A and C is classification) and task B has the same correlation to task D)*
+    - Workflow 1 (Training) ->  ```[you want to switch from task A to task B for prediction, but you haven't train your model on task B -> train the model first on task B -> save the Weights to database -> the Model can load task B Weights for later prediction on different tasks (ex: task C with regression based samples) -> ...]```
+    - Workflow 2 (Memory switching) ->  *(workflow 2 only apply if task A have the same correlation as task C, F, E (ex: task A and C is classification) and task B has the same correlation to task D, K, L)*
       -> ```[when you already trains the Model on both task A and B -> use memory name 'memory-A' for prediction on task C -> switch to memory name 'memory-B' if you want to do prediction on task D]```
-    - NOTE = if task A is classification -> task C **must** have the same shape as task A and is also a classification task, *if* task B is regression -> task D **must** have the same shape as task B and is also a regression task.
-  
+    - NOTE = if task A is classification -> task C, F, E **must** have the same shape as task A and is also a classification task, *if* task B is regression -> task D, K, L **must** have the same shape as task B and is also a regression task.
+    - Benefit of this approach:
+      - One IntegratedPipeline instance with 2 memory name can be used for Predicting both classification or regression tasks *when* both tasks have the same lengths and shapes.
+      - One IntegratedPipeline instance is enough to Train both classification task, and continue with regression task immediately. its Weights will be saved to database everytime each Training is done.
+      - approach -> ```[after training on task A and B -> model can now do prediction on task C, D, E, F, ... continuously as long as these samples have the same shapes as task A and B]```
+    
 - The Framework's Models are handled by Numpy library while most >O(n2)+ heavy algorithms are accelerated using Cython, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 
 > Consider check our other project:
@@ -73,7 +78,7 @@ ________________________________________________________________________________
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
-- Development Stage on PyPi: 1.2.9 Official Release.
+- Development Stage on PyPi: 1.3.0 Official Release.
 - Author and Maintainer: Micro-Novelty and EpsitronNet-bot.
 - library Source-Code is Open-sourced with MIT License.
 - Purpose: Specifically Designed for providing Non-LLM AI Agent Framework for edge Devices, Optimized for ARM64 architecture.
@@ -120,6 +125,8 @@ ________________________________________________________________________________
 >   - Robust Advanced prediction capabilities proven effective on ARM64 Using MLP + LSTM Architectures.
 >   - Transformer Optimized using Cython, reduced Memory overhead and Reduce CPU Usage, With Reduced Training Time is guaranteed.
 >   - Reworked Prediction and Training method for User convenience in controlling the Model's capabilities and reducing Blackbox-ness.
+>   - Continual-learning with memory persistence now has its own Automated workflow example that handles save and load memory properly while also handles different task categories (classification and regression type).
+
 -----
   - Recent Changelogs [Will be reset each new +0.0.5 versions]:
      - v1.2.5 [MAJOR REWORKS]:
@@ -142,6 +149,9 @@ ________________________________________________________________________________
      - v1.2.9:
        - Change most [>] to [TRAIN] or [DATABASE] for better understanding of the mechanism for each print.
        - Added expected calibration error after MLP Validation scoring to help better understanding regarding model generalization.
+     - v1.3.0:
+       - Added new automatic Continual learning mechanism for memory persistence that user can now use their own custom Database to set and save the memory.
+       - Fixed advanced prediction logic where the prediction crash due to shape error when calculating for ensemble needs.
     
      > - Note: if you want to see the Changelog history of the library Older versions consider visiting this link:
      >  - PyPi history: https://pypi.org/project/AbstractIntegratedModule/#history
@@ -1075,10 +1085,243 @@ ________________________________________________________________________________
    main_model.train_lstm(titles=None, rules=None, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
    ```
 
+  - ### [WORKFLOW EXAMPLE FOR CONTINUAL LEARNING WITH MEMORY PERSISTENCE] :
+  - ```python
+    # save as pipeline_setup.py
+    # NOTE: this workflow is customizable specify to your needs.
+    
+    from AbstractIntegratedModule import IntegratedPipeline
+    from AbstractIntegratedModule import PipelinePredictionManager
+    from AbstractIntegratedModule import Transformer
+    from AbstractIntegratedModule import QuantConfig
+    from AbstractIntegratedModule import set_memory
+    from AbstractIntegratedModule import save_memory
+    import numpy as np
+    
+    # db_path is your custom initialized sqlite database name (ex: data_storage.db)
+    def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_config=None, cols=None):
+        # set_memory() is used to load the Model's Memory, csv fie for Training, task and label map using you previouslyr given X and y samples
+        # new_memory argument is used to declare a new memory name if the searched memory is not present.
+    
+        memory_name, label_csv, task, label_map, feature_cols, config = set_memory(db_path, X, y, new_memory=memory_name)
+    
+        if label_csv is None:
+            label_csv = csv
+        if task is None:
+            task = new_task
+        if feature_cols is None:
+            feature_cols = cols
+        if config is None:
+            config = new_config
+    
+        # if task and csv training file is None in the database, set your own csv training file and task that matches the actual X and y samples category (classification or regression)
+    
+        main_model = IntegratedPipeline(
+        memory_name=memory_name,  # memory name for the Model you already initialized
+        use_async=True, # local asynchronous prediction is permitted, if not PipelineAsyncManager wont start asynchronous prediction.
+        agent_port=5001, # this port is used to set AgentDistributedInference server (optional)
+        ssl_cert_file=None, ssl_key_file=None,# provide your cert_file path or key_file path (optional)
+        ssl_context=None, # used by the Agent server. (optional)
+        client_ssl_context=None # used by the client. (optional)
+        ) 
+        
+        main_prediction = PipelinePredictionManager(
+            main_model, # your initialized pipeline
+            label_csv=label_csv, 
+            # your filename that contains the csv and contains the CSV format.
+            # the Agent will automatically searched the nearby folder like: downloads, data, and desktop folder.
+            target_title='window_title', label='label')
+    
+        if config is not None:
+            # set regression config to PredictionManager for prediction on regression task:
+            main_prediction.config = config
+    
+        # initialize label map name if its None in the memory database
+        if label_map is None:
+            titles, _, label_map = main_prediction.load_labels_from_csv(
+                label_csv,  # the name of your .txt file with CSV format.
+                'window_title', 'label')
+                
+    
+        # Quantization config is optional
+        qcfg = QuantConfig(enabled=True, w_bits=8, a_bits=8)
+    
+        # Set up the main model with the specified configurations you wants, this will override the default configurations of the IntegratedPipeline, 
+        # you can change the parameters to suit your dataset and requirements.
+        main_model.model_setup(mlp_train_epochs=1000, tf_train_epochs=10, tf_lr=0.1, mlp_lr=0.5,
+                                lstm_train_epochs=50, lstm_lr=5e-1, lstm_hidden_dim=64, tf_heads=4, tf_d_model=32,
+                                error_decay=0.75)
+    
+        return memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols
+    
+    # handle training round for one task at a time:
+    def one_train_round(memory_name, main_model, db_path, X, y, with_training=False, titles=None, rules=None, 
+                    task=None, label_map=None, feature_cols=None, label_csv=None, use_qat=True, qcfg=None, config=None):
+        # TRAINING BLOCK: This is where you train the MLP, Transformer, and LSTM models with the specified configurations you want.
+    
+        if task == 'classification':
+            # NOTE:
+            # set input_dim and num_classes based on the shape of X and the number of unique labels in label_map.
+            # this are important for the MLP and Transformer model to know how many input features and output classes it has to handle.
+            input_dim = X.shape[1] if X.ndim > 1 else 1
+            num_classes = max(len(label_map), int(np.max(y)) + 1)
 
+            # Re initialize all models everytime a new Training is started, each weights will be saved to database later.
+            main_model.initialize_mlp_model(titles=titles, rules=rules, label_map=label_map, input_dim=input_dim, output_dim=num_classes, hidden_layers=[12, 17, 35], use_qat=use_qat, qcfg=qcfg)
+    
+            # vocab size set to 1 if titles and rules are None.
+            main_model.initialize_transformer_model(titles=titles, rules=rules, label_map=label_map, vocab_size=1, num_classes=num_classes, d_model=64, n_heads=4, n_features=None,
+                                                            attn_dropout=0.1, ffn_dropout=0.05, weight_decay=1e-2, task=task)
+            main_model.initialize_lstm_model(input_size=1, hidden_size=32, output_size=1, dropout_rate=0.1, seed=42)
+    
+            # Memory Loading Block: This is where you load the model memory if you have previously saved it, this will allow you to continue training or prediction from where you left off.
+            # This function will automatically adds the loaded weights to the current model, so you can continue training or prediction without losing any progress.
+            memory_loaded, lstm_weights, transformer_weights, mlp_weights, = main_model.load_model_memory()
+    
+            if not memory_loaded and with_training:
+                main_model.train_mlp_model(titles=titles, rules=rules, label_map=label_map, X=X, y=y, task=task, train_epochs=500, momentum=0.9, lr=0.01)
+                main_model.train_transformer(titles=titles, rules=rules, label_map=label_map, X=X, y=y,  task=task, d_model=64, train_epochs=10, 
+                                                mode='dynamic_backward', lr=0.5, batch_size=4)
+                main_model.train_lstm(titles=titles, rules=rules, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+                
+                # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
+                save_memory(db_path, memory_name, label_csv, X, y, task, label_map)
+    
+                # save weights to database
+                main_model.save_weights(memory_name, model_type='Pipeline') 
+            else:
+                print('[>] Memory is here, ignoring training')
+    
+        elif task == 'regression':
+            input_dim = X.shape[1] if X.ndim > 1 else 1
+            num_classes = max(len(label_map), int(np.max(y)) + 1)
+    
+            main_model.initialize_mlp_model(titles=titles, rules=rules, label_map=label_map, input_dim=input_dim, output_dim=num_classes, hidden_layers=[12, 17, 35], use_qat=True, qcfg=qcfg)
+    
+            # vocab size is always set to 1 in regression samples.
+            main_model.initialize_transformer_model(titles=titles, rules=rules, label_map=label_map, vocab_size=1, num_classes=num_classes, d_model=64, n_heads=4, n_features=len(feature_cols),
+                                                            attn_dropout=0.1, ffn_dropout=0.05, weight_decay=1e-2, task=task)
+            main_model.initialize_lstm_model(input_size=1, hidden_size=32, output_size=1, dropout_rate=0.1, seed=42)
+            memory_loaded, lstm_weights, transformer_weights, mlp_weights, = main_model.load_model_memory()
+    
+            if not memory_loaded and with_training:
+                main_model.train_mlp_model(titles=titles, rules=rules, label_map=label_map, X=X, y=y, task=task, train_epochs=500, momentum=0.9, lr=0.01)
+                main_model.train_transformer(titles=titles, rules=rules, label_map=label_map, X=X, y=y,  task=task, d_model=64, train_epochs=10, 
+                                                    mode='dynamic_backward', lr=0.5, batch_size=4)
+                main_model.train_lstm(titles=titles, rules=rules, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+    
+                # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
+                save_memory(db_path, memory_name, label_csv, X, y, task, label_map, feature_cols=feature_cols, config=config)
+    
+                # save weights to database
+                main_model.save_weights(memory_name, model_type='Pipeline') 
+    
+            else:
+                print('[>] Regression training is skipped')
+    
+        else:
+            print('[>] Invalid task name')
+    
+    def predict(main_prediction, X, y, titles=None, rules=None, label_map=None):
+        results, chosen_label, confidence = main_prediction.advanced_prediction_method(
+        titles=None, label_map=label_map, rules=None, # titles and rules can be set to None (Optional samples), but label_map must NOT be None.
+            X=X, y=y, # you could create your own X and y samples and put it here (Optional, y sample must already be one hot encoded first).
+            top_k=3, batch_size=4)
+    
+        return results, chosen_label, confidence
+    
+    
+    def train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, 
+                new_memory=None, with_training=True):
+        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
+    
+        one_train_round(memory_name, main_model, db_path, X, y, with_training,
+            task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
+        
+    
+    def one_run(db_path, X, y, task=None, pred_config=None, label_csv=None, feature_cols=None, 
+                new_memory=None, with_training=True):
+        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
+        one_train_round(memory_name, main_model, db_path, X, y, with_training,
+            task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
+        
+        results, chosen_label, confidence = predict(main_prediction, X, y, label_map=label_map)
+    
+        return results, chosen_label, confidence
+        
+    ```
+    NOTE:
+    - ```one_run()``` function contains the whole Train and Predict functions, great for testing on small samples first as a validation test before you Test against real samples.
+
+    ### [USAGE EXAMPLE] :
+    ```python
+    from pipeline_setup import one_run
+    from pipeline_setup import train_run
+    import pandas
+
+    # EXAMPLE REGRESSION TASK:
+    df = pd.read_csv("PJME_hourly.csv", parse_dates=["Datetime"], index_col="Datetime")
+    df = df.sort_index()
+    daily = df.resample("D").sum()
+    
+    # calender features (day of week, month, is weekend) (suit to what your dataset actually has)
+    daily["dayofweek"] = daily.index.dayofweek     
+    daily["month"] = daily.index.month
+    daily["is_weekend"] = (daily.index.dayofweek >= 5).astype(int)
+    
+    # lag features (in days, not hours) (suit to what your dataset actually has)
+    daily["lag_1"] = daily["PJME_MW"].shift(1)      # yesterday (lag_1 will be used in feature_cols)
+    daily["lag_7"] = daily["PJME_MW"].shift(7)      # last week (same day) (lag_7 will be used in feature_cols)
+    daily["lag_14"] = daily["PJME_MW"].shift(14)    # 2 weeks ago (lag_14 will be used in feature_cols)
+    
+    # Rolling statistics (suit to what your dataset actually has)
+    daily["rolling_mean_7"] = daily["PJME_MW"].rolling(7).mean() # (rolling_mean_7 will be used in feature_cols)
+    daily["rolling_std_7"] = daily["PJME_MW"].rolling(7).std()   # (rolling_std_7 will be used in feature_cols)
+    # delete the first row that contains NaN values due to lag and rolling calculations
+    daily = daily.dropna()
+
+    # Feature columns: a set of list thatcontains the features you want to use for training and prediction.
+    feature_cols = ["PJME_MW", "dayofweek", "month", "is_weekend",
+                "lag_1", "lag_7", "lag_14", "rolling_mean_7", "rolling_std_7"]
+    
+    X, y = '<load your X and y samples> # TASK A (e.g task A has shape (500, 8))
+    # config is needed for prediction on regression tasks:
+    s_X, s_y, config = get_dataset(daily, feature_cols, target_col_name="PJME_MW",
+                                      window_size=30, horizon=8) # TASK B is regression type (e.g task B has shape (500, 8))
+    t_X, t_y = '<load your third X and y samples> TASK C (e.g task C must have the same shape as task A and B (500, 8) for prediction later)
+
+    db_path = 'model_memory_storage.db' # path to your sqlite database, customizable name (must put .db in the end).
+
+    # ========= TESTING BLOCK (for validation test) =============
+    # FOR TESTING ON CLASSIFICATION TASK 
+    results, chosen_label, confidence = one_run(db_path, X, y, task='classification', pred_config=None, 
+                                            label_csv='ManualsTraining.txt', feature_cols=None)
+
+    # FOR TESTING ON REGRESSION TASK
+    results, chosen_label, confidence = one_run(db_path, X, y, task='regression', pred_config=config, 
+                                label_csv='energy_training.txt', feature_cols=feature_cols)
+
+    # ========== CONTINUOUS TRAIN AND PREDICTION OVER REAL SAMPLES =============
+    # TRAIN ON TASK A
+    # train_run() function will automatically load and save memory including labels and samples.
+    train_run(db_path, X, y, task='classification', pred_config=None, 
+              label_csv='ManualsTraining.txt', feature_cols=None)
+    
+    # TRAIN ON TASK B 
+    train_run(db_path, s_X, s_y, task='regression', pred_config=config, 
+               label_csv='energy_training.txt', feature_cols=feature_cols)
+    
+    # PREDICT ON TASK C (TASK C must have correlation with task A or B)
+    # with_training=False will not trigger any Training.
+    # eventually since you have already Trained the model on task A and B, its memory name, X and Y samples, label_map, feature_cols and config is saved to database, so prediction is now automatic, allowing users to continuously predict over the previously trained samples.
+    results, chosen_label, confidence = one_run(db_path, t_X, t_y, with_training=False) 
+
+    ```   
   - Note:
     - Classification Task workflow script setup can be downloaded here: [classification_usage_script](scripts/classification_usage_scripts.py)
     - Regression task workflow example can be downloaded here: [regression_usage_script](scripts/regression_usage_scripts.py)
+    - Continual learning pipeline_setup() script: [pipeline_setup](scripts/pipeline_setup.py)
+    - Continual learning example script: [example_script](scripts/example_script.py)
 
    
 4. B. Using Standalone IntegratedPipeline Transformer:
