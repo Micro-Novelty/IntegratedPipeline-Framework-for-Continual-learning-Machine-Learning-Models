@@ -10,7 +10,7 @@ ________________________________________________________________________________
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.10|3.11|3.12|3.13](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows%20%7C%20ARM64-lightgrey)](#)
-[![CI](https://img.shields.io/github/actions/workflow/status/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/ci.yml?branch=main)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/cibuildwheel.yml?branch=main)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/actions)
 [![GitHub stars](https://img.shields.io/github/stars/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models?style=social)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/stargazers)
 [![Last commit](https://img.shields.io/github/last-commit/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/commits)
 _________________________________________________________________________________________________
