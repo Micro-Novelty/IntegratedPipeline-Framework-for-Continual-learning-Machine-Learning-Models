@@ -228,14 +228,14 @@ mode = 'train_run'
 
 if mode == 'one_run':
     results, chosen_label, confidence = one_run(f_db_path, X, y, task='classification', pred_config=None, 
-                                            label_csv='ManualsTraining.txt', feature_cols=None)
+                                            label_csv='example_training_sample/ManualsTraining.txt', feature_cols=None)
     results, chosen_label, confidence = one_run(f_db_path, s_X, s_y, task='regression', pred_config=config, 
-                                label_csv='energy_training.txt', feature_cols=feature_cols)
+                                label_csv='example_training_sample/energy_training.txt', feature_cols=feature_cols)
 else:
     train_run(f_db_path, X, y, task='classification', pred_config=None, 
-                                            label_csv='ManualsTraining.txt', feature_cols=None)
+                                            label_csv='example_training_sample/ManualsTraining.txt', feature_cols=None)
     train_run(f_db_path, s_X, s_y, task='regression', pred_config=config, 
-                                label_csv='energy_training.txt', feature_cols=feature_cols)
+                                label_csv='example_training_sample/energy_training.txt', feature_cols=feature_cols)
 
     results, chosen_label, confidence = one_run(f_db_path, s_X, s_y, with_training=False)
 
@@ -246,7 +246,7 @@ memory_name = 'agent_1_memory'
 
 
 # Load dataset (Change to Your own dataset here, just make sure to change the column names and features accordingly)
-df = pd.read_csv("regression_sample/PJME_hourly.csv", parse_dates=["Datetime"], index_col="Datetime")
+df = pd.read_csv("PJME_hourly.csv", parse_dates=["Datetime"], index_col="Datetime")
 df = df.sort_index()
 daily = df.resample("D").sum()
 
@@ -340,7 +340,7 @@ main_model.use_transformer = True
 # window_title: the column name in your .txt file that contains the window title, 
 # label: the column name in your .txt file that contains the label.
 titles, _, label_map = main_prediction.load_labels_from_csv(
-   'ManualsTraining.txt',  # the name of your .txt file with CSV format.
+   'example_training_sample/ManualsTraining.txt',  # the name of your .txt file with CSV format.
    'window_title', 'label')
 
 # NOTE:
