@@ -1,20 +1,20 @@
-
-# step 3 (P2P)
-
 # NOTE:
 # All three Models (MLP, Transformer and LSTM) must be Initialized and Trained first before initiating P2P.
+# Consider using the previous pipeline_setup.py before Prediction for stateful continual learning behavior
 from AbstractIntegratedModule import CohesiveAgentDeployment
 from AbstractIntegratedModule import PipelinePredictionManager
+from pipeline_setup import train_run
 import asyncio
 import traceback
 
+# Create a new instance if you decided to not do any Continual learning behavior.
 prediction_manager = PipelinePredictionManager(main_model, label_csv=<your_training_labels.txt>, target_title=<target_title>, label=<target_label>)
 
 secondary_model = IntegratedPipeline(memory_name=memory_name, 
                 use_async=True, agent_port=8080, 
                 ssl_cert_file=cert_file, ssl_key_file=key_file) # provide cert_file path or key_file path (optional)
 # secondary model of integrated pipeline is critical for ARM64 environment to prevent socket conflict during P2P with the first Integrated pipeline instance.
-# make sure that the agent_port in secondary_model must be different from agent_port in first IntegratedPipeline instance you initialized.
+# make sure that the agent_port in secondary_model must be different from agent_port in first IntegratedPipeline instance you initialized to prevent address already in use error [Errno 48].
 
 print("=== SECURE PEER-TO-PEER CLUSTER ===")
 
@@ -25,7 +25,7 @@ print("=== SECURE PEER-TO-PEER CLUSTER ===")
 
 # example task (change to regression if yours are regression task)
 # function must be async to use the await syntax (Non-blocking)
-async def p2p_tasks(task='classification')
+async def p2p_tasks(X=None, y=None, task='classification', prediction_manager=None)
    main_model.distribution.enable_ssl = False # set to false if you dont have SSL key and CERT, this code would instruct AgentDistributedInference that you don't have SSL, and provide you a regular unsecured socket (Not necessary for production)
    secondary_model.distribution.enable_ssl = False
 
@@ -162,4 +162,9 @@ async def p2p_tasks(task='classification')
 # Initiate tasks:
 if __name__ == '__main__':
    # match to your own task (classification or regression based on your samples)
-   p2p_tasks(task='classification')
+   # if you have X samples, you can use the previous prediction_manager loaded by train_run() for stateful continual learning behavior
+   X, y = '<your x and y samples>'
+   prediction_manager = train_run(db_path, X, y, task='classification', pred_config=None, 
+              label_csv='ManualsTraining.txt', feature_cols=None)
+
+   p2p_tasks(X, y, task='classification', prediction_manager)
