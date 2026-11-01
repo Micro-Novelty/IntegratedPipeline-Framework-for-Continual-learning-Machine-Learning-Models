@@ -167,4 +167,4 @@ if __name__ == '__main__':
    prediction_manager = train_run(db_path, X, y, task='classification', pred_config=None, 
               label_csv='ManualsTraining.txt', feature_cols=None)
 
-   p2p_tasks(X, y, task='classification', prediction_manager)
+   p2p_tasks(X, y, task='classification', prediction_manager=prediction_manager)
