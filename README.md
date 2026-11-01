@@ -6,7 +6,7 @@ ________________________________________________________________________________
 <img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
 
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/abstractintegratedmodule?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/abstractintegratedmodule)
-[![PyPI version](https://img.shields.io/PyPi-blue?logo=pypi/v/AbstractIntegratedModule.svg)](https://pypi.org/project/AbstractIntegratedModule/)
+[![PyPI version](https://img.shields.io/PyPI/v/AbstractIntegratedModule.svg)](https://pypi.org/project/AbstractIntegratedModule/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.10|3.11|3.12|3.13](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows%20%7C%20ARM64-lightgrey)](#)
@@ -78,7 +78,7 @@ ________________________________________________________________________________
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
-- Development Stage on PyPi: [![Newer PyPI version](https://img.shields.io/badge/PyPI-v1.3.0-blue?logo=pypi)](https://pypi.org/project/AbstractIntegratedModule/) Official Release.
+- Development Stage on PyPi: [![PyPI version](https://img.shields.io/PyPI/v/AbstractIntegratedModule.svg)](https://pypi.org/project/AbstractIntegratedModule/) Official Release.
 - Author and Maintainer: Micro-Novelty and EpsitronNet-bot.
 - library Source-Code is Open-sourced with MIT License.
 - Purpose: Specifically Designed for providing Non-LLM AI Agent Framework for edge Devices, Optimized for ARM64 architecture.
