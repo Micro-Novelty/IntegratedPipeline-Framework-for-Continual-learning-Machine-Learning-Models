@@ -134,3 +134,42 @@ jobs:
           path: |
             **/*.pyd
           retention-days: 30
+
+  # Runs only after ALL 9 matrix builds succeed, and only on pushes to main
+  # (never on pull requests).
+  release:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # required to create releases and tags
+
+    steps:
+      - name: Download all compiled artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: compiled-extensions-*
+          path: dist
+
+      - name: Zip each platform build
+        run: |
+          cd dist
+          for dir in compiled-extensions-*/; do
+            name="${dir%/}"
+            (cd "$name" && zip -r "../${name}.zip" .)
+          done
+          ls -lh *.zip
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="build-${{ github.run_number }}"
+          gh release create "$TAG" dist/*.zip \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.sha }}" \
+            --title "Build #${{ github.run_number }} (${GITHUB_SHA::7})" \
+            --notes "Automated cross-platform build of commit ${{ github.sha }}.
+
+          Contains compiled extensions for Linux x86_64, macOS arm64 and Windows x86_64 on Python 3.10, 3.11 and 3.12."
