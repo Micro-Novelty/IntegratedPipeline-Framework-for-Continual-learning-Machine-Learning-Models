@@ -8,6 +8,8 @@ from pipeline_setup import train_run
 # All the three Models (MLP, Transformer, LSTM MUST be Initialized, Trained before initiating Asynchronous Prediction, the Initialization workflow can be seen above.)
 # Replace the regular advanced_prediction_method() with this asynchronous setups:
 
+X, y = '<replace with actual samples>'
+
 # Use the previous pipeline_setup.py for Training only.
 # Asynchronous prediction will automatically load the Trained weights
 # Use the main_prediction that was loaded by train_run() for flexibility on stateful continual learning behavior.
