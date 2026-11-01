@@ -17,6 +17,18 @@ A. LSTMs (Long Short-Term Memory) and Transformers are foundational deep learnin
 >  - Use Cases: Ideal for tasks with strictly continuous chronological data like time-series forecasting (e.g., stock market or weather prediction) or speech recognition.
 >  - Limitations: Because they process data in a strict chain, it is difficult to parallelize training, making them slow and prone to forgetting long contexts.
 
+### Introduction for demo
+- Video Documentation: [![Introduction and demo:](https://youtube.com)](https://youtu.be/RmWvwDHU_QY?si=Lvl8mt8c_BnFypS_)
+- Quick demo start: [main.py](main.py)
+  - purpose: let you demonstrate the advanced prediction method and asynchronous prediction directly.
+- Quick test of P2P:
+    - [multi_agent_client.py](P2P_Setups/multi_agent_client.py)
+    - [multi_agent_server.py](P2P_Setups/multi_agent_server.py)
+    - [P2PDirectTest.py](P2P_Setups/P2PDirectTest.py)
+    > - Purpose: let you demonstrate simple P2P using AbstractIntegratedModule quickly, there may be edge case bugs in this P2P setup so feel free to share it in issues.
+
+
+
 B. Transformer:
 Transformers are the modern standard for AI, introduced in 2017 with the famous "Attention Is All You Need" paper.
 - How it works: Instead of reading sequences linearly, Transformers read the entire sequence all at once. They utilize a self-attention mechanism, which calculates how much "attention" or weight every part of the sequence should give to every other part, understanding the global context instantly.
