@@ -18,7 +18,7 @@ ________________________________________________________________________________
 ### [Intro]:
 Machine Learning Framework that **Creates a Model that can Continuously learn, backed by *augmented memory* from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the *previous saved, Trained weights* inside the SQlite database from different Tasks**. users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, Train the current Model with another task while Preserving the previous Trained weights as memory inside the SQlite database.
 > [!IMPORTANT]
-> This framework does not provides a standalone new novel Deep-learning algorithms, its a python Framework that utilized SQlite database as a way to save Memory and provide a way to build a stateful Continual learning Memory augmented Machine learning model.
+> This framework does not provides a standalone new novel Deep-learning algorithms, it is a python Framework that utilized SQlite database as a way to save Memory and provide a way to build a stateful Continual learning Memory augmented Machine learning model.
 > *Consider check:* [MANN introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
 
 ![Issues](https://img.shields.io/github/issues/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models)
