@@ -898,10 +898,10 @@ task='regression', training=True,
 train_epochs=100, batch_size=2,
 train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
 
-transformer_probs, attn_weights, prediction = sec_main_prediction.knn_forward_inference(X, y,
+transformer_probs, attn_weights, prediction = sec_main_prediction.knn_forward_inference(X, y,                                                                                       
 label_map=label_map, # Label map can be inserted in here, or you Can set this to None,
                      # if set to None this function will only returns Transformer prob and attn_weights.,
-training=False) # for returning kNN Transformer probabilities and attention weights only.
+task='regression', training=False) # for returning kNN Transformer probabilities and attention weights only.
 # Note: - train_mode can be set to 'dynamic_backward' if you have very large dataset, this makes Transformer Q, K, V be much more dynamic and grants flexible learning behavior for large dataset.
      # - train_mode can be set to 'fixed_backward' if you have small dataset, this makes Transformer Q, K, V to stay frozen so the FFN flow will handle the Training, making Learning in very little samples possible and deterministic in behavior.
      # - y sample must be one-hot encoded manually before its passed to the function, since the function above will not automatically one-hot encode the y-sample.
