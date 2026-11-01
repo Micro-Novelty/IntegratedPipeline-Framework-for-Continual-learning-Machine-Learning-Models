@@ -1108,6 +1108,9 @@ ________________________________________________________________________________
     
         one_train_round(memory_name, main_model, db_path, X, y, with_training,
             task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
+    
+        # return main_prediction for later usage (like P2P or asynchronous prediction)
+        return main_prediction
         
     # one full train -> predict.
     def one_run(db_path, X, y, task=None, pred_config=None, label_csv=None, feature_cols=None, 
@@ -1322,11 +1325,17 @@ ________________________________________________________________________________
 from AbstractIntegratedModule import PipelineAsyncManager
 from AbstractIntegratedModule import SecurityConfig
 from AbstractIntegratedModule import SecurityLevel
+from pipeline_setup import train_run
 
 # NOTE:
 # All the three Models (MLP, Transformer, LSTM MUST be Initialized, Trained before initiating Asynchronous Prediction, the Initialization workflow can be seen above.)
 # Replace the regular advanced_prediction_method() with this asynchronous setups:
 
+# Use the previous pipeline_setup.py for Training only.
+# Asynchronous prediction will automatically load the Trained weights
+# Use the main_prediction that was loaded by train_run() for flexibility on stateful continual learning behavior.
+main_prediction = train_run(db_path, X, y, task='classification', # example classification task
+ pred_config=None, label_csv='ManualsTraining.txt', feature_cols=None)
 
 print(" = TESTING ASYNCHRONOUS PREDICTION MANAGER = ")
 # Set discovery secret (in production, use environment variable)
@@ -1412,16 +1421,16 @@ print('[==] Initiating advanced batch prediction')
    - To Make the Agent cooperate with other peers, consider using this setup:
    - [=] for ensemble prediction from multiple peers, exchanging predicted label with each other, consider using this setup:
 ```python
-
-# step 3
-
 # NOTE:
 # All three Models (MLP, Transformer and LSTM) must be Initialized and Trained first before initiating P2P.
+# Consider using the previous pipeline_setup.py before Prediction for stateful continual learning behavior
 from AbstractIntegratedModule import CohesiveAgentDeployment
 from AbstractIntegratedModule import PipelinePredictionManager
+from pipeline_setup import train_run
 import asyncio
 import traceback
 
+# Create a new instance if you decided to not do any Continual learning behavior.
 prediction_manager = PipelinePredictionManager(main_model, label_csv=<your_training_labels.txt>, target_title=<target_title>, label=<target_label>)
 
 secondary_model = IntegratedPipeline(memory_name=memory_name, 
@@ -1439,7 +1448,7 @@ print("=== SECURE PEER-TO-PEER CLUSTER ===")
 
 # example task (change to regression if yours are regression task)
 # function must be async to use the await syntax (Non-blocking)
-async def p2p_tasks(task='classification')
+async def p2p_tasks(X=None, y=None, task='classification', prediction_manager=None)
    main_model.distribution.enable_ssl = False # set to false if you dont have SSL key and CERT, this code would instruct AgentDistributedInference that you don't have SSL, and provide you a regular unsecured socket (Not necessary for production)
    secondary_model.distribution.enable_ssl = False
 
@@ -1576,7 +1585,11 @@ async def p2p_tasks(task='classification')
 # Initiate tasks:
 if __name__ == '__main__':
    # match to your own task (classification or regression based on your samples)
-   p2p_tasks(task='classification')
+   # if you have X samples, you can use the previous prediction_manager loaded by train_run() for stateful continual learning behavior
+   prediction_manager = train_run(db_path, X, y, task='classification', pred_config=None, 
+              label_csv='ManualsTraining.txt', feature_cols=None)
+
+   p2p_tasks(task='classification', prediction_manager)
 
 ```
 [NOTE] Important Note: 
