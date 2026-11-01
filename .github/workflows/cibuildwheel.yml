@@ -249,8 +249,8 @@ jobs:
       - name: Copy README for ${{ matrix.aim }} into wheelhouse
         run: |
           mkdir -p wheelhouse/docs
-          if [ -f "readme-docs/README-${{ matrix.aim }}.md" ]; then
-            cp "readme-docs/README-${{ matrix.aim }}.md" "wheelhouse/docs/README-${{ matrix.aim }}.md"
+          if [ -f "README.md" ]; then
+            cp "README.md" "wheelhouse/docs/README.md"
           fi
 
       - name: Upload wheels (${{ matrix.aim }})
@@ -356,8 +356,8 @@ jobs:
       - name: Copy README for ${{ matrix.aim }} into wheelhouse
         run: |
           mkdir -p wheelhouse/docs
-          if [ -f "readme-docs/README-${{ matrix.aim }}.md" ]; then
-            cp "readme-docs/README-${{ matrix.aim }}.md" "wheelhouse/docs/README-${{ matrix.aim }}.md"
+          if [ -f "README.md" ]; then
+            cp "README.md" "wheelhouse/docs/README.md"
           fi
 
       - name: Upload wheels (${{ matrix.aim }})
@@ -455,8 +455,8 @@ jobs:
       - name: Copy README for regular build into wheelhouse
         run: |
           mkdir -p wheelhouse/docs
-          if [ -f "readme-docs/README.md" ]; then
-            cp "readme-docs/README.md" "wheelhouse/docs/README.md"
+          if [ -f "README.md" ]; then
+            cp "README.md" "wheelhouse/docs/README.md"
           fi
 
       - name: Upload wheels (regular aarch64)
@@ -520,8 +520,8 @@ jobs:
       - name: Copy README for AIM-4 into wheelhouse
         run: |
           mkdir -p wheelhouse/docs
-          if [ -f "readme-docs/README-AIM-4.md" ]; then
-            cp readme-docs/README-AIM-4.md wheelhouse/docs/README-AIM-4.md
+          if [ -f "README.md" ]; then
+            cp README.md wheelhouse/docs/README.md
           fi
 
       - name: Upload wheels
@@ -587,8 +587,8 @@ jobs:
         shell: bash
         run: |
           mkdir -p wheelhouse/docs
-          if [ -f "readme-docs/README.md" ]; then
-            cp readme-docs/README.md wheelhouse/docs/README.md
+          if [ -f "README.md" ]; then
+            cp README.md wheelhouse/docs/README.md
           fi
 
       - name: Upload wheels (Windows)
