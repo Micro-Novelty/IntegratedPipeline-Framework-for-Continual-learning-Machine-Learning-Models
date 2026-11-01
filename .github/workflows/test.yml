@@ -1,4 +1,4 @@
-name: Tests
+name: Tests Compatibility
 
 on:
   push:
@@ -33,42 +33,44 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       - name: Install system dependencies (Ubuntu)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential python3-dev
-      
-      - name: Install system dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew install build-essential
-      
+
+      # macOS: no system dependency step needed.
+      # The runner already ships with Xcode Command Line Tools (clang),
+      # which is what Cython/setuptools use to compile extensions.
+      # (The old `brew install build-essential` failed because that is an
+      # apt package and does not exist in Homebrew.)
+
       - name: Upgrade pip
         run: python -m pip install --upgrade pip wheel setuptools
-      
+
       - name: Install dependencies
         run: |
           pip install Cython numpy scikit-learn scipy pandas joblib cryptography aiohttp psutil
           pip install pytest pytest-cov pytest-xdist
-      
+
       - name: Compile Cython extensions
         run: python scripts/linux_setup.py build_ext --inplace
-      
+
       - name: Run tests with pytest
         run: pytest tests/ -v --cov=AbstractIntegratedModule --cov=AbstractOptimizedModules --cov-report=xml --cov-report=html -n auto
         continue-on-error: true
-      
+
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
           flags: unittests
           name: codecov-umbrella
+          fail_ci_if_error: false
