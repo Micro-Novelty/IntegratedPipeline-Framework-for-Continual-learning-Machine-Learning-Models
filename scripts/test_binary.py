@@ -874,7 +874,7 @@ print(f'[=] Results: {async_predict}')
 
 # NOTE: This function below MUST require test_titles or titles, label_map and example rules:
 print('[==] Initiating advanced batch prediction')
-predicted_output = async_manager.advanced_batch_prediction(test_titles, label_map, example_rules, 
+predicted_output = async_manager.advanced_batch_prediction(test_titles, label_map, rules, 
 X=None, y=None, # provide your initialized X and y samples (Also Optional, can be set to None)
 secret_key=secret_key, client_ip=None) # you can add client_ip to provide a robust authentication paired with secret_key
 # for better and faster advanced prediction when using titles and rules, consider using advanced batch prediction like in the above example
