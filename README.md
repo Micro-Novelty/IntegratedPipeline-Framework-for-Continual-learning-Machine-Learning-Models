@@ -37,7 +37,7 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
       - approach -> ```[after training on task A and B -> model can now do prediction on task C, D, E, F, ... continuously as long as these samples have the same shapes as task A and B]```
 
 _________________________________________________________________________________
-<img width="800" height="400" alt="Continual Learning Pipeline Infographic" src="https://github.com/user-attachments/assets/50e9284b-7aa5-4ddd-aadf-de9d461421fb" />
+<img width="800" height="400" alt="Continual Learning Memory Map (1)" src="https://github.com/user-attachments/assets/c0a97e77-5f2d-4dc6-bbee-a8b0a87abaf3" />
 
 __________________________________________________________________________________
 
