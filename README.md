@@ -275,14 +275,12 @@ ________________________________________________________________________________
 - X and y samples or titles and rules samples for Training and prediction (see Library in depth usage instructions below).
 
 > - [OPTIONAL] For using AbstractIntegratedModule Binaries for users who doesnt have pip Installed:
->  - NOTE:
->  - The binaries inside the releases section might be Outdated in terms of version, so we advised to use the pip installation method.
 >  - (Optional) Download AbstractIntegratedModule Compiled Binary file extension manually in the repository for Users who can't use pip install (Choose one minimal, specified for your needs):
 >    - AbstractOptimizedModules for Optimizing Transformer using Cython (Optional)
 >    - AbstractIntegratedModule (Main library)
 >     - Compiled Binaries can be downloaded from release section in the Main repo or You can use this link:
 >       - Release section: https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework/releases
->       - Supported OS: Mac-Os, linux x86-64 and Windows.   
+>       - Supported OS: Mac-Os, linux x86-64 and Windows, bundled in zip folders.
 >   - (Optional) Install AbstractIntegratedModule Compiled binaries from release section:
 >   - (Optional) Libraries needed if pip is not installed (For using Compiled binary, not python wheels):
 >     - Pandas
