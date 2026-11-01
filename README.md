@@ -7,6 +7,7 @@ ________________________________________________________________________________
 
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/abstractintegratedmodule?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/abstractintegratedmodule)
 [![PyPI version](https://img.shields.io/pypi/v/AbstractIntegratedModule.svg)](https://pypi.org/project/AbstractIntegratedModule/)
+[![Newer PyPI version](https://img.shields.io/badge/PyPI-v1.3.0-blue?logo=pypi)](https://pypi.org/project/AbstractIntegratedModule/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.10|3.11|3.12|3.13](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows%20%7C%20ARM64-lightgrey)](#)
