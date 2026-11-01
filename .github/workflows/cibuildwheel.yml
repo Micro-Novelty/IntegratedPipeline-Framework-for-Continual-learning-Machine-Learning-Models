@@ -170,9 +170,9 @@ jobs:
       matrix:
         include:
           - aim: AIM-2
-            toml: build-configs/pyproject-AIM-2.toml
+            toml: build-configs/pyproject.toml
           - aim: AIM-3
-            toml: build-configs/pyproject-AIM-3.toml
+            toml: build-configs/pyproject.toml
     env:
       CIBW_PLATFORM: linux
       CIBW_ARCHS: x86_64
@@ -277,9 +277,9 @@ jobs:
       matrix:
         include:
           - aim: AIM-1
-            toml: build-configs/pyproject-AIM-1.toml
+            toml: build-configs/pyproject.toml
           - aim: AIM-2
-            toml: build-configs/pyproject-AIM-2.toml
+            toml: build-configs/pyproject.toml
     env:
       CIBW_PLATFORM: linux
       CIBW_ARCHS: aarch64
