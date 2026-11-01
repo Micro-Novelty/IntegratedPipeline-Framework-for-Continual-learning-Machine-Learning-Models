@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import asyncio
 import traceback
+from pathlib import Path
 
 # pipeline_setup.py
 from AbstractIntegratedModule import set_memory
@@ -172,9 +173,13 @@ def one_run(db_path, X, y, task=None, pred_config=None, label_csv=None, feature_
     results, chosen_label, confidence = predict(main_prediction, X, y, label_map=label_map)
 
     return results, chosen_label, confidence
-    
+
+
+script_dir = Path(__file__).parent
+file_path = script_dir / "regression_sample" / "PJME_hourly.csv"
+
 # Load dataset (Change to Your own dataset here, just make sure to change the column names and features accordingly)
-df = pd.read_csv("regression_sample/PJME_hourly.csv", parse_dates=["Datetime"], index_col="Datetime")
+df = pd.read_csv(file_path, parse_dates=["Datetime"], index_col="Datetime")
 df = df.sort_index()
 daily = df.resample("D").sum()
 
