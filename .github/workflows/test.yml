@@ -6,14 +6,14 @@ on:
     paths:
       - 'src/*.pyx'
       - 'requirements.txt'
-      - 'linux_setup.py'
+      - 'scripts/linux_setup.py'
       - '.github/workflows/test.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'src/*.pyx'
       - 'requirements.txt'
-      - 'linux_setup.py'
+      - 'scripts/linux_setup.py'
       - '.github/workflows/test.yml'
 
 jobs:
@@ -59,7 +59,7 @@ jobs:
           pip install pytest pytest-cov pytest-xdist
       
       - name: Compile Cython extensions
-        run: python linux_setup.py build_ext --inplace
+        run: python scripts/linux_setup.py build_ext --inplace
       
       - name: Run tests with pytest
         run: pytest tests/ -v --cov=AbstractIntegratedModule --cov=AbstractOptimizedModules --cov-report=xml --cov-report=html -n auto
