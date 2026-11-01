@@ -35,7 +35,12 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
       - One IntegratedPipeline instance with 2 memory name can be used for Predicting both classification or regression tasks *when* both tasks have the same lengths and shapes.
       - One IntegratedPipeline instance is enough to Train both classification task, and continue with regression task immediately. its Weights will be saved to database everytime each Training is done.
       - approach -> ```[after training on task A and B -> model can now do prediction on task C, D, E, F, ... continuously as long as these samples have the same shapes as task A and B]```
-    
+
+_________________________________________________________________________________
+<img width="800" height="400" alt="Continual Learning Pipeline Infographic" src="https://github.com/user-attachments/assets/50e9284b-7aa5-4ddd-aadf-de9d461421fb" />
+
+__________________________________________________________________________________
+
 - The Framework's Models are handled by Numpy library while most >O(n2)+ heavy algorithms are accelerated using Cython, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 
 > Consider check our other project:
