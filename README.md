@@ -116,7 +116,7 @@ ________________________________________________________________________________
       ```
     - Note: This Optimization would help AbstractIntegratedModule with faster JSON parsing and much more flexible database handling handled efficiently using Rust programming language.
    
-> - Proven Capabilities [Frameworks entire Journey]:
+> - Proven Capabilities [Frameworks feature]:
 >   - The library has been thoroughly first successfully tested in Multiple Environments from Windows to ARM64 QEMU Based Environment. The library is now Robust for Small  usages for Toy projects.
 >   - Proven Works on ARM64 Environment using Github runners, Training and Prediction works efficient on Docker ARM64 environment with QEMU, good parallelizing behavior is  guaranteed.
 >   - P2P Works efficiently in ARM64 Docker + QEMU, No conflicting socket and all prediction works efficiently.
@@ -126,6 +126,8 @@ ________________________________________________________________________________
 >   - Transformer Optimized using Cython, reduced Memory overhead and Reduce CPU Usage, With Reduced Training Time is guaranteed.
 >   - Reworked Prediction and Training method for User convenience in controlling the Model's capabilities and reducing Blackbox-ness.
 >   - Continual-learning with memory persistence now has its own Automated workflow example that handles save and load memory properly while also handles different task categories (classification and regression type).
+>   - Transformer is Optimized for small samples using Novel alpha-based computing:
+      - > *alpha-based computing for Transformer documentation:* [introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
 
 -----
   - Recent Changelogs [Will be reset each new +0.0.5 versions]:
@@ -138,6 +140,7 @@ ________________________________________________________________________________
        - Reworks Asynchronous function to predict chunked X samples instead of all X samples to prevent Memory overflow for edge devices.
        - Reworks Numerous important Functions inside IntegratedPipeline that handles number of classes, dataset creation from test titles.
        - Saving and Loading Weights as memory to SQLite database is now separated, meaning you can handle Continuous Training or stop Training when memory is present and not present.
+           
      - v1.2.6:
         - Separate SNN initialization from train SNN function
         - added Regression based training and prediction for SNN
@@ -166,8 +169,6 @@ ________________________________________________________________________________
 - [Go to Quickstart with Docker](#docker-container-application)
 - [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
 - [Go to Troubleshooting](#troubleshooting)
-- [Go to Detailed process of Alpha-computing](#detailed-process-of-alpha-computing)
-- [Go to Main Components](#main-components)
 - [Go to Source code](#source-code-of-abstractintegratedmodule)
 
 - Consider checking:
@@ -187,6 +188,8 @@ ________________________________________________________________________________
 > Introduction to MANN Models, Transformer and LSTM,
 > Proofs of library performance,
 > Video documentation and P2P demo,
+> Alpha based documentation for Transformer,
+> Main Architectures for the entire library,
 > Branch: [introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
 
 ## Why IntegratedPipeline?
@@ -1822,146 +1825,6 @@ Solution:
         ```
         async_manager.predict(...., ...., api_key=api_key, ...)
         ```
-
-_______________________________________________________________________________________________
-## Detailed process of Alpha-computing
-
-<img width="720" height="338" alt="WhatsApp Image 2026-05-04 at 17 43 35" src="https://github.com/user-attachments/assets/3d149dce-cf3b-44c9-80b0-fa68290a2019" />
-
-<img width="720" height="388" alt="WhatsApp Image 2026-05-04 at 17 44 04" src="https://github.com/user-attachments/assets/b1efedf6-5aa1-431e-89da-5f422549b453" />
-
-_________________________________________________________________________________________________
-🧠 What Alpha-Based Computation Actually Does
-
-At its core, alpha (α) is a control parameter that blends two different information paths inside a given transformer:
-A_final = α · A_fixed + (1 − α) · A_learned.
-[>] Where: 
-- A_fixed → stable, non-trainable (or minimally changing) attention
-- A_learned → dynamic, trainable attention (Q, K, V)
-- α ∈ [0, 1] → controls how much each path contributes
-  
-[>] Forward Pass -> Controlling Information Flow:
-> During the forward pass, alpha determines what representation the model uses.
-> If α is high (e.g., 0.8–1.0): Model relies mostly on stable attention
-> → outputs are consistent → less noise → safer early training, If α is low (e.g., 0.0–0.3), Model relies mostly on learned attention, → more expressive → but unstable early on.
-> So in forward propagation, alpha is essentially, “How much do I trust learned attention vs safe attention?”
-
-[>] Backward Pass -> Controlling Gradient Flow:
-When gradients flow backward:
-```
-- dA_final → splits into two paths
-    - Mathematically:
-        - dA_fixed   = α · dA_final
-        - dA_learned = (1 − α) · dA_final
-```
-
-[>] Simple Explanation:
-1. If α (alpha) is high: → most gradient goes to fixed path → learned attention gets very little update → training is stable but slow
-2. If α is low: → most gradient goes to learned attention → fast learning → but noisy / unstable
-   
-[>] Why This Matters for Training
-1. Without alpha: attention starts random → gradients noisy → model stuck (~10% accuracy)
-2. With alpha: early stage -> rely on stable structure → meaningful gradients
-
-
-_____________________________________________________________________________________________________________
-## Main Components
-[>] 1. - Consider checking and run: [IntegratedPipeline_Flow.html](IntegratedPipeline_Flow.html) regarding each function of the whole components and deep-dive mechanism.
-    2. - consider checking [ARCHITECTURE.md](ARCHITECTURE.md) for more explanation about the main components.
-       
-[>] With 23 total architectures working together as a standalone library that is efficient and robust, Main components include:
-    
-1. GeometricWeightShaping
-Purpose: Analyzes the geometric structure of data (anisotropy, spectral properties, complexity) and generates optimal weight matrices based on that geometry. Essentially teaches the model how to "understand" the shape of data before processing it, Highly robust to noise, making it an excellent fit for messy environment.
----
-2. Activation
-Purpose: Provides standard neural network activation functions (ReLU, sigmoid, softmax) and their derivatives for backpropagation for MLP Class.
----
-3. Loss
-Purpose: Implements categorical crossentropy loss and its gradient for training classification models for both MLP and The Transformer
----
-4. Transformer 
-Purpose: A complete transformer implementation with multi-head attention, positional embeddings, feed-forward networks, layer normalization, and custom backpropagation. Includes both fixed (stable) and dynamic (adaptive) training modes necessary for Scarce data environment using algorithm such as Alpha based computing directly during forward pass.
----
-5. Dense and QATDense:
-Purpose: A regular dense layer and a Dense layer that specifically handles Quantization-Aware method for Training that is flexible.
----
-6. SoftmaxOutput  
-Purpose: A simple wrapper around softmax activation that stores the output and passes gradients through unchanged (since softmax + crossentropy gradient is handled elsewhere).
----
-7. MLP 
-Purpose: A multi-layer perceptron that can switch between standard training and "focused" training (using feed-forward layers only) based on data complexity. Includes prediction, scoring, and geometric measurement methods.
----
-8. WeightedEnsemblePredictor 
-Purpose: Combines Transformer and MLP predictions using dynamic weighting based on attention quality, model confidence, and agreement. Also manages memory storage, explainability, and peer agent communication.
----
-9. CrossSessionAutomation
-Purpose: Manages exporting, importing, and syncing model sessions across different devices or time periods. Allows saving entire model states to JSON and transferring them over network sockets.
----
-10. ExplainabilityModule 
-Purpose: Generates human-readable explanations for predictions, learns from user feedback, maintains decision history, and batch-trains on corrections. The transparency layer for the AI agent.
----
-11. ModelStorage 
-Purpose: SQLite-based persistence for models, attention weights, node memories, and agent data. Handles serialization/deserialization of numpy arrays and model dictionaries.
----
-12. AgentDistributedInference 
-Purpose: The distributed agent system - can act as a server or client, handles SSL/TLS security, rate limiting, authentication, peer-to-peer prediction requests, memory synchronization, ensemble voting, and trust management between agents.
----
-14. QueryNode  
-Purpose: Manages trust relationships and identity verification between nodes. Evaluates node agreement, establishes connections, performs safety checks, and maintains the network of trusted peers.
----
-14. AutoBatcherAutomation  
-Purpose: Automatically batches incoming prediction requests to optimize throughput. Collects requests up to a maximum batch size or time window, then processes them together.
----
-15. IntegratedPipeline
-Purpose: The main orchestration class that ties everything together - handles text encoding, model initialization, training, prediction, memory management, hybrid predictions, and distributed inference coordination.
----
-16. PipelinePredictionManager
-Purpose: High-level prediction interface that loads labels from CSV, performs regular/advanced/hybrid predictions, displays results, and calculates entropy for uncertainty estimation.
----
-17. ThreadedMessageQueue
-purpose: Handles message queue in thread for asynchronous message handling. (Queue based)
----
-18. AsyncMessageQueue
-purpose: Handles incoming message from Asychronous peer request (Queue based)
----
-19. CohesiveAgentDeployment
-purpose: Handles both synchronous prediction, and P2P Asynchronous prediction request, acts as a server and a listener simultaneously.
----
-20. ConsecutivePeerAgent
-purpose: handles ensemble weighting from received output from peer, managed server and acts as a listener simultaneously.
----
-21. LSTMCell
-purpose: handles LSTM Core equations In Numpy.
----
-22. LSTMNetwork
-purpose: handling LSTM Feed-forward layer, Training and Samples handling.
----
-23. LSTMEngine
-purpose: handles Proper LSTM Confidence and calibration layer.
----
-
-## Full Documentation Features
-- [Go to IntegratedPipeline-Specialized-AI-Agent-library](#IntegratedPipeline-Specialized-AI-Agent-library)
-- [Go to MANN Intro](#MANN-Intro)
-- [Go to Abstract Weight Encoder (AWE) Intro](#Abstract-Weight-Encoder-(AWE)-Intro)
-- [Go to LSTM And Transformer Into](#-lstm-and-transformer-intro)
-- [Go to Why IntegratedPipeline?](#Why-IntegratedPipeline?)
-- [Go to Requirements](#Requirements)
-- [Go to System-Specific-Notes](#System-Specific-Notes)
-- [Go to Quickstart with Docker](#Quickstart-with-Docker)
-- [Go to Performance in ARM64 Environment/Container](#Performance-in-ARM64-Environment/Container)
-- [Go to Step's for in-depth Usage](#Step's-for-in-depth-Usage)
-- [Go to Troubleshooting](#Troubleshooting)
-- [Go to Detailed process of Alpha-computing](#Detailed-process-of-Alpha-computing)
-- [Go to Main Components](#Components)
-- [Go to Source code](#Source-code-of-AbstractIntegratedModule)
-- Consider checking:
-  - [ROADMAP.md](ROADMAP.md)
-  - [Contributing.md](Contributing.md)
-  - [changelog.md](changelog.md)
-  - [requirements-For-Dev](dev_needs.txt) for contributors requirements.
-  - [architecture_diagram.js](architecture_diagram.js).
 
 ## License
 [>] LICENSE: - MIT (2026) || See [LICENSE](LICENSE) for more information.
