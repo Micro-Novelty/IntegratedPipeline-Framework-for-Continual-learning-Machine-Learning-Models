@@ -1,0 +1,173 @@
+name: Binary Test (released .zip assets)
+
+on:
+  # Runs after the build workflow finishes. Needed because releases created with
+  # the default GITHUB_TOKEN do NOT fire the `release` event.
+  workflow_run:
+    workflows: ["CI Compiler for Cross-platform"]   # must match the build workflow's name exactly
+    types: [completed]
+  # Fires for releases you publish manually (or with a personal access token).
+  release:
+    types: [published]
+  # Manual run. Leave `tag` empty to test the latest release.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to test (empty = latest release)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Work out which release to test
+  # ─────────────────────────────────────────────
+  resolve:
+    name: Resolve release tag
+    runs-on: ubuntu-latest
+    # For workflow_run: only after a successful *push* build (PR builds never create a release)
+    if: >
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - name: Determine tag
+        id: tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RUN_NUMBER: ${{ github.event.workflow_run.run_number }}
+        run: |
+          case "$EVENT" in
+            workflow_run) TAG="build-${RUN_NUMBER}" ;;   # matches the tag the build workflow creates
+            release)      TAG="$RELEASE_TAG" ;;
+            *)            TAG="$INPUT_TAG" ;;
+          esac
+
+          if [ -z "$TAG" ]; then
+            TAG=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName -q .tagName)
+          fi
+
+          echo "Testing release: $TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+  # ─────────────────────────────────────────────
+  # Download -> extract -> test each shipped binary
+  # on the same OS / Python version it was built for
+  # ─────────────────────────────────────────────
+  test-binaries:
+    name: Test ${{ matrix.suffix }}
+    needs: resolve
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: '3.10'
+            suffix: linux-x86_64-cp310
+          - os: ubuntu-latest
+            python-version: '3.11'
+            suffix: linux-x86_64-cp311
+          - os: ubuntu-latest
+            python-version: '3.12'
+            suffix: linux-x86_64-cp312
+          - os: macos-latest
+            python-version: '3.10'
+            suffix: macos-cp310
+          - os: macos-latest
+            python-version: '3.11'
+            suffix: macos-cp311
+          - os: macos-latest
+            python-version: '3.12'
+            suffix: macos-cp312
+          - os: windows-latest
+            python-version: '3.10'
+            suffix: windows-x86_64-cp310
+          - os: windows-latest
+            python-version: '3.11'
+            suffix: windows-x86_64-cp311
+          - os: windows-latest
+            python-version: '3.12'
+            suffix: windows-x86_64-cp312
+
+    env:
+      PYTHONUTF8: "1"                                  # avoid Windows Unicode print errors
+      PYTHONPATH: ${{ github.workspace }}/bin          # import the extracted binaries from here
+
+    steps:
+      # Sparse checkout: only scripts/ is present, so the repo's source files
+      # can never shadow the compiled binary. Add more folders if
+      # test_binary.py needs them, e.g.  sparse-checkout: |
+      #                                    scripts
+      #                                    tests/data
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install runtime dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "numpy>=2.1.0" scikit-learn scipy pandas joblib cryptography aiohttp psutil pytest
+
+      - name: Download release asset (${{ matrix.suffix }})
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          mkdir -p dist
+          gh release download "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "compiled-extensions-${{ matrix.suffix }}.zip" \
+            --dir dist
+          ls -l dist
+
+      - name: Extract binaries
+        shell: bash
+        run: |
+          # Python's zipfile works the same on Linux, macOS and Windows (no unzip needed)
+          python -m zipfile -e "dist/compiled-extensions-${{ matrix.suffix }}.zip" extracted
+
+          # Flatten every compiled extension into ./bin (the PYTHONPATH folder)
+          mkdir -p bin
+          find extracted -type f \( -name "*.so" -o -name "*.pyd" \) -exec cp -v {} bin/ \;
+
+          if [ -z "$(ls -A bin)" ]; then
+            echo "::error::No .so/.pyd files found inside the release zip"
+            exit 1
+          fi
+          echo "=== Binaries under test ==="
+          ls -lh bin
+
+      - name: Verify the shipped binary is what gets imported
+        shell: bash
+        run: |
+          python - << 'EOF'
+          import glob, importlib, os, sys
+
+          print("Python", sys.version)
+          binaries = sorted(glob.glob("bin/*.so") + glob.glob("bin/*.pyd"))
+          for path in binaries:
+              name = os.path.basename(path).split(".")[0]
+              mod = importlib.import_module(name)
+              loaded = os.path.abspath(mod.__file__)
+              print(f"{name} -> {loaded}")
+              assert loaded.endswith((".so", ".pyd")), f"{name} was NOT loaded from a compiled binary"
+          print(f"OK: {len(binaries)} compiled module(s) import correctly")
+          EOF
+
+      - name: Run binary and library functionality tests
+        shell: bash
+        run: python scripts/test_binary.py
