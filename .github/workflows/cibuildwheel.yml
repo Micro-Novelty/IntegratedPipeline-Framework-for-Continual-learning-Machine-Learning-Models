@@ -1,4 +1,4 @@
-name: Build wheels (cibuildwheel) for Linux and macOS (x86_64 + aarch64). # build wheels
+name: Build wheels (cibuildwheel) for Linux, macOS and Windows # build wheels
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
       - '**/*.pyx'
       - '**/*.rs'
       - '**/Cargo.toml'
-      - 'build-configs/pyproject-AIM-*.toml'
+      - 'build-configs/pyproject.toml'
   workflow_dispatch:
 
 jobs:
@@ -157,22 +157,14 @@ jobs:
 
   # ─────────────────────────────────────────────
   # JOB 3a: Linux x86_64 — native runner
-  # Uses pyproject-AIM-2.toml (x86_64 manylinux)
-  # and pyproject-AIM-3.toml (x86_64 musllinux)
+  # Uses build-configs/pyproject.toml and README.md
+  # manylinux + musllinux, cp310–cp312
   # ─────────────────────────────────────────────
   build-linux-x86_64:
     name: Build Linux wheels (x86_64)
     runs-on: ubuntu-latest
     timeout-minutes: 500
     needs: [cythonize, build-rust-wheels]
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - aim: AIM-2
-            toml: build-configs/pyproject.toml
-          - aim: AIM-3
-            toml: build-configs/pyproject.toml
     env:
       CIBW_PLATFORM: linux
       CIBW_ARCHS: x86_64
@@ -227,213 +219,7 @@ jobs:
           name: rust-wheels-ubuntu-latest
           path: /tmp/rust-wheels
 
-      - name: Copy ${{ matrix.aim }} pyproject.toml to root
-        run: |
-          echo "Using ${{ matrix.toml }} as pyproject.toml"
-          cp "${{ matrix.toml }}" pyproject.toml
-
-      - name: Debug rust-wheels on runner
-        run: |
-          echo "Contents of /tmp/rust-wheels on runner:"
-          ls -la /tmp/rust-wheels || true
-          echo "This directory is bind-mounted into the build container at /host/rust-wheels"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-
-      - name: Build wheels (${{ matrix.aim }})
-        uses: pypa/cibuildwheel@v4.3.0
-        with:
-          output-dir: wheelhouse
-
-      - name: Copy README for ${{ matrix.aim }} into wheelhouse
-        run: |
-          mkdir -p wheelhouse/docs
-          if [ -f "README.md" ]; then
-            cp "README.md" "wheelhouse/docs/README.md"
-          fi
-
-      - name: Upload wheels (${{ matrix.aim }})
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-linux-x86_64-${{ matrix.aim }}
-          path: |
-            wheelhouse/*.whl
-            wheelhouse/docs/*.md
-
-  # ─────────────────────────────────────────────
-  # JOB 3b: Linux aarch64 — NATIVE ARM runner
-  # Uses pyproject-AIM-1.toml (cp310/cp311)
-  # and pyproject-AIM-2.toml (cp312 aarch64)
-  # ─────────────────────────────────────────────
-  build-linux-aarch64:
-    name: Build Linux wheels (aarch64)
-    runs-on: ubuntu-24.04-arm
-    timeout-minutes: 500
-    if: github.event_name != 'pull_request'
-    needs: [cythonize, build-rust-wheels]
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - aim: AIM-1
-            toml: build-configs/pyproject.toml
-          - aim: AIM-2
-            toml: build-configs/pyproject.toml
-    env:
-      CIBW_PLATFORM: linux
-      CIBW_ARCHS: aarch64
-      CIBW_BUILD: "cp310-* cp311-* cp312-*"
-      CIBW_BUILD_FRONTEND: "build[uv]"
-      CIBW_CONTAINER_ENGINE: "docker; create_args: -v /tmp/rust-wheels:/host/rust-wheels:ro"
-      CIBW_ENVIRONMENT: >
-        RUST_WHEEL_DIR=/host/rust-wheels
-      CIBW_BEFORE_ALL_LINUX: |
-        set -euo pipefail
-        echo "Detecting package manager..."
-        if command -v yum >/dev/null 2>&1; then
-          echo "yum detected — installing manylinux deps"
-          yum install -y epel-release || true
-          yum install -y openblas-devel blas-devel lapack-devel || true
-        elif command -v apk >/dev/null 2>&1; then
-          echo "apk detected — installing musllinux deps"
-          apk add --no-cache openblas-dev lapack-dev build-base gfortran || true
-        elif command -v apt-get >/dev/null 2>&1; then
-          echo "apt-get detected — installing ubuntu/debian deps"
-          apt-get update && apt-get install -y libopenblas-dev liblapack-dev build-essential gfortran || true
-        else
-          echo "No known package manager found; skipping system package installation"
-        fi
-        echo "Installing Python-level deps..."
-        pip install numpy scikit-learn psutil aiohttp pandas || true
-        if [ -d "${RUST_WHEEL_DIR:-/host/rust-wheels}" ] && ls "${RUST_WHEEL_DIR}"/*.whl >/dev/null 2>&1; then
-          pip install "${RUST_WHEEL_DIR}"/*.whl || true
-        else
-          echo "No rust wheels found in ${RUST_WHEEL_DIR:-/host/rust-wheels}"
-        fi
-      CIBW_BEFORE_BUILD: >
-        pip install "${RUST_WHEEL_DIR:-/host/rust-wheels}"/*.whl || true
-      CIBW_MANYLINUX_AARCH64_IMAGE: "quay.io/pypa/manylinux_2_28_aarch64"
-      CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
-        auditwheel repair -w {dest_dir} {wheel}
-      CIBW_TEST_COMMAND: >
-        python -c "import sys; print('✓ Python', sys.version, 'OK')"
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download Cython C files
-        uses: actions/download-artifact@v4
-        with:
-          name: cython-c-files
-          path: src/
-
-      - name: Download Rust wheels (Linux aarch64)
-        uses: actions/download-artifact@v4
-        with:
-          name: rust-wheels-ubuntu-24.04-arm
-          path: /tmp/rust-wheels
-
-      - name: Copy ${{ matrix.aim }} pyproject.toml to root
-        run: |
-          echo "Using ${{ matrix.toml }} as pyproject.toml"
-          cp "${{ matrix.toml }}" pyproject.toml
-
-      - name: Debug rust-wheels on runner
-        run: |
-          echo "Contents of /tmp/rust-wheels on runner:"
-          ls -la /tmp/rust-wheels || true
-          echo "This directory is bind-mounted into the build container at /host/rust-wheels"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-
-      - name: Build wheels (${{ matrix.aim }})
-        uses: pypa/cibuildwheel@v4.3.0
-        with:
-          output-dir: wheelhouse
-
-      - name: Copy README for ${{ matrix.aim }} into wheelhouse
-        run: |
-          mkdir -p wheelhouse/docs
-          if [ -f "README.md" ]; then
-            cp "README.md" "wheelhouse/docs/README.md"
-          fi
-
-      - name: Upload wheels (${{ matrix.aim }})
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-linux-aarch64-${{ matrix.aim }}
-          path: |
-            wheelhouse/*.whl
-            wheelhouse/docs/*.md
-
-  # ─────────────────────────────────────────────
-  # JOB 3c: Linux aarch64 — regular build
-  # Uses build-configs/pyproject.toml (GitHub README)
-  # manylinux + musllinux, cp310–cp312
-  # ─────────────────────────────────────────────
-  build-linux-aarch64-regular:
-    name: Build Linux wheels (aarch64, regular)
-    runs-on: ubuntu-24.04-arm
-    timeout-minutes: 500
-    if: github.event_name != 'pull_request'
-    needs: [cythonize, build-rust-wheels]
-    env:
-      CIBW_PLATFORM: linux
-      CIBW_ARCHS: aarch64
-      CIBW_BUILD: "cp310-* cp311-* cp312-*"
-      CIBW_BUILD_FRONTEND: "build[uv]"
-      CIBW_CONTAINER_ENGINE: "docker; create_args: -v /tmp/rust-wheels:/host/rust-wheels:ro"
-      CIBW_ENVIRONMENT: >
-        RUST_WHEEL_DIR=/host/rust-wheels
-      CIBW_BEFORE_ALL_LINUX: |
-        set -euo pipefail
-        echo "Detecting package manager..."
-        if command -v yum >/dev/null 2>&1; then
-          echo "yum detected — installing manylinux deps"
-          yum install -y epel-release || true
-          yum install -y openblas-devel blas-devel lapack-devel || true
-        elif command -v apk >/dev/null 2>&1; then
-          echo "apk detected — installing musllinux deps"
-          apk add --no-cache openblas-dev lapack-dev build-base gfortran || true
-        elif command -v apt-get >/dev/null 2>&1; then
-          echo "apt-get detected — installing ubuntu/debian deps"
-          apt-get update && apt-get install -y libopenblas-dev liblapack-dev build-essential gfortran || true
-        else
-          echo "No known package manager found; skipping system package installation"
-        fi
-        echo "Installing Python-level deps..."
-        pip install numpy scikit-learn psutil aiohttp pandas || true
-        if [ -d "${RUST_WHEEL_DIR:-/host/rust-wheels}" ] && ls "${RUST_WHEEL_DIR}"/*.whl >/dev/null 2>&1; then
-          pip install "${RUST_WHEEL_DIR}"/*.whl || true
-        else
-          echo "No rust wheels found in ${RUST_WHEEL_DIR:-/host/rust-wheels}"
-        fi
-      CIBW_BEFORE_BUILD: >
-        pip install "${RUST_WHEEL_DIR:-/host/rust-wheels}"/*.whl || true
-      CIBW_MANYLINUX_AARCH64_IMAGE: "quay.io/pypa/manylinux_2_28_aarch64"
-      CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
-        auditwheel repair -w {dest_dir} {wheel}
-      CIBW_TEST_COMMAND: >
-        python -c "import sys; print('✓ Python', sys.version, 'OK')"
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download Cython C files
-        uses: actions/download-artifact@v4
-        with:
-          name: cython-c-files
-          path: src/
-
-      - name: Download Rust wheels (Linux aarch64)
-        uses: actions/download-artifact@v4
-        with:
-          name: rust-wheels-ubuntu-24.04-arm
-          path: /tmp/rust-wheels
-
-      - name: Copy regular pyproject.toml to root
+      - name: Copy build-configs/pyproject.toml to root
         run: |
           echo "Using build-configs/pyproject.toml as pyproject.toml"
           cp build-configs/pyproject.toml pyproject.toml
@@ -447,29 +233,128 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
-      - name: Build wheels (regular aarch64)
+      - name: Build wheels (Linux x86_64)
         uses: pypa/cibuildwheel@v4.3.0
         with:
           output-dir: wheelhouse
 
-      - name: Copy README for regular build into wheelhouse
+      - name: Copy README.md into wheelhouse
         run: |
           mkdir -p wheelhouse/docs
           if [ -f "README.md" ]; then
             cp "README.md" "wheelhouse/docs/README.md"
           fi
 
-      - name: Upload wheels (regular aarch64)
+      - name: Upload wheels (Linux x86_64)
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-linux-aarch64-regular
+          name: wheels-linux-x86_64
+          path: |
+            wheelhouse/*.whl
+            wheelhouse/docs/*.md
+
+  # ─────────────────────────────────────────────
+  # JOB 3b: Linux aarch64 — NATIVE ARM runner
+  # Uses build-configs/pyproject.toml and README.md
+  # manylinux + musllinux, cp310–cp312
+  # ─────────────────────────────────────────────
+  build-linux-aarch64:
+    name: Build Linux wheels (aarch64)
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 500
+    if: github.event_name != 'pull_request'
+    needs: [cythonize, build-rust-wheels]
+    env:
+      CIBW_PLATFORM: linux
+      CIBW_ARCHS: aarch64
+      CIBW_BUILD: "cp310-* cp311-* cp312-*"
+      CIBW_BUILD_FRONTEND: "build[uv]"
+      CIBW_CONTAINER_ENGINE: "docker; create_args: -v /tmp/rust-wheels:/host/rust-wheels:ro"
+      CIBW_ENVIRONMENT: >
+        RUST_WHEEL_DIR=/host/rust-wheels
+      CIBW_BEFORE_ALL_LINUX: |
+        set -euo pipefail
+        echo "Detecting package manager..."
+        if command -v yum >/dev/null 2>&1; then
+          echo "yum detected — installing manylinux deps"
+          yum install -y epel-release || true
+          yum install -y openblas-devel blas-devel lapack-devel || true
+        elif command -v apk >/dev/null 2>&1; then
+          echo "apk detected — installing musllinux deps"
+          apk add --no-cache openblas-dev lapack-dev build-base gfortran || true
+        elif command -v apt-get >/dev/null 2>&1; then
+          echo "apt-get detected — installing ubuntu/debian deps"
+          apt-get update && apt-get install -y libopenblas-dev liblapack-dev build-essential gfortran || true
+        else
+          echo "No known package manager found; skipping system package installation"
+        fi
+        echo "Installing Python-level deps..."
+        pip install numpy scikit-learn psutil aiohttp pandas || true
+        if [ -d "${RUST_WHEEL_DIR:-/host/rust-wheels}" ] && ls "${RUST_WHEEL_DIR}"/*.whl >/dev/null 2>&1; then
+          pip install "${RUST_WHEEL_DIR}"/*.whl || true
+        else
+          echo "No rust wheels found in ${RUST_WHEEL_DIR:-/host/rust-wheels}"
+        fi
+      CIBW_BEFORE_BUILD: >
+        pip install "${RUST_WHEEL_DIR:-/host/rust-wheels}"/*.whl || true
+      CIBW_MANYLINUX_AARCH64_IMAGE: "quay.io/pypa/manylinux_2_28_aarch64"
+      CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
+        auditwheel repair -w {dest_dir} {wheel}
+      CIBW_TEST_COMMAND: >
+        python -c "import sys; print('✓ Python', sys.version, 'OK')"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Cython C files
+        uses: actions/download-artifact@v4
+        with:
+          name: cython-c-files
+          path: src/
+
+      - name: Download Rust wheels (Linux aarch64)
+        uses: actions/download-artifact@v4
+        with:
+          name: rust-wheels-ubuntu-24.04-arm
+          path: /tmp/rust-wheels
+
+      - name: Copy build-configs/pyproject.toml to root
+        run: |
+          echo "Using build-configs/pyproject.toml as pyproject.toml"
+          cp build-configs/pyproject.toml pyproject.toml
+
+      - name: Debug rust-wheels on runner
+        run: |
+          echo "Contents of /tmp/rust-wheels on runner:"
+          ls -la /tmp/rust-wheels || true
+          echo "This directory is bind-mounted into the build container at /host/rust-wheels"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Build wheels (Linux aarch64)
+        uses: pypa/cibuildwheel@v4.3.0
+        with:
+          output-dir: wheelhouse
+
+      - name: Copy README.md into wheelhouse
+        run: |
+          mkdir -p wheelhouse/docs
+          if [ -f "README.md" ]; then
+            cp "README.md" "wheelhouse/docs/README.md"
+          fi
+
+      - name: Upload wheels (Linux aarch64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-aarch64
           path: |
             wheelhouse/*.whl
             wheelhouse/docs/*.md
 
   # ─────────────────────────────────────────────
   # JOB 4: macOS — x86_64 + arm64
-  # Uses pyproject-AIM-4.toml
+  # Uses build-configs/pyproject.toml and README.md
   # ─────────────────────────────────────────────
   build-macos:
     name: Build macOS wheels (x86_64 + arm64)
@@ -504,27 +389,27 @@ jobs:
           name: rust-wheels-macos-latest
           path: /tmp/rust-wheels
 
-      - name: Copy AIM-4 pyproject.toml to root
+      - name: Copy build-configs/pyproject.toml to root
         run: |
-          echo "Using build-configs/pyproject.toml"
+          echo "Using build-configs/pyproject.toml as pyproject.toml"
           cp build-configs/pyproject.toml pyproject.toml
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
-      - name: Build wheels (AIM-4)
+      - name: Build wheels (macOS)
         uses: pypa/cibuildwheel@v4.3.2
         with:
           output-dir: wheelhouse
 
-      - name: Copy README for AIM-4 into wheelhouse
+      - name: Copy README.md into wheelhouse
         run: |
           mkdir -p wheelhouse/docs
           if [ -f "README.md" ]; then
             cp README.md wheelhouse/docs/README.md
           fi
 
-      - name: Upload wheels
+      - name: Upload wheels (macOS)
         uses: actions/upload-artifact@v4
         with:
           name: wheels-macos
@@ -534,8 +419,7 @@ jobs:
 
   # ─────────────────────────────────────────────
   # JOB 4b: Windows — x86_64 (AMD64)
-  # Uses the plain build-configs/pyproject.toml
-  # and readme-docs/README.md
+  # Uses build-configs/pyproject.toml and README.md
   # ─────────────────────────────────────────────
   build-windows:
     name: Build Windows wheels (AMD64)
@@ -569,7 +453,7 @@ jobs:
           name: rust-wheels-windows-latest
           path: rust-wheels
 
-      - name: Copy regular pyproject.toml to root
+      - name: Copy build-configs/pyproject.toml to root
         shell: bash
         run: |
           echo "Using build-configs/pyproject.toml as pyproject.toml"
@@ -578,12 +462,12 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
-      - name: Build wheels (Windows, regular)
+      - name: Build wheels (Windows)
         uses: pypa/cibuildwheel@v4.3.0
         with:
           output-dir: wheelhouse
 
-      - name: Copy README for regular build into wheelhouse
+      - name: Copy README.md into wheelhouse
         shell: bash
         run: |
           mkdir -p wheelhouse/docs
@@ -607,7 +491,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: always()
-    needs: [build-linux-x86_64, build-linux-aarch64, build-linux-aarch64-regular, build-macos, build-windows]
+    needs: [build-linux-x86_64, build-linux-aarch64, build-macos, build-windows]
     steps:
       - name: Download all wheel artifacts
         uses: actions/download-artifact@v4
@@ -622,15 +506,20 @@ jobs:
           ls -laR all-wheels/ || true
           echo "=== Found wheels count ==="
           find all-wheels -name '*.whl' -print | wc -l || true
-          echo "=== Found README docs ==="
-          find all-wheels -type f -name 'README-AIM-*.md' -print || true
+          echo "=== Found README ==="
+          find all-wheels -type f -name 'README.md' -print || true
 
-      - name: Gather wheels and README docs into all-wheels root
+      - name: Gather wheels and README into all-wheels root
         run: |
           set -euo pipefail
           mkdir -p all-wheels/docs
-          find all-wheels -name '*.whl' -exec cp {} all-wheels/ \; || true
-          find all-wheels -type f -name 'README-AIM-*.md' -exec cp {} all-wheels/docs/ \; || true
+          find all-wheels -name '*.whl' -exec cp -n {} all-wheels/ \; || true
+          if [ -f all-wheels/docs/README.md ]; then
+            echo "README.md already in all-wheels/docs/"
+          else
+            find all-wheels -type f -name 'README.md' -not -path 'all-wheels/docs/*' -print -quit \
+              | xargs -r -I{} cp {} all-wheels/docs/README.md || true
+          fi
           echo "After gather:"
           ls -lah all-wheels/ || true
           ls -lah all-wheels/docs/ || true
