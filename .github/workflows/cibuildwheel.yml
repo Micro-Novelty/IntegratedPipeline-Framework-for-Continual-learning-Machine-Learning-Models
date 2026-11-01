@@ -507,7 +507,7 @@ jobs:
       - name: Copy AIM-4 pyproject.toml to root
         run: |
           echo "Using build-configs/pyproject.toml"
-          cp build-configs/pyproject.toml
+          cp build-configs/pyproject.toml pyproject.toml
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
