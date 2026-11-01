@@ -1,0 +1,9 @@
+window_title,label,confidence,notes
+"Low Consumption", 0.1
+"Medium Low Consumption",0.5
+"Medium High Consumption",0.9
+"High Consumption",1.3
+"Very High Consumption",1.7
+"Very very high",2.1
+"Too high",2.4
+"Boros",2.7
