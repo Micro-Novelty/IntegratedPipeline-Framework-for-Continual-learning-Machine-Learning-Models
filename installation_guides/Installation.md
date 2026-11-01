@@ -1,4 +1,4 @@
-# Installation Guide For using binary of IntegratedPipeline
+# [OLD] Installation Guide For using binary of IntegratedPipeline
 
 A comprehensive guide to install and set up IntegratedPipeline on your system.
 
