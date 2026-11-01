@@ -1,14 +1,32 @@
 ## Changelog
 All notable changes to this project will be documented in this file.
 ### PyPi AbstractIntegratedModule New Version changelog:
-- Version 1.0.7 - 2026-18-07.
-- Changelog:
-     - v1.0.7:
-     [=] New features:
-     - Added new Forget gate bias in LSTM init to make the model remember more, forget less about certain memory.
-     - Added safety clip during New cell generation in LSTM.
-     - Added small print logs to alert when LSTM experienced Vanishing gradient or large gradient norm during Training.
-         
+- Updated: 01/11/2026
+- Recent Changelogs [Will be reset each new +0.0.5 versions]:
+     - v1.2.5 [MAJOR REWORKS]:
+       - Reworks Advanced Prediction method to separate Training and prediction to provide User's control.
+       - Reworks Regression Training for MLP, and LSTM.
+       - Fixed numerous bugs that can appear in edge cases during Advanced prediction method.
+       - New Quantization-Aware-Training method only for MLP to reduce Memory usage during Continuous Training.
+       - Reworks P2P functions to handle regression Tasks.
+       - Reworks Asynchronous function to predict chunked X samples instead of all X samples to prevent Memory overflow for edge devices.
+       - Reworks Numerous important Functions inside IntegratedPipeline that handles number of classes, dataset creation from test titles.
+       - Saving and Loading Weights as memory to SQLite database is now separated, meaning you can handle Continuous Training or stop Training when memory is present and not present.
+     - v1.2.6:
+        - Separate SNN initialization from train SNN function
+        - added Regression based training and prediction for SNN
+     - v1.2.7:
+       - test_titles and rules is not a must required samples for Asynchronous prediction.
+     - v1.2.8:
+       - Fixed rigid logic in _handle_async method function where a missing test titles and rules stops the whole async process.
+       - Fixed rigid logic where a crash can occur in advanced prediction if lstm_predictions results are None.
+     - v1.2.9:
+       - Change most [>] to [TRAIN] or [DATABASE] for better understanding of the mechanism for each print.
+       - Added expected calibration error after MLP Validation scoring to help better understanding regarding model generalization.
+     - v1.3.0:
+       - Added new automatic Continual learning mechanism for memory persistence that user can now use their own custom Database to set and save the memory.
+       - Fixed advanced prediction logic where the prediction crash due to shape error when calculating for ensemble needs.
+            
 # Binary-new Release Changelog (Only inside in this repository)
 ### [0.1.0] - 2026-05-05
 [=] Added
