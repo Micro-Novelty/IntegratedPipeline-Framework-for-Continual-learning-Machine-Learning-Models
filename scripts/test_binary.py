@@ -895,7 +895,7 @@ knn_tf = sec_main_prediction.initialize_knn_transformer(
 # knn_forward_inference() lives inside PipelinePredictionManager, so you need to call this class to initiate the knn_forward_inference() function.
 losses, accs, _ = main_prediction.knn_forward_inference(X, y,
 label_map=None, # Label map can be safely set to None during Training phase.
-task='regression' training=True, 
+task='regression', training=True, 
 train_epochs=100, batch_size=2,
 train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
 
