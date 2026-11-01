@@ -13,6 +13,7 @@ on:
       - '**/*.rs'
       - '**/Cargo.toml'
       - 'build-configs/pyproject.toml'
+      - 'build-configs/setup.py'
   workflow_dispatch:
 
 jobs:
@@ -223,6 +224,7 @@ jobs:
         run: |
           echo "Using build-configs/pyproject.toml as pyproject.toml"
           cp build-configs/pyproject.toml pyproject.toml
+          cp build-configs/setup.py setup.py
 
       - name: Debug rust-wheels on runner
         run: |
@@ -322,6 +324,7 @@ jobs:
         run: |
           echo "Using build-configs/pyproject.toml as pyproject.toml"
           cp build-configs/pyproject.toml pyproject.toml
+          cp build-configs/setup.py setup.py
 
       - name: Debug rust-wheels on runner
         run: |
@@ -393,6 +396,7 @@ jobs:
         run: |
           echo "Using build-configs/pyproject.toml as pyproject.toml"
           cp build-configs/pyproject.toml pyproject.toml
+          cp build-configs/setup.py setup.py
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -458,6 +462,7 @@ jobs:
         run: |
           echo "Using build-configs/pyproject.toml as pyproject.toml"
           cp build-configs/pyproject.toml pyproject.toml
+          cp build-configs/setup.py setup.py
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
