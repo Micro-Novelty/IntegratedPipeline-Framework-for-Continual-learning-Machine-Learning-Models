@@ -234,7 +234,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Build wheels (Linux x86_64)
-        uses: pypa/cibuildwheel@v4.3.0
+        uses: pypa/cibuildwheel@v4.3.5
         with:
           output-dir: wheelhouse
 
@@ -333,7 +333,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Build wheels (Linux aarch64)
-        uses: pypa/cibuildwheel@v4.3.0
+        uses: pypa/cibuildwheel@v4.3.5
         with:
           output-dir: wheelhouse
 
@@ -398,7 +398,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Build wheels (macOS)
-        uses: pypa/cibuildwheel@v4.3.2
+        uses: pypa/cibuildwheel@v4.3.5
         with:
           output-dir: wheelhouse
 
@@ -463,7 +463,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Build wheels (Windows)
-        uses: pypa/cibuildwheel@v4.3.0
+        uses: pypa/cibuildwheel@v4.3.5
         with:
           output-dir: wheelhouse
 
