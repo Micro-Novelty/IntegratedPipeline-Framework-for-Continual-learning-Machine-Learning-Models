@@ -172,4 +172,6 @@ jobs:
             --title "Build #${{ github.run_number }} (${GITHUB_SHA::7})" \
             --notes "Automated cross-platform build of commit ${{ github.sha }}.
 
-          Contains compiled extensions for Linux x86_64, macOS arm64 and Windows x86_64 on Python 3.10, 3.11 and 3.12."
+          Contains compiled extensions for:
+          - Linux x86_64, macOS arm64 and Windows x86_64 on Python 3.10, 3.11 and 3.12 for AbstractIntegratedModule newer Versions.
+          - This binaries can be used for Users who doesnt have pip installed."
