@@ -1252,9 +1252,9 @@ ________________________________________________________________________________
        memory_capacity=10000,
        memory_k=5, memory_metric='euclidian')
      # NOTE:
-     - vocab_size and num_classes is a MUST, meaning you have to pass the number of classes of your samples, and vocab_size of your data (can be set to vocab_size=1 for regression task)
-     - memory_capacity = the amount of memory for the kNN to hold
-     - memory_k = "K" is the central hyperparameter that defines the number of nearby training data points the algorithm looks at to make a prediction, more memory_k => more nearby training points the model can look up.
+     # - vocab_size and num_classes is a MUST, meaning you have to pass the number of classes of your samples, and vocab_size of your data (can be set to vocab_size=1 for regression task)
+     # - memory_capacity = the amount of memory for the kNN to hold
+     # - memory_k = "K" is the central hyperparameter that defines the number of nearby training data points the algorithm looks at to make a prediction, more memory_k => more nearby training points the model can look up.
      
      
      # knn_forward_inference() lives inside PipelinePredictionManager, so you need to call this class to initiate the knn_forward_inference() function.
@@ -1266,7 +1266,7 @@ ________________________________________________________________________________
      
      transformer_probs, attn_weights, prediction = main_prediction.knn_forward_inference(X, y,
      label_map=label_map, # Label map can be inserted in here, or you Can set this to None,
-                            if set to None this function will only returns Transformer prob and attn_weights.
+                            # if set to None this function will only returns Transformer prob and attn_weights.
      training=False) # for returning kNN Transformer probabilities and attention weights only.
      # Note: - train_mode can be set to 'dynamic_backward' if you have very large dataset, this makes Transformer Q, K, V be much more dynamic and grants flexible learning behavior for large dataset.
             # - train_mode can be set to 'fixed_backward' if you have small dataset, this makes Transformer Q, K, V to stay frozen so the FFN flow will handle the Training, making Learning in very little samples possible and deterministic in behavior.
