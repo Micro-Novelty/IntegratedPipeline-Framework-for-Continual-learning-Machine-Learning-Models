@@ -2,11 +2,17 @@
 from AbstractIntegratedModule import PipelineAsyncManager
 from AbstractIntegratedModule import SecurityConfig
 from AbstractIntegratedModule import SecurityLevel
+from pipeline_setup import train_run
 
 # NOTE:
-# All the three Models (MLP, Transformer, LSTM MUST be Initialized and Trained before initiating Asynchronous Prediction, the Initialization workflow can be seen above.)
+# All the three Models (MLP, Transformer, LSTM MUST be Initialized, Trained before initiating Asynchronous Prediction, the Initialization workflow can be seen above.)
 # Replace the regular advanced_prediction_method() with this asynchronous setups:
 
+# Use the previous pipeline_setup.py for Training only.
+# Asynchronous prediction will automatically load the Trained weights
+# Use the main_prediction that was loaded by train_run() for flexibility on stateful continual learning behavior.
+main_prediction = train_run(db_path, X, y, task='classification', # example classification task
+ pred_config=None, label_csv='ManualsTraining.txt', feature_cols=None)
 
 print(" = TESTING ASYNCHRONOUS PREDICTION MANAGER = ")
 # Set discovery secret (in production, use environment variable)
@@ -60,7 +66,7 @@ async_manager.start(method='Transformer_included', bootstrap_token=None) # booth
 # overall_timeout: this is the overall timeout you want to use for the prediction, in this case we set it to 20000 seconds, meaning if the model takes longer than 20000 seconds to predict, it will abort the prediction (changeable).
 
 # IMPORTANT NOTE: the async_predict variable will return all the prediction results, prediction success, failures, so you can directly see how the model predicts each batch of the given sample.
-
+# test_titles and rules are can be set to None if not needed.
 payloads = {'test_titles': test_titles, 'label_map': label_map, 'rules': rules, 'use_transformer': True}
 async_predict = wrapper.prediction_method(payloads, X, y_samples=y, chunk_size=1000,
                  max_predictions=3, task="auto", timeout=1000,
@@ -71,8 +77,10 @@ print(f'[=] Results: {async_predict}')
 
 
 # NOTE: This function below MUST require test_titles or titles, label_map and example rules:
+# pair with your api_key and samples
+# (NOTE: This function is better used if you have test_titles, label_map and rules)
 print('[==] Initiating advanced batch prediction')
-         predicted_output = async_manager.advanced_batch_prediction(test_titles, label_map, example_rules, 
+         predicted_output = async_manager.advanced_batch_prediction(test_titles, label_map, rules, 
          X=None, y=None, # provide your initialized X and y samples (Also Optional, can be set to None)
-         secret_key=secret_key, client_ip=None) # you can add client_ip to provide a robust authentication paired with secret_key
+         api_key=secret_key, client_ip=None) # you can add client_ip to provide a robust authentication paired with secret_key
 # for better and faster advanced prediction when using titles and rules, consider using advanced batch prediction like in the above example
