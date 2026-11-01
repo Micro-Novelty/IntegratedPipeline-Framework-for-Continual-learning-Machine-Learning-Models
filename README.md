@@ -18,6 +18,11 @@ ________________________________________________________________________________
 ### [Intro]:
 Machine Learning Framework that **Creates a Model that can Continuously learn, backed by *augmented memory* from SQLite Database to store Weights, in which each a Model memory is Auditable, Transparent, and allows user to Create a different Memory for the Model to learn new Things, without overwriting the *previous saved, Trained weights* inside the SQlite database from different Tasks**. users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, Train the current Model with another task while Preserving the previous Trained weights as memory inside the SQlite database.
 
+_________________________________________________________________________________
+<img width="800" height="400" alt="Continual Learning Memory Map (1)" src="https://github.com/user-attachments/assets/c0a97e77-5f2d-4dc6-bbee-a8b0a87abaf3" />
+
+__________________________________________________________________________________
+
 - Workflow:
   *the below workflow explanation is used to explain how user can use our framework*
   - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real Prediction.
@@ -35,11 +40,6 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
       - One IntegratedPipeline instance with 2 memory name can be used for Predicting both classification or regression tasks *when* both tasks have the same lengths and shapes.
       - One IntegratedPipeline instance is enough to Train both classification task, and continue with regression task immediately. its Weights will be saved to database everytime each Training is done.
       - approach -> ```[after training on task A and B -> model can now do prediction on task C, D, E, F, ... continuously as long as these samples have the same shapes as task A and B]```
-
-_________________________________________________________________________________
-<img width="800" height="400" alt="Continual Learning Memory Map (1)" src="https://github.com/user-attachments/assets/c0a97e77-5f2d-4dc6-bbee-a8b0a87abaf3" />
-
-__________________________________________________________________________________
 
 - The Framework's Models are handled by Numpy library while most >O(n2)+ heavy algorithms are accelerated using Cython, allowing The Models to be used efficiently from High-end embedded systems to regular Consumed based PCs or Laptops without GPU (GPU Acceleration will be considered in the Future).
 
