@@ -156,7 +156,7 @@ ________________________________________________________________________________
 
 
 ## Why IntegratedPipeline?
-- IntegratedPipeline is a great choice for a sophisticated Non-LLM AI Model Program for The Main Orchestrator of a Distributed MANN-Type Model Agent Working in Edge-device/Consumer-Based machine Where LLM isn't a great fit for Messy, Unpredictable environments. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
+- IntegratedPipeline is a great choice for a sophisticated Non-LLM ML Model for The Main Orchestrator of a Distributed MANN-Type Model Working in Edge-device/Consumer-Based machine Where LLM isn't a great fit for Messy, Unpredictable environments. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
 
 - IntegratedPipeline offers:
 1. Local-Based AI Orchestrator:
