@@ -174,7 +174,7 @@ def one_run(db_path, X, y, task=None, pred_config=None, label_csv=None, feature_
     return results, chosen_label, confidence
     
 # Load dataset (Change to Your own dataset here, just make sure to change the column names and features accordingly)
-df = pd.read_csv("PJME_hourly.csv", parse_dates=["Datetime"], index_col="Datetime")
+df = pd.read_csv("regression_sample/PJME_hourly.csv", parse_dates=["Datetime"], index_col="Datetime")
 df = df.sort_index()
 daily = df.resample("D").sum()
 
