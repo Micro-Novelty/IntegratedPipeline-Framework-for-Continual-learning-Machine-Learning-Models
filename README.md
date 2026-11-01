@@ -78,7 +78,7 @@ ________________________________________________________________________________
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
-- Development Stage on PyPi: 1.3.0 Official Release.
+- Development Stage on PyPi: [![Newer PyPI version](https://img.shields.io/badge/PyPI-v1.3.0-blue?logo=pypi)](https://pypi.org/project/AbstractIntegratedModule/) Official Release.
 - Author and Maintainer: Micro-Novelty and EpsitronNet-bot.
 - library Source-Code is Open-sourced with MIT License.
 - Purpose: Specifically Designed for providing Non-LLM AI Agent Framework for edge Devices, Optimized for ARM64 architecture.
@@ -95,7 +95,7 @@ ________________________________________________________________________________
  - aarch64 manylinux (accepts version 2.17+) architecture, accepts python version 3.10, 3.11 only.
  - aarch64 musllinux (accepts version 1.2+) architecture, accepts python version 3.10, 3.11 only.
  - Windows 64 bit architecture (python 3.10, 3.11, 3.12, 3.13 only)
- - single tarball file for Users who want to test the library up to Python version 3.12 or 3.13+.
+ - single tarball file for broad compatibilty accross different Machines.
  ____________________________________________________________________________________________________
 - Library installation if you dont have aarch64 setup, you can download the correct wheel for your setup in this repository or by using pip:
   - ✨ use pip for downloading the correct wheels for your setup:
@@ -129,36 +129,6 @@ ________________________________________________________________________________
 >   - Transformer is Optimized for small samples using Novel alpha-based computing:
       - > *alpha-based computing for Transformer documentation:* [introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
 
------
-  - Recent Changelogs [Will be reset each new +0.0.5 versions]:
-     - v1.2.5 [MAJOR REWORKS]:
-       - Reworks Advanced Prediction method to separate Training and prediction to provide User's control.
-       - Reworks Regression Training for MLP, and LSTM.
-       - Fixed numerous bugs that can appear in edge cases during Advanced prediction method.
-       - New Quantization-Aware-Training method only for MLP to reduce Memory usage during Continuous Training.
-       - Reworks P2P functions to handle regression Tasks.
-       - Reworks Asynchronous function to predict chunked X samples instead of all X samples to prevent Memory overflow for edge devices.
-       - Reworks Numerous important Functions inside IntegratedPipeline that handles number of classes, dataset creation from test titles.
-       - Saving and Loading Weights as memory to SQLite database is now separated, meaning you can handle Continuous Training or stop Training when memory is present and not present.
-           
-     - v1.2.6:
-        - Separate SNN initialization from train SNN function
-        - added Regression based training and prediction for SNN
-     - v1.2.7:
-       - test_titles and rules is not a must required samples for Asynchronous prediction.
-     - v1.2.8:
-       - Fixed rigid logic in _handle_async method function where a missing test titles and rules stops the whole async process.
-       - Fixed rigid logic where a crash can occur in advanced prediction if lstm_predictions results are None.
-     - v1.2.9:
-       - Change most [>] to [TRAIN] or [DATABASE] for better understanding of the mechanism for each print.
-       - Added expected calibration error after MLP Validation scoring to help better understanding regarding model generalization.
-     - v1.3.0:
-       - Added new automatic Continual learning mechanism for memory persistence that user can now use their own custom Database to set and save the memory.
-       - Fixed advanced prediction logic where the prediction crash due to shape error when calculating for ensemble needs.
-    
-     > - Note: if you want to see the Changelog history of the library Older versions consider visiting this link:
-     >  - PyPi history: https://pypi.org/project/AbstractIntegratedModule/#history
-       
 ________________________________________________________________________________________________________________________
 ### [>] Full Documentation Features
 - [Go to Library short description](#library-short-description)
@@ -170,7 +140,7 @@ ________________________________________________________________________________
 - [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
 - [Go to Troubleshooting](#troubleshooting)
 - [Go to Source code](#source-code-of-abstractintegratedmodule)
-
+  
 - Consider checking:
   - [ROADMAP.md](ROADMAP.md)
   - [SECURITY.md](SECURITY.md)
@@ -184,13 +154,6 @@ ________________________________________________________________________________
 ___________________________________________________________________________________________________       
 <img width="1280" height="600" alt="WhatsApp Image 2026-05-27 at 07 16 32" src="https://github.com/user-attachments/assets/4b58a556-45a3-419b-96fd-9c1b76cac574" />
 
-- Consider check:
-> Introduction to MANN Models, Transformer and LSTM,
-> Proofs of library performance,
-> Video documentation and P2P demo,
-> Alpha based documentation for Transformer,
-> Main Architectures for the entire library,
-> Branch: [introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
 
 ## Why IntegratedPipeline?
 - IntegratedPipeline is a great choice for a sophisticated Non-LLM AI Model Program for The Main Orchestrator of a Distributed MANN-Type Model Agent Working in Edge-device/Consumer-Based machine Where LLM isn't a great fit for Messy, Unpredictable environments. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
@@ -267,11 +230,19 @@ ________________________________________________________________________________
 overtime, including in ambiguous data, using Weighted Confidence assembling from both specialized MLP and Transformer for better reliability during training and 
 prediction over Unpredictable environments, such as:
 
-> [>] User data's : User data is often messy and ambiguous, Specialized MLP with AWE will do the job for shaping and calibrating the necessary Weight to complement for the Ambiguous pattern, AWE MLP is proven to help in Quantization-Aware-Training in MLP that helps reduce Memory usage -> proven in synthetic Environment such as scikit-learn Make-Classification scarce and Noisy Input robustness during generalization test. making it a great fit for messy, Scarce data.
+> [>] User data : User data is often messy and ambiguous, Specialized MLP with AWE will do the job for shaping and calibrating the necessary Weight to complement for the Ambiguous pattern, AWE MLP is proven to help in Quantization-Aware-Training in MLP that helps reduce Memory usage -> proven in synthetic Environment such as scikit-learn Make-Classification scarce and Noisy Input robustness during generalization test. making it a great fit for messy, Scarce data.
 
-> [>] Small Dataset's : We often don't have enough Dataset to train a Transformer Model, Thats Why IntegratedPipeline Offers a Highly optimized Transformer that supports scarce dataset processing, Using Alpha-Based computing as a Warm-up for training, it provides a direct Boost for the transformer to be efficient during training in scarce-data Environment.
+> [>] Small Datasets : We often don't have enough Dataset to train a Transformer Model, Thats Why IntegratedPipeline Offers a Highly optimized Transformer that supports scarce dataset processing, Using Alpha-Based computing as a Warm-up for training, it provides a direct Boost for the transformer to be efficient during training in scarce-data Environment.
 
 > [>] Non-Representative data (Undersampled) : IntegratedPipeline Support's ambiguous data that come's from file with format such as CSV Format to extract title's and label's necessary to create automatic Dataset for Later use in Training, making it optimized for specific task's and easier dataset creation with lower overfitting rate for reliability.
+
+- Consider check:
+> - Introduction to MANN Models, Transformer and LSTM,
+> - Proofs of library performance,
+> - Video documentation and P2P demo,
+> - Alpha based documentation for Transformer,
+> - Main Architectures for the entire library,
+> - Branch: [introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
 
 _____________________________________________________________________________________________________________
 [>] Architectural-Overview
