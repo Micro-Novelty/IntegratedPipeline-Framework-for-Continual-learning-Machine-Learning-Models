@@ -1331,6 +1331,8 @@ from pipeline_setup import train_run
 # All the three Models (MLP, Transformer, LSTM MUST be Initialized, Trained before initiating Asynchronous Prediction, the Initialization workflow can be seen above.)
 # Replace the regular advanced_prediction_method() with this asynchronous setups:
 
+X, y = '<replace with actual samples>'
+
 # Use the previous pipeline_setup.py for Training only.
 # Asynchronous prediction will automatically load the Trained weights
 # Use the main_prediction that was loaded by train_run() for flexibility on stateful continual learning behavior.
@@ -1586,10 +1588,11 @@ async def p2p_tasks(X=None, y=None, task='classification', prediction_manager=No
 if __name__ == '__main__':
    # match to your own task (classification or regression based on your samples)
    # if you have X samples, you can use the previous prediction_manager loaded by train_run() for stateful continual learning behavior
+   X, y = '<change with your actual samples>'
    prediction_manager = train_run(db_path, X, y, task='classification', pred_config=None, 
               label_csv='ManualsTraining.txt', feature_cols=None)
 
-   p2p_tasks(task='classification', prediction_manager)
+   p2p_tasks(X, y, task='classification', prediction_manager)
 
 ```
 [NOTE] Important Note: 
