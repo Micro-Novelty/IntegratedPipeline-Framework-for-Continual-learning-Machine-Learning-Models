@@ -899,7 +899,7 @@ train_epochs=100, batch_size=2,
 train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
 
 transformer_probs, attn_weights, prediction = sec_main_prediction.knn_forward_inference(X, y,                                                                                       
-label_map=label_map, # Label map can be inserted in here, or you Can set this to None,
+label_map=sec_label_map, # Label map can be inserted in here, or you Can set this to None,
                      # if set to None this function will only returns Transformer prob and attn_weights.,
 task='regression', training=False) # for returning kNN Transformer probabilities and attention weights only.
 # Note: - train_mode can be set to 'dynamic_backward' if you have very large dataset, this makes Transformer Q, K, V be much more dynamic and grants flexible learning behavior for large dataset.
@@ -944,7 +944,7 @@ encoder, net, reports, warnings = train_snn_network(X=X, y=y, epochs=50,
 # Very High Dead neurons is a sign of Bad development, consider to Increase hidden layers or learning rate in order for the Model to improve.
 
 # x must be a two dimensional sample, if X.ndim > 2, consider reshaping the X to be a 2D sample safely.
-results = snn_predict(X=X, y=y, task='regression', label_map=label_map, encoder=encoder, net=net)
+results = snn_predict(X=X, y=y, task='regression', label_map=sec_label_map, encoder=encoder, net=net)
 # net is the SNNNetwork Class, and Encoder is PoissonEncoder, both are required for Prediction and must be passed in this function, consider saving the SNN net and the encoder using json for later use.
 # Small Note:
 # - This architecture is not guaranteed to work best for Classifying tabular datas, its good for time series event based activity classification.
