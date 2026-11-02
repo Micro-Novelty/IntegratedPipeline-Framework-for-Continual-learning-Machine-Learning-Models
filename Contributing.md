@@ -75,8 +75,8 @@ pip install -r requirements-dev.txt
 
 ```bash
 # Clone your fork
-git clone https://github.com/Micro-Novelty/IntegratedPipeline-Continous-Learning-AI-Agent-library-framework.git
-cd IntegratedPipeline-Continous-Learning-AI-Agent-library-framework
+git clone https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models.git
+cd IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models
 
 # Install in development mode
 pip install -e .
