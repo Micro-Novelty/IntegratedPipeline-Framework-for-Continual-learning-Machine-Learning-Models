@@ -1,0 +1,67 @@
+name: Nightly Compatibility
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # every day at 02:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  nightly-compatibility:
+    name: Python ${{ matrix.python-version }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install OS build deps (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3-dev
+
+      - name: Upgrade pip and build tools
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+
+      - name: Install latest compatible dependencies
+        run: |
+          python -m pip install --upgrade --upgrade-strategy eager \
+            Cython \
+            numpy \
+            scipy \
+            scikit-learn \
+            pandas \
+            joblib \
+            cryptography \
+            aiohttp \
+            psutil \
+            pytest \
+            pytest-cov \
+            pytest-xdist
+
+      - name: Build Cython extensions
+        run: |
+          python scripts/linux_setup.py build_ext --inplace
+
+      - name: Run smoke import checks
+        run: |
+          python -c "import AbstractIntegratedModule; print('Import OK')"
+          python -c "import AbstractOptimizedModules; print('Optimized import OK')"
+
+      - name: Run test suite
+        run: |
+          pytest tests/ -v -n auto --maxfail=1
