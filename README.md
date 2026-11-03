@@ -1132,54 +1132,54 @@ ________________________________________________________________________________
     # ================== Continual learning setup for kNN Transformer (OPTIONAL, can be removed) =======================
     def knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_training=False, titles=None, rules=None, 
                 task=None, label_map=None, feature_cols=None, label_csv=None, use_qat=True, qcfg=None, config=None):
-    if task == 'classification':
-        # NOTE:
-        # set input_dim and num_classes based on the shape of X and the number of unique labels in label_map.
-        # this are important for the MLP and Transformer model to know how many input features and output classes it has to handle.
-        input_dim = X.shape[1] if X.ndim > 1 else 1
-        if label_map is not None:
-            num_classes = max(len(label_map), int(np.max(y)) + 1)
+        if task == 'classification':
+            # NOTE:
+            # set input_dim and num_classes based on the shape of X and the number of unique labels in label_map.
+            # this are important for the MLP and Transformer model to know how many input features and output classes it has to handle.
+            input_dim = X.shape[1] if X.ndim > 1 else 1
+            if label_map is not None:
+                num_classes = max(len(label_map), int(np.max(y)) + 1)
+            else:
+                num_classes = int(np.max(y)) + 1
+    
+            knn_tf = main_prediction.initialize_knn_transformer(
+                vocab_size=1, task='classification', num_classes=num_classes, d_model=32, n_heads=4, n_features=None, 
+                memory_capacity=10000,
+                memory_k=5, memory_metric='euclidean')  
+    
+            loaded = main_prediction.load_memory_head_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
+            if not loaded and with_training:
+                losses, accs, _ = main_prediction.knn_forward_inference(X, y,
+                label_map=label_map, # Label map can be safely set to None during Training phase.
+                training=True, train_epochs=10, task='classification', batch_size=64,
+                train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
+    
+                # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
+                save_memory(db_path, memory_name, label_csv, X, y, task, label_map, feature_cols=feature_cols, config=config)
+                main_prediction.save_memory_head_setup(memory_name) # This function saves the Per-Head memory setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
+    
+        elif task == 'regression':
+            input_dim = X.shape[1] if X.ndim > 1 else 1
+            num_classes = y.shape[1]
+    
+            knn_tf = main_prediction.initialize_knn_transformer(
+                vocab_size=1, task='regression', num_classes=num_classes, d_model=32, n_heads=4, n_features=len(feature_cols), 
+                memory_capacity=10000,
+                memory_k=5, memory_metric='euclidean')  
+    
+            loaded = main_prediction.load_memory_head_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
+            if not loaded and with_training:
+                losses, accs, _ = main_prediction.knn_forward_inference(X, y,
+                label_map=label_map, # Label map can be safely set to None during Training phase.
+                training=True, train_epochs=10, task='regression', batch_size=64,
+                train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
+    
+                # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
+                save_memory(db_path, memory_name, label_csv, X, y, task, label_map, feature_cols=feature_cols, config=config)
+                main_prediction.save_memory_head_setup(memory_name) # This function saves the Per-Head memory setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
+    
         else:
-            num_classes = int(np.max(y)) + 1
-
-        knn_tf = main_prediction.initialize_knn_transformer(
-            vocab_size=1, task='classification', num_classes=num_classes, d_model=32, n_heads=4, n_features=None, 
-            memory_capacity=10000,
-            memory_k=5, memory_metric='euclidean')  
-
-        loaded = main_prediction.load_memory_head_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
-        if not loaded and with_training:
-            losses, accs, _ = main_prediction.knn_forward_inference(X, y,
-            label_map=label_map, # Label map can be safely set to None during Training phase.
-            training=True, train_epochs=10, task='classification', batch_size=64,
-            train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
-
-            # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
-            save_memory(db_path, memory_name, label_csv, X, y, task, label_map, feature_cols=feature_cols, config=config)
-            main_prediction.save_memory_head_setup(memory_name) # This function saves the Per-Head memory setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
-
-    elif task == 'regression':
-        input_dim = X.shape[1] if X.ndim > 1 else 1
-        num_classes = y.shape[1]
-
-        knn_tf = main_prediction.initialize_knn_transformer(
-            vocab_size=1, task='regression', num_classes=num_classes, d_model=32, n_heads=4, n_features=len(feature_cols), 
-            memory_capacity=10000,
-            memory_k=5, memory_metric='euclidean')  
-
-        loaded = main_prediction.load_memory_head_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
-        if not loaded and with_training:
-            losses, accs, _ = main_prediction.knn_forward_inference(X, y,
-            label_map=label_map, # Label map can be safely set to None during Training phase.
-            training=True, train_epochs=10, task='regression', batch_size=64,
-            train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
-
-            # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
-            save_memory(db_path, memory_name, label_csv, X, y, task, label_map, feature_cols=feature_cols, config=config)
-            main_prediction.save_memory_head_setup(memory_name) # This function saves the Per-Head memory setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
-
-    else:
-        print('[>] Invalid task name')
+            print('[>] Invalid task name')
 
     def knn_train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, 
             new_memory=None, with_training=True):
