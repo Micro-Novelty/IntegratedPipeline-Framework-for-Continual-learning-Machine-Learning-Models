@@ -155,7 +155,11 @@ _______________________________________
 - Video Documentation: [![Introduction and demo:](https://youtube.com)](https://youtu.be/RmWvwDHU_QY?si=Lvl8mt8c_BnFypS_)
 - Quick demo start: [main.py](scripts/main.py)
   - Note: you must provide the Correct samples and setup inside main.py properly.
+  - download 2 files to execute main.py:
+    - [ManualsTraining](ManualsTraining.txt) for Classification task prediction demo.
+    - [PJME_MW](PJME_MW.csv) for regression task prediction demo.
   - purpose: let you demonstrate the advanced prediction method and asynchronous prediction directly.
+    
 - Quick test of P2P:
     - [multi_agent_client.py](P2P_Setups/multi_agent_client.py)
     - [multi_agent_server.py](P2P_Setups/multi_agent_server.py)
