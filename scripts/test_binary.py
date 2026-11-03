@@ -401,13 +401,13 @@ sec_main_prediction = PipelinePredictionManager(
 sec_main_model.initialize_mlp_model(titles=test_titles, rules=rules, label_map=label_map, input_dim=None, output_dim=None, hidden_layers=[12, 17, 35], use_qat=False, qcfg=None)
 
 sec_main_model.initialize_transformer_model(titles=test_titles, rules=rules, label_map=label_map, vocab_size=1, num_classes=None, d_model=128, n_heads=4, n_features=None,
-                                                attn_dropout=0.1, ffn_dropout=0.05, weight_decay=1e-4, task='regression')
+                                                attn_dropout=0.1, ffn_dropout=0.05, weight_decay=1e-4, task='classification')
 
-sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
-sec_main_model.train_mlp_model(titles=test_titles, rules=rules, label_map=label_map, X=X, y=y, task='regression', train_epochs=500, momentum=0.9, lr=0.01)
-sec_main_model.train_transformer(titles=test_titles, rules=rules, label_map=label_map, X=X, y=y,  task='regression', d_model=128, train_epochs=10, 
+sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=label_map, raw_X=s_X, raw_Y=s_y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+sec_main_model.train_mlp_model(titles=test_titles, rules=rules, label_map=label_map, X=s_X, y=s_y, task='classification', train_epochs=500, momentum=0.9, lr=0.01)
+sec_main_model.train_transformer(titles=test_titles, rules=rules, label_map=label_map, X=s_X, y=s_y,  task='classification', d_model=128, train_epochs=10, 
                                     mode='dynamic_backward', lr=0.5, batch_size=4)
-sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=label_map, raw_X=s_X, raw_Y=s_y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
 
 
 wrapper = PipelineAsyncManager(sec_main_model, 
@@ -439,7 +439,7 @@ wrapper.start(method='Transformer_included', bootstrap_token=None)
 
 # IMPORTANT NOTE: the async_predict variable will return all the prediction results, prediction success, failures, so you can directly see how the model predicts each batch of the given sample.
 
-payloads = {'test_titles': test_titles, 'label_map': sec_label_map, 'rules': rules, 'use_transformer': True}
+payloads = {'test_titles': test_titles, 'label_map': label_map, 'rules': rules, 'use_transformer': True}
 async_predict = wrapper.prediction_method(payloads, X, y_samples=y, chunk_size=1000,
                  max_predictions=3, task="auto", timeout=1000,
                  api_key=api_key, client_ip=None, overall_timeout=20000,
@@ -464,7 +464,7 @@ agent_2_id = 'ID-02'
 
 
 # function must be 'async' to use the await syntaxes below:
-async def agent_test(task='classification', x=None, y=None):
+async def agent_test(task='classification', x=None, y=None, titles=None, rules=None, label_map=None):
 
    # NOTE:
    # shared_auth_token : the secret_key you have alread made
@@ -527,9 +527,9 @@ async def agent_test(task='classification', x=None, y=None):
       print(f"\n🔑 Using API Key: {api_key[:20]}...")
 
       # first payload for agent-1:
-      payloads_1 = {"test_titles": test_titles, "label_map": label_map, "rules": rules, "X":X, "y":y, "use_transformer": True, "agent_id": agent_1_id}
+      payloads_1 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":X, "y":y, "use_transformer": True, "agent_id": agent_1_id}
       # second payload for agent-2:
-      payloads_2 = {"test_titles": test_titles, "label_map": label_map, "rules": rules, "X":X, "y":y, "use_transformer": True, "agent_id": agent_2_id}
+      payloads_2 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":X, "y":y, "use_transformer": True, "agent_id": agent_2_id}
 
       # NOTE:
       # daily: is the dataframe/dataset you have loaded, if its present meaning You can use it in P2P using this setup for regression prediction:
@@ -588,7 +588,7 @@ async def agent_test(task='classification', x=None, y=None):
 
 
 # Initiate agent_test
-asyncio.run(agent_test(task='classification', X=s_X, y=s_y))
+asyncio.run(agent_test(task='classification', X=s_X, y=s_y, titles=test_titles, rules=rules, label_map=label_map))
 asyncio.run(agent_test(task='regression', X=X, y=y))
 
 # Step 2
