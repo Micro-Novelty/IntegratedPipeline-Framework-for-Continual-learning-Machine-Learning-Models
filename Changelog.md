@@ -1,8 +1,8 @@
 ## Changelog
 All notable changes to this project will be documented in this file.
 ### PyPi AbstractIntegratedModule New Version changelog:
-- Updated: 01/11/2026
-- Recent Changelogs [Will be reset each new +0.0.5 versions]:
+- Updated: 03/11/2026
+- Recent Changelogs [Will be reset each new +0.1.0 versions]:
      - v1.2.5 [MAJOR REWORKS]:
        - Reworks Advanced Prediction method to separate Training and prediction to provide User's control.
        - Reworks Regression Training for MLP, and LSTM.
@@ -26,7 +26,13 @@ All notable changes to this project will be documented in this file.
      - v1.3.0:
        - Added new automatic Continual learning mechanism for memory persistence that user can now use their own custom Database to set and save the memory.
        - Fixed advanced prediction logic where the prediction crash due to shape error when calculating for ensemble needs.
-            
+     - v1.3.1:
+       - Label map is now considered not used for regression samples and will be replaced by prediction config.
+       - fixed multiple bugs in save and load memory for kNN Transformer.
+       - removed useless functions for HNSW setups that are no longer in use.
+       - added regression sample analysis for kNN Transformer.
+
+
 # Binary-new Release Changelog (Only inside in this repository)
 ### [0.1.0] - 2026-05-05
 [=] Added
