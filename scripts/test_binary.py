@@ -657,7 +657,7 @@ async_manager.start(method='Transformer_included', bootstrap_token=None) # booth
 # IMPORTANT NOTE: the async_predict variable will return all the prediction results, prediction success, failures, so you can directly see how the model predicts each batch of the given sample.
 
 payloads = {'test_titles': test_titles, 'label_map': label_map, 'rules': rules, 'use_transformer': True}
-async_predict = wrapper.prediction_method(payloads, s_X, s_y_samples=y, chunk_size=1000,
+async_predict = wrapper.prediction_method(payloads, s_X, y_samples=s_y, chunk_size=1000,
                  max_predictions=3, task="auto", timeout=1000,
                  api_key=api_key, client_ip=None, overall_timeout=20000,
                  stop_on_error=False)
