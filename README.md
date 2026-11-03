@@ -975,9 +975,12 @@ ________________________________________________________________________________
     
     # db_path is your custom initialized sqlite database name (ex: data_storage.db)
     # label_csv is the name of your .txt file that contains labels with csv format used for Prediction.
-    def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_config=None, cols=None):
+    def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_config=None, cols=None, port=None):
         # set_memory() is used to load the Model's Memory, csv fie for Training, task and label map using you previouslyr given X and y samples
         # new_memory argument is used to declare a new memory name if the searched memory is not present.
+        # port is used for P2P (Optional)
+        if port is None:
+            port = 5001
     
         memory_name, label_csv, task, label_map, feature_cols, config = set_memory(db_path, X, y, new_memory=memory_name)
     
@@ -995,7 +998,7 @@ ________________________________________________________________________________
         main_model = IntegratedPipeline(
         memory_name=memory_name,  # memory name for the Model you already initialized
         use_async=True, # local asynchronous prediction is permitted, if not PipelineAsyncManager wont start asynchronous prediction.
-        agent_port=5001, # this port is used to set AgentDistributedInference server (optional)
+        agent_port=port, # this port is used to set AgentDistributedInference server (optional)
         ssl_cert_file=None, ssl_key_file=None,# provide your cert_file path or key_file path (optional)
         ssl_context=None, # used by the Agent server. (optional)
         client_ssl_context=None # used by the client. (optional)
@@ -1109,19 +1112,19 @@ ________________________________________________________________________________
     
     # for training only
     def train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, 
-                new_memory=None, with_training=True):
-        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
+                new_memory=None, with_training=True, port=None):
+        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols, port=port)
     
         one_train_round(memory_name, main_model, db_path, X, y, with_training,
             task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
     
         # return main_prediction for later usage (like P2P or asynchronous prediction)
-        return main_prediction
+        return main_prediction, main_model
         
     # one full train -> predict.
     def one_run(db_path, X, y, task=None, pred_config=None, label_csv=None, feature_cols=None, 
-                new_memory=None, with_training=True):
-        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
+                new_memory=None, with_training=True, port=None):
+        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols, port=None)
         one_train_round(memory_name, main_model, db_path, X, y, with_training,
             task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
         
@@ -1530,15 +1533,7 @@ from pipeline_setup import train_run
 import asyncio
 import traceback
 
-# Create a new instance if you decided to not do any Continual learning behavior.
-prediction_manager = PipelinePredictionManager(main_model, label_csv=<your_training_labels.txt>, target_title=<target_title>, label=<target_label>)
-
-secondary_model = IntegratedPipeline(memory_name=memory_name, 
-                use_async=True, agent_port=8080, 
-                ssl_cert_file=cert_file, ssl_key_file=key_file) # provide cert_file path or key_file path (optional)
-# secondary model of integrated pipeline is critical for ARM64 environment to prevent socket conflict during P2P with the first Integrated pipeline instance.
-# make sure that the agent_port in secondary_model must be different from agent_port in first IntegratedPipeline instance you initialized to prevent address already in use error [Errno 48].
-
+# =========== P2P ====================
 print("=== SECURE PEER-TO-PEER CLUSTER ===")
 
 # CohesiveAgentDeployment is deeply tied and coupled with AgentDistributedInference,
@@ -1548,7 +1543,7 @@ print("=== SECURE PEER-TO-PEER CLUSTER ===")
 
 # example task (change to regression if yours are regression task)
 # function must be async to use the await syntax (Non-blocking)
-async def p2p_tasks(X=None, y=None, task='classification', prediction_manager=None)
+async def p2p_tasks(X=None, y=None, titles=None, rules=None, task='classification', prediction_manager=None, secondary_model=None)
    main_model.distribution.enable_ssl = False # set to false if you dont have SSL key and CERT, this code would instruct AgentDistributedInference that you don't have SSL, and provide you a regular unsecured socket (Not necessary for production)
    secondary_model.distribution.enable_ssl = False
 
@@ -1686,11 +1681,25 @@ async def p2p_tasks(X=None, y=None, task='classification', prediction_manager=No
 if __name__ == '__main__':
    # match to your own task (classification or regression based on your samples)
    # if you have X samples, you can use the previous prediction_manager loaded by train_run() for stateful continual learning behavior
-   X, y = '<change with your actual samples>'
-   prediction_manager = train_run(db_path, X, y, task='classification', pred_config=None, 
-              label_csv='ManualsTraining.txt', feature_cols=None)
+   prediction_manager, main_model = train_run(db_path, X, y, task='classification', pred_config=None, 
+              label_csv='ManualsTraining.txt', feature_cols=None, port=5000) # use port 5000
+   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it
+   # this new instance used a different port for P2P so it doesnt conflict with other instance
+   _, secondary_model = train_run(db_path, X, y, task='classification', pred_config=None, 
+              label_csv='ManualsTraining.txt', feature_cols=None, port=5001) # use port 5001
 
-   p2p_tasks(X, y, task='classification', prediction_manager=prediction_manager)
+   # insert the IntegratedPipeline instance and PipelinePredictionManager for Prediction during P2P
+   # insert secondary IntegratedPipeline model for p2p to make sure no same instance share the same port.
+   p2p_tasks(X, y, titles=None, rules=None, task='classification', prediction_manager=prediction_manager, model=main_model, secondary_model=secondary_model)
+
+   prediction_manager, main_model = train_run(db_path, X, y, task='classification', pred_config=config, # get your previous pred_config. 
+              label_csv=None, feature_cols=len(feature_cols, port=5003) # use port 5003
+   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it
+   # this new instance used a different port for P2P so it doesnt conflict with other instance
+   _, secondary_model = train_run(db_path, X, y, task='classification', pred_config=None, 
+              label_csv='ManualsTraining.txt', feature_cols=None, port=5004) # use port 5004
+
+   p2p_tasks(X, y, titles=None, rules=None, task='regression', prediction_manager=prediction_manager, model=main_model, secondary_model=secondary_model)
 
 ```
 [NOTE] Important Note: 
