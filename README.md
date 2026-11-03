@@ -1183,8 +1183,9 @@ ________________________________________________________________________________
 
     def knn_train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, 
             new_memory=None, with_training=True):
-    memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
-    knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_training,
+        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
+    
+        knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_training,
         task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
 
         return main_prediction, label_map
