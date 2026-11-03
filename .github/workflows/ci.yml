@@ -100,7 +100,7 @@ jobs:
 
       - name: Compile Cython extensions
         run: |
-          python linux_setup.py build_ext --inplace
+          python scripts/linux_setup.py build_ext --inplace
 
       - name: Verify compilation and locate extension files (Linux/macOS)
         if: runner.os != 'Windows'
