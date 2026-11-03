@@ -464,7 +464,7 @@ agent_2_id = 'ID-02'
 
 
 # function must be 'async' to use the await syntaxes below:
-async def agent_test(task='classification'):
+async def agent_test(task='classification', x=None, y=None):
 
    # NOTE:
    # shared_auth_token : the secret_key you have alread made
@@ -527,9 +527,9 @@ async def agent_test(task='classification'):
       print(f"\n🔑 Using API Key: {api_key[:20]}...")
 
       # first payload for agent-1:
-      payloads_1 = {"test_titles": test_titles, "label_map": label_map, "rules": rules, "X":None, "y":None, "use_transformer": True, "agent_id": agent_1_id}
+      payloads_1 = {"test_titles": test_titles, "label_map": label_map, "rules": rules, "X":X, "y":y, "use_transformer": True, "agent_id": agent_1_id}
       # second payload for agent-2:
-      payloads_2 = {"test_titles": test_titles, "label_map": label_map, "rules": rules, "X":None, "y":None, "use_transformer": True, "agent_id": agent_2_id}
+      payloads_2 = {"test_titles": test_titles, "label_map": label_map, "rules": rules, "X":X, "y":y, "use_transformer": True, "agent_id": agent_2_id}
 
       # NOTE:
       # daily: is the dataframe/dataset you have loaded, if its present meaning You can use it in P2P using this setup for regression prediction:
@@ -588,8 +588,8 @@ async def agent_test(task='classification'):
 
 
 # Initiate agent_test
-asyncio.run(agent_test(task='classification'))
-
+asyncio.run(agent_test(task='classification', X=s_X, y=s_y))
+asyncio.run(agent_test(task='regression', X=X, y=y))
 
 # Step 2
 from AbstractIntegratedModule import PipelineAsyncManager
