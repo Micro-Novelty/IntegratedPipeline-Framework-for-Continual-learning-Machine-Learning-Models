@@ -464,7 +464,7 @@ agent_2_id = 'ID-02'
 
 
 # function must be 'async' to use the await syntaxes below:
-async def agent_test(task='classification', x=None, y=None, titles=None, rules=None, label_map=None, main_prediction=None, main_model=None):
+async def agent_test(task='classification', x=None, y=None, titles=None, rules=None, label_map=None, main_prediction=None, main_model=None, sec_main_model=None):
 
    # NOTE:
    # shared_auth_token : the secret_key you have alread made
@@ -561,7 +561,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
          api_key=api_key,
          method='advanced',
          disable_sync=True,
-         regression_payload=regression_payload
+         regression_payload=None
       ) 
       
       print(f"\n📊 Ensemble Result for Agent 1:")
@@ -589,8 +589,9 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
 
 
 # Initiate agent_test
-asyncio.run(agent_test(task='classification', x=s_X, y=s_y, titles=test_titles, rules=rules, label_map=label_map, main_prediction=class_main, main_model=class_model))
-asyncio.run(agent_test(task='regression', x=X, y=y, main_prediction=reg_main, main_model=reg_model))
+asyncio.run(agent_test(task='classification', x=s_X, y=s_y, titles=test_titles, rules=rules, label_map=label_map, 
+                       main_prediction=class_main, main_model=class_model, sec_main_model=sec_main_model))
+asyncio.run(agent_test(task='regression', x=X, y=y, main_prediction=reg_main, main_model=reg_model, sec_main_model=sec_main_model))
 
 # Step 2
 from AbstractIntegratedModule import PipelineAsyncManager
@@ -629,8 +630,8 @@ security_config = SecurityConfig(
 # pass the PipelinePredictionManager of yours (main_prediction in this case), and the IntegratedPipeline of yours (here its main_model), 
 # the SecurityConfig as config, and the api_key as api_key, and the max_workers of 4, more worker, means more concurrent requests (changeable), 
 # the task_timeout as 30 (changeable), and the max_retries as 3 (changeable).
-async_manager = PipelineAsyncManager(main_model, 
-        main_prediction, # your previous initialized PipelinePredictionManager
+async_manager = PipelineAsyncManager(class_model, 
+        class_main, # your previous initialized PipelinePredictionManager
         config=security_config, 
         state_file=None, # state file is used to load known security logs ex: ip used, ip blacklisted, etc.
         security_level=SecurityLevel.PRODUCTION, # production level security initiated
@@ -656,7 +657,7 @@ async_manager.start(method='Transformer_included', bootstrap_token=None) # booth
 # IMPORTANT NOTE: the async_predict variable will return all the prediction results, prediction success, failures, so you can directly see how the model predicts each batch of the given sample.
 
 payloads = {'test_titles': test_titles, 'label_map': label_map, 'rules': rules, 'use_transformer': True}
-async_predict = wrapper.prediction_method(payloads, X, y_samples=y, chunk_size=1000,
+async_predict = wrapper.prediction_method(payloads, s_X, s_y_samples=y, chunk_size=1000,
                  max_predictions=3, task="auto", timeout=1000,
                  api_key=api_key, client_ip=None, overall_timeout=20000,
                  stop_on_error=False)
