@@ -162,6 +162,7 @@ def train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_col
 
     one_train_round(memory_name, main_model, db_path, X, y, with_training,
         task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
+    return main_prediction, main_model
     
 
 def one_run(db_path, X, y, task=None, pred_config=None, label_csv=None, feature_cols=None, 
@@ -298,9 +299,9 @@ if mode == 'one_run':
     results, chosen_label, confidence = one_run(f_db_path, X, y, task='regression', pred_config=config, 
                                 label_csv=None, feature_cols=feature_cols)
 else:
-    train_run(f_db_path, s_X, s_y, task='classification', pred_config=None, 
+    class_main, class_model = train_run(f_db_path, s_X, s_y, task='classification', pred_config=None, 
                                             label_csv='ManualsTraining.txt', feature_cols=None)
-    train_run(f_db_path, X, y, task='regression', pred_config=config, 
+    reg_main, reg_model = train_run(f_db_path, X, y, task='regression', pred_config=config, 
                                 label_csv=None, feature_cols=feature_cols)
 
     results, chosen_label, confidence = one_run(f_db_path, s_X, s_y, with_training=False)
@@ -464,7 +465,7 @@ agent_2_id = 'ID-02'
 
 
 # function must be 'async' to use the await syntaxes below:
-async def agent_test(task='classification', x=None, y=None, titles=None, rules=None, label_map=None):
+async def agent_test(task='classification', x=None, y=None, titles=None, rules=None, label_map=None, main_prediction=None, main_model=None):
 
    # NOTE:
    # shared_auth_token : the secret_key you have alread made
@@ -588,8 +589,8 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
 
 
 # Initiate agent_test
-asyncio.run(agent_test(task='classification', X=s_X, y=s_y, titles=test_titles, rules=rules, label_map=label_map))
-asyncio.run(agent_test(task='regression', X=X, y=y))
+asyncio.run(agent_test(task='classification', X=s_X, y=s_y, titles=test_titles, rules=rules, label_map=label_map, main_prediction=class_main, main_model=class_model))
+asyncio.run(agent_test(task='regression', X=X, y=y, main_prediction=reg_main, main_model=reg_model))
 
 # Step 2
 from AbstractIntegratedModule import PipelineAsyncManager
