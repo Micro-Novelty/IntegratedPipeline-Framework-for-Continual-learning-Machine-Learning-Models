@@ -61,7 +61,7 @@ def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_con
         main_prediction.config = config
 
     # initialize label map name if its None in the memory database
-    if label_map is None and not label_csv is None:
+    if label_map is None:
         titles, _, label_map = main_prediction.load_labels_from_csv(
             label_csv,  # the name of your .txt file with CSV format.
             'window_title', 'label')
@@ -231,7 +231,7 @@ if mode == 'one_run':
     results, chosen_label, confidence = one_run(f_db_path, s_X, s_y, task='classification', pred_config=None, 
                                             label_csv='ManualsTraining.txt', feature_cols=None)
     results, chosen_label, confidence = one_run(f_db_path, X, y, task='regression', pred_config=config, 
-                                label_csv='energy_training.txt', feature_cols=feature_cols)
+                                label_csv=None, feature_cols=feature_cols)
 else:
     train_run(f_db_path, s_X, s_y, task='classification', pred_config=None, 
                                             label_csv='ManualsTraining.txt', feature_cols=None)
@@ -600,25 +600,22 @@ sec_main_model = IntegratedPipeline(
 
 sec_main_prediction = PipelinePredictionManager(
    sec_main_model, # your initialized pipeline
-   label_csv='energy_training.txt', 
+   label_csv=None, 
    # your filename that contains the csv and contains the CSV format.
    # the Agent will automatically searched the nearby folder like: downloads, data, and desktop folder.
    target_title='window_title', label='label')
 
-titles, _, sec_label_map = main_prediction.load_labels_from_csv(
-   'energy_training.txt',  # the name of your .txt file with CSV format.
-   'window_title', 'label')
 
-sec_main_model.initialize_mlp_model(titles=test_titles, rules=rules, label_map=sec_label_map, input_dim=input_dim, output_dim=num_classes, hidden_layers=[12, 17, 35], use_qat=False, qcfg=None)
+sec_main_model.initialize_mlp_model(titles=test_titles, rules=rules, label_map=None, input_dim=input_dim, output_dim=num_classes, hidden_layers=[12, 17, 35], use_qat=False, qcfg=None)
 
-sec_main_model.initialize_transformer_model(titles=test_titles, rules=rules, label_map=sec_label_map, vocab_size=1, num_classes=num_classes, d_model=128, n_heads=4, n_features=len(feature_cols),
+sec_main_model.initialize_transformer_model(titles=test_titles, rules=rules, label_map=None, vocab_size=1, num_classes=num_classes, d_model=128, n_heads=4, n_features=len(feature_cols),
                                                 attn_dropout=0.1, ffn_dropout=0.05, weight_decay=1e-4, task='regression')
 
-sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=sec_label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
-sec_main_model.train_mlp_model(titles=test_titles, rules=rules, label_map=sec_label_map, X=X, y=y, task='regression', train_epochs=500, momentum=0.9, lr=0.01)
-sec_main_model.train_transformer(titles=test_titles, rules=rules, label_map=sec_label_map, X=X, y=y,  task='regression', d_model=128, train_epochs=10, 
+sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=None, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+sec_main_model.train_mlp_model(titles=test_titles, rules=rules, label_map=None, X=X, y=y, task='regression', train_epochs=500, momentum=0.9, lr=0.01)
+sec_main_model.train_transformer(titles=test_titles, rules=rules, label_map=None, X=X, y=y,  task='regression', d_model=128, train_epochs=10, 
                                     mode='dynamic_backward', lr=0.5, batch_size=4)
-sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=sec_label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
+sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=None, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
 
 
 wrapper = PipelineAsyncManager(sec_main_model, 
@@ -901,7 +898,7 @@ train_epochs=100, batch_size=2,
 train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
 
 transformer_probs, attn_weights, prediction = sec_main_prediction.knn_forward_inference(X, y,                                                                                       
-label_map=sec_label_map, # Label map can be inserted in here, or you Can set this to None,
+label_map=None, # Label map can be inserted in here, or you Can set this to None,
                      # if set to None this function will only returns Transformer prob and attn_weights.,
 task='regression', training=False) # for returning kNN Transformer probabilities and attention weights only.
 # Note: - train_mode can be set to 'dynamic_backward' if you have very large dataset, this makes Transformer Q, K, V be much more dynamic and grants flexible learning behavior for large dataset.
