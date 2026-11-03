@@ -102,11 +102,13 @@ ________________________________________________________________________________
 ### Github Link (for Visiting and cloning)
 > - https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework
 
-- The library also includes precompiled binaries for:
- - aarch64 manylinux (accepts version 2.17+) architecture, accepts python version 3.10, 3.11 only.
- - aarch64 musllinux (accepts version 1.2+) architecture, accepts python version 3.10, 3.11 only.
- - Windows 64 bit architecture (python 3.10, 3.11, 3.12, 3.13 only)
- - single tarball file for broad compatibilty accross different Machines.
+- The library published in PyPi includes precompiled binaries (Python wheels) for:
+ - aarch64 manylinux_2_17+ architecture -> Python version 3.10, 3.11 only.
+ - aarch64 musllinux_1.2+ architecture -> Python version 3.10, 3.11 only.
+ - Windows 64 bit architecture (Python 3.10, 3.11, 3.12)
+ - single tarball file for broad compatibilty accross different Architectures.
+ - Note:
+   - For Linux x86-64 and Mac-OS Python Wheels can be downloaded using pip steps below.
  ____________________________________________________________________________________________________
 - Library installation if you dont have aarch64 setup, you can download the correct wheel for your setup in this repository or by using pip:
   - ✨ use pip for downloading the correct wheels for your setup:
