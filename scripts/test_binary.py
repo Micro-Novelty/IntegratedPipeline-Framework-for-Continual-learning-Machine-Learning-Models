@@ -589,8 +589,8 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
 
 
 # Initiate agent_test
-asyncio.run(agent_test(task='classification', X=s_X, y=s_y, titles=test_titles, rules=rules, label_map=label_map, main_prediction=class_main, main_model=class_model))
-asyncio.run(agent_test(task='regression', X=X, y=y, main_prediction=reg_main, main_model=reg_model))
+asyncio.run(agent_test(task='classification', x=s_X, y=s_y, titles=test_titles, rules=rules, label_map=label_map, main_prediction=class_main, main_model=class_model))
+asyncio.run(agent_test(task='regression', x=X, y=y, main_prediction=reg_main, main_model=reg_model))
 
 # Step 2
 from AbstractIntegratedModule import PipelineAsyncManager
