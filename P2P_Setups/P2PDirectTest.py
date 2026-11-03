@@ -7,15 +7,7 @@ from pipeline_setup import train_run
 import asyncio
 import traceback
 
-# Create a new instance if you decided to not do any Continual learning behavior.
-prediction_manager = PipelinePredictionManager(main_model, label_csv=<your_training_labels.txt>, target_title=<target_title>, label=<target_label>)
-
-secondary_model = IntegratedPipeline(memory_name=memory_name, 
-                use_async=True, agent_port=8080, 
-                ssl_cert_file=cert_file, ssl_key_file=key_file) # provide cert_file path or key_file path (optional)
-# secondary model of integrated pipeline is critical for ARM64 environment to prevent socket conflict during P2P with the first Integrated pipeline instance.
-# make sure that the agent_port in secondary_model must be different from agent_port in first IntegratedPipeline instance you initialized to prevent address already in use error [Errno 48].
-
+# =========== P2P ====================
 print("=== SECURE PEER-TO-PEER CLUSTER ===")
 
 # CohesiveAgentDeployment is deeply tied and coupled with AgentDistributedInference,
@@ -25,7 +17,7 @@ print("=== SECURE PEER-TO-PEER CLUSTER ===")
 
 # example task (change to regression if yours are regression task)
 # function must be async to use the await syntax (Non-blocking)
-async def p2p_tasks(X=None, y=None, task='classification', prediction_manager=None)
+async def p2p_tasks(X=None, y=None, titles=None, rules=None, task='classification', prediction_manager=None, secondary_model=None)
    main_model.distribution.enable_ssl = False # set to false if you dont have SSL key and CERT, this code would instruct AgentDistributedInference that you don't have SSL, and provide you a regular unsecured socket (Not necessary for production)
    secondary_model.distribution.enable_ssl = False
 
@@ -161,10 +153,32 @@ async def p2p_tasks(X=None, y=None, task='classification', prediction_manager=No
 
 # Initiate tasks:
 if __name__ == '__main__':
+   X, y = '<your classification sample>'
+
    # match to your own task (classification or regression based on your samples)
    # if you have X samples, you can use the previous prediction_manager loaded by train_run() for stateful continual learning behavior
-   X, y = '<your x and y samples>'
-   prediction_manager = train_run(db_path, X, y, task='classification', pred_config=None, 
-              label_csv='ManualsTraining.txt', feature_cols=None)
+   prediction_manager, main_model = train_run(db_path, X, y, task='classification', pred_config=None, 
+              label_csv='ManualsTraining.txt', feature_cols=None, port=5000) # use port 5000
+   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it
+   # this new instance used a different port for P2P so it doesnt conflict with other instance
+   _, secondary_model = train_run(db_path, X, y, task='classification', pred_config=None, 
+              label_csv='ManualsTraining.txt', feature_cols=None, port=5001) # use port 5001
 
-   p2p_tasks(X, y, task='classification', prediction_manager=prediction_manager)
+   # insert the IntegratedPipeline instance and PipelinePredictionManager for Prediction during P2P
+   # insert secondary IntegratedPipeline model for p2p to make sure no same instance share the same port.
+   p2p_tasks(X, y, titles=None, rules=None, task='classification', prediction_manager=prediction_manager, model=main_model, secondary_model=secondary_model)
+
+   # We use the previous PJME_MW for example only (change with your actual sample)
+   daily = ...
+   feature_cols = ...
+   X2, y2, config = secondary_manager.prepare_dataset(daily, feature_cols, target_col_name="PJME_MW",
+                                    window_size=30, horizon=5)
+
+   prediction_manager, main_model = train_run(db_path, X2, y2, task='regression', pred_config=config, # get your previous pred_config. 
+              label_csv=None, feature_cols=len(feature_cols, port=5003) # use port 5003
+   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it
+   # this new instance used a different port for P2P so it doesnt conflict with other instance
+   _, secondary_model = train_run(db_path, X2, y2, task='regression', pred_config=config, 
+              label_csv=None, feature_cols=feature_cols, port=5004) # use port 5004
+
+   p2p_tasks(X2, y2, titles=None, rules=None, task='regression', prediction_manager=prediction_manager, model=main_model, secondary_model=secondary_model)
