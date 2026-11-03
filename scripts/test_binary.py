@@ -350,7 +350,7 @@ titles, _, label_map = main_prediction.load_labels_from_csv(
 # set input_dim and num_classes based on the shape of X and the number of unique labels in label_map.
 # this are important for the MLP and Transformer model to know how many input features and output classes it has to handle.
 input_dim = X.shape[1] if X.ndim > 1 else 1
-num_classes = max(len(label_map), int(np.max(y)) + 1)
+num_classes = max(int(len(label_map), int(np.max(y)) + 1)
 
 '''("Listening to Spotify", "entertainment"),
     ("Playing Steam Game", "gaming"),
