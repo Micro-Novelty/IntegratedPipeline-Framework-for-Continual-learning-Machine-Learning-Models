@@ -1187,7 +1187,7 @@ ________________________________________________________________________________
     knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_training,
         task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
 
-    return main_prediction, label_map
+        return main_prediction, label_map
 
     def knn_predict_run(main_prediction, X, y, label_map=None):
         transformer_probs, attn_weights, prediction = main_prediction.knn_forward_inference(X, y,
