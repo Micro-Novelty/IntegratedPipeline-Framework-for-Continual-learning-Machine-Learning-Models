@@ -89,7 +89,7 @@ def one_train_round(memory_name, main_model, db_path, X, y, with_training=False,
         # set input_dim and num_classes based on the shape of X and the number of unique labels in label_map.
         # this are important for the MLP and Transformer model to know how many input features and output classes it has to handle.
         input_dim = X.shape[1] if X.ndim > 1 else 1
-        num_classes = y.shape[1]
+        num_classes = max(len(label_map), int(np.max(y)) + 1)
 
         main_model.initialize_mlp_model(titles=titles, rules=rules, label_map=label_map, input_dim=input_dim, output_dim=num_classes, hidden_layers=[12, 17, 35], use_qat=use_qat, qcfg=qcfg)
 
@@ -118,7 +118,7 @@ def one_train_round(memory_name, main_model, db_path, X, y, with_training=False,
 
     elif task == 'regression':
         input_dim = X.shape[1] if X.ndim > 1 else 1
-        num_classes = max(len(label_map), int(np.max(y)) + 1)
+        num_classes = y.shape[1]
 
         main_model.initialize_mlp_model(titles=titles, rules=rules, label_map=label_map, input_dim=input_dim, output_dim=num_classes, hidden_layers=[12, 17, 35], use_qat=True, qcfg=qcfg)
 
