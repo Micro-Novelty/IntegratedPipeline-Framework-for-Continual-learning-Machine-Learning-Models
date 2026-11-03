@@ -1232,12 +1232,13 @@ async def p2p_tasks(X=None, y=None, titles=None, rules=None, task='classificatio
 # Initiate tasks:
 if __name__ == '__main__':
    X, y = '<your classification sample>'
-
    # match to your own task (classification or regression based on your samples)
-   # if you have X samples, you can use the previous prediction_manager loaded by train_run() for stateful continual learning behavior
+
+   # if you have X samples, you can use the previous prediction_manager and main_model loaded by train_run() for stateful continual learning behavior
    prediction_manager, main_model = train_run(db_path, X, y, task='classification', pred_config=None, 
               label_csv='ManualsTraining.txt', feature_cols=None, port=5000) # use port 5000
-   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it
+
+   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it,
    # this new instance used a different port for P2P so it doesnt conflict with other instance
    _, secondary_model = train_run(db_path, X, y, task='classification', pred_config=None, 
               label_csv='ManualsTraining.txt', feature_cols=None, port=5001) # use port 5001
@@ -1249,12 +1250,13 @@ if __name__ == '__main__':
    # We use the previous PJME_MW for example only (change with your actual sample)
    daily = ...
    feature_cols = ...
-   X2, y2, config = main_prediction.prepare_dataset(daily, feature_cols, target_col_name="PJME_MW",
+   X2, y2, config = secondary_manager.prepare_dataset(daily, feature_cols, target_col_name="PJME_MW",
                                     window_size=30, horizon=5)
 
    prediction_manager, main_model = train_run(db_path, X2, y2, task='regression', pred_config=config, # get your previous pred_config. 
               label_csv=None, feature_cols=len(feature_cols, port=5003) # use port 5003
-   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it
+
+   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it,
    # this new instance used a different port for P2P so it doesnt conflict with other instance
    _, secondary_model = train_run(db_path, X2, y2, task='regression', pred_config=config, 
               label_csv=None, feature_cols=feature_cols, port=5004) # use port 5004
