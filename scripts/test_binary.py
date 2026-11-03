@@ -303,6 +303,11 @@ else:
                                             label_csv='ManualsTraining.txt', feature_cols=None)
     reg_main, reg_model = train_run(f_db_path, X, y, task='regression', pred_config=config, 
                                 label_csv=None, feature_cols=feature_cols)
+    
+    sec_class_main, sec_class_model = train_run(f_db_path, s_X, s_y, task='classification', pred_config=None, 
+                                            label_csv='ManualsTraining.txt', feature_cols=None)
+    sec_reg_main, sec_reg_model = train_run(f_db_path, X, y, task='regression', pred_config=config, 
+                                label_csv=None, feature_cols=feature_cols)
 
     results, chosen_label, confidence = one_run(f_db_path, s_X, s_y, with_training=False)
     results, chosen_label, confidence = one_run(f_db_path, X, y, with_training=False)
@@ -590,8 +595,8 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
 
 # Initiate agent_test
 asyncio.run(agent_test(task='classification', x=s_X, y=s_y, titles=test_titles, rules=rules, label_map=label_map, 
-                       main_prediction=class_main, main_model=class_model, sec_main_model=sec_main_model))
-asyncio.run(agent_test(task='regression', x=X, y=y, main_prediction=reg_main, main_model=reg_model, sec_main_model=sec_main_model))
+                       main_prediction=class_main, main_model=class_model, sec_main_model=sec_class_model))
+asyncio.run(agent_test(task='regression', x=X, y=y, main_prediction=reg_main, main_model=reg_model, sec_main_model=sec_reg_model))
 
 # Step 2
 from AbstractIntegratedModule import PipelineAsyncManager
