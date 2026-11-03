@@ -92,7 +92,7 @@ ________________________________________________________________________________
 - Development Stage on PyPi: [![PyPI version](https://img.shields.io/pypi/v/AbstractIntegratedModule.svg)](https://pypi.org/project/AbstractIntegratedModule/) Official Release.
 - Author and Maintainer: Micro-Novelty and EpsitronNet-bot.
 - library Source-Code is Open-sourced with MIT License.
-- Purpose: Specifically Designed for providing Non-LLM AI Agent Framework for edge Devices, Optimized for ARM64 architecture.
+- Purpose: Specifically Designed to provide Framework to build Stateful continual learning Machine Learning Models optimized for Edge devices (ARM64).
 - Library installation: 
   ```bash
   pip install AbstractIntegratedModule
@@ -302,9 +302,11 @@ ________________________________________________________________________________
 >     - cryptography
      
     
-[>] for labels assignation:
+[>] for labels assignation used for Training and prediction on Classification task only:
 - CSV file that contains training labels and titles used for training and prediction label map, example will be provided below, Go to Step's for in-depth Usage below.
 - [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
+- Note:
+  - Regression sample will have its own custom prediction Config.
 _______________________________________________________________________________________________________________________
 ### Requirements for Docker container
 - Dockerfile (For Container assembler) 
@@ -522,7 +524,8 @@ ________________________________________________________________________________
            
          
      
-3. Create CSV file that contains training labels and titles (Optional for training using texts):
+3. Create CSV file that contains training labels and titles:
+   - (OPTIONAL, for training and prediction on classification tasks only. Regression sample will have its own custom prediction config):
    -  Example format:
       ```txt
       window_title,label
@@ -888,10 +891,10 @@ ________________________________________________________________________________
       'window_title', 'label')
 
    # NOTE:
-   # set input_dim and num_classes based on the shape of X and the number of unique labels in label_map.
+   # set input_dim and num_classes based on the shape of X and your y sample.
    # this are important for the MLP and Transformer model to know how many input features and output classes it has to handle.
    input_dim = X.shape[1] if X.ndim > 1 else 1
-   num_classes = max(len(label_map), int(np.max(y)) + 1)
+   num_classes = y.shape[1]
 
    main_model.model_setup(mlp_train_epochs=1000, tf_train_epochs=10, tf_lr=0.1, mlp_lr=0.5,
    lstm_train_epochs=50, lstm_lr=5e-1, lstm_hidden_dim=64, tf_heads=4, tf_d_model=32,
@@ -957,7 +960,7 @@ ________________________________________________________________________________
 
   - ### [Workflow for Continual learning with Memory persistence] :
   - ```python
-    # save as pipeline_setup.py
+    # save as pipeline_setup.py (or change it with other names)
     # NOTE: this workflow is customizable specify to your needs.
     
     from AbstractIntegratedModule import IntegratedPipeline
@@ -969,6 +972,7 @@ ________________________________________________________________________________
     import numpy as np
     
     # db_path is your custom initialized sqlite database name (ex: data_storage.db)
+    # label_csv is the name of your .txt file that contains labels with csv format used for Prediction.
     def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_config=None, cols=None):
         # set_memory() is used to load the Model's Memory, csv fie for Training, task and label map using you previouslyr given X and y samples
         # new_memory argument is used to declare a new memory name if the searched memory is not present.
@@ -1064,7 +1068,7 @@ ________________________________________________________________________________
     
         elif task == 'regression':
             input_dim = X.shape[1] if X.ndim > 1 else 1
-            num_classes = max(len(label_map), int(np.max(y)) + 1)
+            num_classes = y.shape[1]
     
             main_model.initialize_mlp_model(titles=titles, rules=rules, label_map=label_map, input_dim=input_dim, output_dim=num_classes, hidden_layers=[12, 17, 35], use_qat=True, qcfg=qcfg)
     
@@ -1125,7 +1129,7 @@ ________________________________________________________________________________
         
     ```
     NOTE:
-    - ```one_run()``` function contains the whole Train and Predict functions, great for testing on small samples first as a validation test before you Test against real samples.
+    - ```one_run()``` function contains the whole Train and Predict functions, great for testing on small samples first as a validation test before you Test the Models against real samples.
 
     ### [USAGE EXAMPLE] :
     ```python
@@ -1162,18 +1166,21 @@ ________________________________________________________________________________
     # config is needed for prediction on regression tasks:
     s_X, s_y, config = get_dataset(daily, feature_cols, target_col_name="PJME_MW",
                                       window_size=30, horizon=8) # TASK B is regression type (e.g task B has shape (500, 8))
-    t_X, t_y = '<load your third X and y samples> TASK C (e.g task C must have the same shape as task A and B (500, 8) for prediction later)
+    t_X, t_y = '<load your third X and y samples> TASK C (e.g task C must have the same shape as task A and B (500, 8) for prediction later).
 
     db_path = 'model_memory_storage.db' # path to your sqlite database, customizable name (must put .db in the end).
 
     # ========= TESTING BLOCK (for validation test) =============
+    # label_csv is the name of your .txt file that contains labels with csv format used for prediction on classification task only.
     # FOR TESTING ON CLASSIFICATION TASK 
     results, chosen_label, confidence = one_run(db_path, X, y, task='classification', pred_config=None, 
                                             label_csv='ManualsTraining.txt', feature_cols=None)
 
     # FOR TESTING ON REGRESSION TASK
+    # label_csv set to None for regression sample.
+    # label map can be set to None for regression samples, labels used for prediction on regression sample will use prediction config (pred_config).
     results, chosen_label, confidence = one_run(db_path, X, y, task='regression', pred_config=config, 
-                                label_csv='energy_training.txt', feature_cols=feature_cols)
+                                label_csv=None, feature_cols=feature_cols)
 
     # ========== CONTINUOUS TRAIN AND PREDICTION OVER REAL SAMPLES =============
     # TRAIN ON TASK A
@@ -1188,8 +1195,74 @@ ________________________________________________________________________________
     # PREDICT ON TASK C (TASK C must have correlation with task A or B)
     # with_training=False will not trigger any Training.
     # eventually since you have already Trained the model on task A and B, its memory name, X and Y samples, label_map, feature_cols and config is saved to database, so prediction is now automatic, allowing users to continuously predict over the previously trained samples.
-    results, chosen_label, confidence = one_run(db_path, t_X, t_y, with_training=False) 
+    results, chosen_label, confidence = one_run(db_path, t_X, t_y, with_training=False)
 
+    # ================== Continual learning setup for kNN Transformer (OPTIONAL, can be removed) =======================
+    def knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_training=False, titles=None, rules=None, 
+                task=None, label_map=None, feature_cols=None, label_csv=None, use_qat=True, qcfg=None, config=None):
+    if task == 'classification':
+        # NOTE:
+        # set input_dim and num_classes based on the shape of X and the number of unique labels in label_map.
+        # this are important for the MLP and Transformer model to know how many input features and output classes it has to handle.
+        input_dim = X.shape[1] if X.ndim > 1 else 1
+        if label_map is not None:
+            num_classes = max(len(label_map), int(np.max(y)) + 1)
+        else:
+            num_classes = int(np.max(y)) + 1
+
+        knn_tf = main_prediction.initialize_knn_transformer(
+            vocab_size=1, task='classification', num_classes=num_classes, d_model=32, n_heads=4, n_features=None, 
+            memory_capacity=10000,
+            memory_k=5, memory_metric='euclidean')  
+
+        loaded = main_prediction.load_memory_head_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
+        if not loaded and with_training:
+            losses, accs, _ = main_prediction.knn_forward_inference(X, y,
+            label_map=label_map, # Label map can be safely set to None during Training phase.
+            training=True, train_epochs=10, task='classification', batch_size=64,
+            train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
+
+            # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
+            save_memory(db_path, memory_name, label_csv, X, y, task, label_map, feature_cols=feature_cols, config=config)
+            main_prediction.save_memory_head_setup(memory_name) # This function saves the Per-Head memory setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
+
+    elif task == 'regression':
+        input_dim = X.shape[1] if X.ndim > 1 else 1
+        num_classes = y.shape[1]
+
+        knn_tf = main_prediction.initialize_knn_transformer(
+            vocab_size=1, task='regression', num_classes=num_classes, d_model=32, n_heads=4, n_features=len(feature_cols), 
+            memory_capacity=10000,
+            memory_k=5, memory_metric='euclidean')  
+
+        loaded = main_prediction.load_memory_head_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
+        if not loaded and with_training:
+            losses, accs, _ = main_prediction.knn_forward_inference(X, y,
+            label_map=label_map, # Label map can be safely set to None during Training phase.
+            training=True, train_epochs=10, task='regression', batch_size=64,
+            train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
+
+            # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
+            save_memory(db_path, memory_name, label_csv, X, y, task, label_map, feature_cols=feature_cols, config=config)
+            main_prediction.save_memory_head_setup(memory_name) # This function saves the Per-Head memory setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
+
+    else:
+        print('[>] Invalid task name')
+
+    def knn_train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, 
+            new_memory=None, with_training=True):
+    memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
+    knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_training,
+        task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
+
+    return main_prediction, label_map
+
+    def knn_predict_run(main_prediction, X, y, label_map=None):
+        transformer_probs, attn_weights, prediction = main_prediction.knn_forward_inference(X, y,
+        label_map=label_map, # Label map can be inserted in here, or you Can set this to None,
+                            # if set to None this function will only returns Transformer prob and attn_weights.
+        task='classification', training=False)
+    
     ```   
   - Note:
     - Classification Task workflow script setup can be downloaded here: [classification_usage_script](scripts/classification_usage_scripts.py)
@@ -1198,7 +1271,7 @@ ________________________________________________________________________________
     - Continual learning example script: [example_script](scripts/example_script.py)
 
    
-4. B. Using Standalone IntegratedPipeline Transformer:
+5. B. Using Standalone IntegratedPipeline Transformer:
    ```python
    # if you want to use the IntegratedPipeline Transformer only, you can use this setup:
    # ideal when you want blazing Fast Transformer Training and prediction, and the Transformer weights are loaded using JSON, this made Transformer Training much more feasible and easily intuitive for Beginners who wants Complex abstraction models that can run on cheap Edge devices.
@@ -1254,11 +1327,30 @@ ________________________________________________________________________________
    ```
    - Note: script setup can be downloaded here: [transformer_usage](scripts/transformer_usage.py)
    
-5. C. Use kNN-Augmented Transformer:
+6. C. Use kNN-Augmented Transformer:
    Note: kNN-Augmented Transformer doesn't have its own Prediction pipeline flow, meaning after the Transformer forward method is called, the probabilities of the kNN Transformer will be returned and no prediction is made, We decided to be better this way because it grants Flexibility over how Prediction will be made in your favour:
    - Example Code:
    - ```python
+      # ==== Use pipeline_setup.py continual learning workflow ======
+      # = for classification:
+      X, y = '<your X and y samples>'
+      # use any X and y for classification (plus label map using label_csv)
+      main_prediction, label_map = knn_train_run(f_db_path, X, y, task='classification', pred_config=config, 
+                                      label_csv="ManualsTraining.txt", feature_cols=None)
+      main_prediction = knn_predict_run(main_prediction, X, y, label_map=label_map)
 
+      # for regression:
+      # use the previous example of regression sample (PJME_MW Sample).
+      X, y, config = main_prediction.prepare_dataset(daily, feature_cols, target_col_name="PJME_MW",
+                                       window_size=30, horizon=8)
+      
+      # label_map is None for regression sample, labels for prediction will use prediction config              
+      main_prediction = knn_train_run(f_db_path, X, y, task='regression', pred_config=config, 
+                                      label_csv=None, feature_cols=feature_cols)
+      main_prediction = knn_predict_run(main_prediction, X, y, label_map=None)
+
+     
+      # other ways to initialize knn Transformer:
       # Initialize kNN Transformer:
       knn_tf = sec_main_prediction.initialize_knn_transformer(
        vocab_size=1, task='<your_task>', num_classes=num_classes, d_model=32,
@@ -1266,17 +1358,23 @@ ________________________________________________________________________________
        memory_capacity=10000,
        memory_k=5, memory_metric='euclidian')
      # NOTE:
-     # - vocab_size and num_classes is a MUST, meaning you have to pass the number of classes of your samples, and vocab_size of your data (can be set to vocab_size=1 for regression task)
+     # - vocab_size and num_classes is a must to pass, meaning you have to pass the number of classes of your samples, and vocab_size of your data (can be set to vocab_size=1 for regression task)
      # - memory_capacity = the amount of memory for the kNN to hold
      # - memory_k = "K" is the central hyperparameter that defines the number of nearby training data points the algorithm looks at to make a prediction, more memory_k => more nearby training points the model can look up.
+
+     memory_loaded = main_prediction.load_memory_head_setup(memory_name) # This function is used to load the saved PerHeadMemory used by kNN Transformer inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
+
      
-     
-     # knn_forward_inference() lives inside PipelinePredictionManager, so you need to call this class to initiate the knn_forward_inference() function.
-     losses, accs, _ = main_prediction.knn_forward_inference(X, y,
-     label_map=None, # Label map can be safely set to None during Training phase.
-     task='regression',
-     train_epochs=100, training=True, batch_size=2,
-     train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
+     # knn_forward_inference() is placed inside PipelinePredictionManager, you need to call this class to initiate the knn_forward_inference() function.
+     # memory loaded -> skip Training.
+     if memory_loaded:
+         losses, accs, _ = main_prediction.knn_forward_inference(X, y,
+         label_map=None, # Label map can be safely set to None during Training phase.
+         task='regression',
+         train_epochs=100, training=True, batch_size=2,
+         train_mode='dynamic_backward', lr=0.1) # for Training kNN Transformer only
+     else:
+         print('[>] kNN Transformer memory saved, skipping Training')
      
      transformer_probs, attn_weights, prediction = main_prediction.knn_forward_inference(X, y,
      label_map=label_map, # Label map can be inserted in here, or you Can set this to None,
@@ -1287,8 +1385,7 @@ ________________________________________________________________________________
             # - y sample must be one-hot encoded manually before its passed to the function, since the function above will not automatically one-hot encode the y-sample.
 
       # ==== SAVING MEMORY BLOCK =====
-      main_prediction.pipeline.storage.save_hnsw_memory(memory_name) # This function saves the HNSW setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
-      main_prediction.pipeline.storage.save_memory_head(memory_name) # This function saves the Per-Head memory setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
+      main_prediction.save_memory_head_setup(memory_name) # This function saves the Per-Head memory setup inside KNNAugmentedTransformer class to the the same database (activity_log.db) so it can be retrieved as Retrievable Memory later.
 
       # Get binary blob to save target memory:
       blob = main_model.model2.target_memory_to_bytes()
@@ -1299,8 +1396,7 @@ ________________________________________________________________________________
       main_prediction.pipeline.storage.load_hnsw_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
       main_prediction.pipeline.storage.load_head_memory_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
       main_model.storage.load_target_memory_row(memory_name) # load target memory row for kNN Transformer
-
-     # .... # your own custom kNN prediction block.
+ 
      ```
       
      
