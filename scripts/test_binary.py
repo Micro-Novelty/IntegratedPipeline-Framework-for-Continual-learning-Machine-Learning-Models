@@ -61,7 +61,7 @@ def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_con
         main_prediction.config = config
 
     # initialize label map name if its None in the memory database
-    if label_map is None:
+    if label_map is None and not label_csv is None:
         titles, _, label_map = main_prediction.load_labels_from_csv(
             label_csv,  # the name of your .txt file with CSV format.
             'window_title', 'label')
