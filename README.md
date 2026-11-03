@@ -1697,7 +1697,7 @@ if __name__ == '__main__':
    # We use the previous PJME_MW for example only (change with your actual sample)
    daily = ...
    feature_cols = ...
-   X2, y2, config = main_prediction.prepare_dataset(daily, feature_cols, target_col_name="PJME_MW",
+   X2, y2, config = secondary_manager.prepare_dataset(daily, feature_cols, target_col_name="PJME_MW",
                                     window_size=30, horizon=5)
 
    prediction_manager, main_model = train_run(db_path, X2, y2, task='regression', pred_config=config, # get your previous pred_config. 
