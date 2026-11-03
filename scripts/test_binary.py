@@ -459,7 +459,6 @@ print(f'[=] Results: {async_predict}')
 # agent_2_id: this is the agent id you want to use for the second agent, in this case we use 'ID-02' (changeable).
 secret_key = 'my-ultra-safe-secret-key-for-authentication'
 filename = 'ManualsTraining.txt'
-main_model.timeout = 20000
 agent_1_id = 'ID-01'
 agent_2_id = 'ID-02'
 
@@ -478,7 +477,8 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
    # security_level:
       # PRODUCTION: secure for P2P networking,
       # DEVELOPMENT: not-secure for P2P networking
-
+   main_model.timeout = 20000
+    
    # Agent 1 - Primary (Port 5555)
    agent1 = CohesiveAgentDeployment(
       pipeline=main_model,
