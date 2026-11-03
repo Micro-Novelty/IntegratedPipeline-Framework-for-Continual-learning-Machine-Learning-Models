@@ -21,7 +21,7 @@ Machine Learning Framework that **Creates a Model that can Continuously learn, b
 > This framework does not provide a standalone, new novel Deep-learning algorithms for a near-perfect Continual learning behavior Model, it is a Python Framework that utilized SQlite database as a way to save Memory and provide a instruction to build a stateful Continual learning Memory augmented Machine learning model.
 > *Consider check:* [MANN introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
 
-![Issues](https://img.shields.io/github/issues/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models)
+[![Open Issues](https://img.shields.io/github/issues-raw/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models?label=Open%20Issues)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/issues)
 ![Security](https://img.shields.io/badge/security-scanned-green.svg)
 
 _________________________________________________________________________________
