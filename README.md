@@ -1338,7 +1338,7 @@ ________________________________________________________________________________
       # use any X and y for classification (plus label map using label_csv)
       main_prediction, label_map = knn_train_run(f_db_path, X, y, task='classification', pred_config=config, 
                                       label_csv="ManualsTraining.txt", feature_cols=None)
-      main_prediction = knn_predict_run(main_prediction, X, y, label_map=label_map)
+      knn_predict_run(main_prediction, X, y, label_map=label_map)
 
       # for regression:
       # use the previous example of regression sample (PJME_MW Sample).
@@ -1346,9 +1346,9 @@ ________________________________________________________________________________
                                        window_size=30, horizon=8)
       
       # label_map is None for regression sample, labels for prediction will use prediction config              
-      main_prediction = knn_train_run(f_db_path, X, y, task='regression', pred_config=config, 
+      main_prediction, _ = knn_train_run(f_db_path, X, y, task='regression', pred_config=config, 
                                       label_csv=None, feature_cols=feature_cols)
-      main_prediction = knn_predict_run(main_prediction, X, y, label_map=None)
+      knn_predict_run(main_prediction, X, y, label_map=None)
 
      
       # other ways to initialize knn Transformer:
