@@ -1,21 +1,37 @@
 ## Requirements and Installations
-[~] To run and execute IntegratedPipeline, Requirement's include Or see [Requirements](installation_guides/usage_needs.txt):
-- Python 3.10 -> Python 3.14.
-- pip install for quick usage:
+
+________________________________________________
+**Installation:**
+- Python version: Python 3.10 -> Python 3.14.
+- pip install for Quick install:
 - ```bash
   pip install AbstractIntegratedModule # or
   python -m pip install AbstractIntegratedModule
-  ```
-  
+  ``` 
 - NOTE: for Mac-OS or Linux x86-64 Users, consider downloading the correct python wheel for your setup using this command:
    - ```bash
      pip install abstractintegratedmodule --extra-index-url https://Micro-Novelty.github.io/abstract-modules/whl/ --break-system-packages
      ```
      Note: using this installation method grants you an up-to-date AbstractIntegratedModule library specifically for Mac-OS and Linux x86-64 users.
-     
-- X and y samples or titles and rules samples for Training and prediction (see Library in depth usage instructions below).
 
-> - [OPTIONAL] For using AbstractIntegratedModule Binaries for users who doesnt have pip Installed:
+**Requirements for IntegratedPipeline:**
+- X and y samples or test titles dataset and rules samples for Training and Prediction (see Library in depth usage instructions below).
+  - Test titles dataset and rules example can be seen in [main](main.py)
+
+- for labels assignation used for Training and prediction on Classification task only:
+ - .txt file that contains labels used for training and prediction in csv format, example will be provided below.
+ - [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
+ - Note:
+   - Regression sample will have its own custom separate prediction Config.
+   - Example .txt file for classification task with csv format: [ManualsTraining](ManualsTraining.txt)
+
+- P2P requirements:
+  - Two different ports and IPs in two different Machines.
+  - json file for peer IP lists (this will allow 2 different peers to connect): [example_peers_list](utility_setups/peer_ip_lists.json)
+    
+[OPTIONAL INSTALLATION METHOD]:
+- This installation method is needed for users who doesn't have pip Installed:
+> - [OPTIONAL] For using AbstractIntegratedModule Binaries:
 >  - (Optional) Download AbstractIntegratedModule Compiled Binary file extension manually in the repository for Users who can't use pip install (Choose one minimal, specified for your needs):
 >    - AbstractOptimizedModules for Optimizing Transformer using Cython (Optional)
 >    - AbstractIntegratedModule (Main library)
@@ -24,19 +40,12 @@
 >       - Supported OS: Mac-Os, linux x86-64 and Windows, bundled in zip folders.
 >   - (Optional) Install AbstractIntegratedModule Compiled binaries from release section:
 >   - (Optional) Libraries needed if pip is not installed (For using Compiled binary, not python wheels):
->     - Pandas
->     - aiohttp
+>     - Paiohttp
 >     - scikit-learn
 >     - numpy
->     - psutil
+>     - psutilandas
+>     - 
 >     - cryptography
-     
-    
-[>] for labels assignation used for Training and prediction on Classification task only:
-- CSV file that contains training labels and titles used for training and prediction label map, example will be provided below, Go to Step's for in-depth Usage below.
-- [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
-- Note:
-  - Regression sample will have its own custom prediction Config.
 _______________________________________________________________________________________________________________________
 ### Requirements for Docker container
 - Dockerfile (For Container assembler) 
@@ -159,4 +168,5 @@ ________________________________________________________________________________
      # Stop all agents
      docker-compose down
      ```
-   
+    
+
