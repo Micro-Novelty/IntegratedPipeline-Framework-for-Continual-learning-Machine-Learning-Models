@@ -16,9 +16,9 @@ ________________________________________________________________________________
 _________________________________________________________________________________________________
 
 ### [Intro]:
-Machine Learning Framework that **Creates a Model that can Continuously learn, backed by *augmented memory* from SQLite Database to store Weights, in which each a Model memory is auditable, transparent, and allows User to Create a different memory for the Model to learn new things, without overwriting the *previous saved, Trained Weights* inside the SQlite database from different tasks**. Users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, Train the current Model with another task while preserving the previous Trained weights as memory inside the SQlite Database.
+AbstractIntegratedModule is Python Machine Learning Framework that **creates a Model that can Continuously learn, backed by *augmented memory* from SQLite Database to store Weights, in which each a Model memory is auditable, transparent, and allows User to Create a different memory for the Model to learn new things, without overwriting the *previous saved, Trained Weights* inside the SQlite database from different tasks**. Users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, Train the current Model with another task while preserving the previous Trained weights as memory inside the SQlite Database.
 > [!IMPORTANT]
-> This framework does not provide a standalone, new novel Deep-learning algorithms for a near-perfect Continual learning behavior Model, it is a Python Framework that utilized SQlite database as a way to save Memory and provide a instruction to build a stateful Continual learning Memory augmented Machine learning model.
+> This Framework does not provide a standalone, new novel Deep-learning algorithms for a near-perfect Continual learning behavior Model, it is a Python Framework that utilized SQlite database as a way to save Memory and provide a instruction to build a stateful Continual learning Memory augmented Machine learning model.
 > *Consider check:* [MANN introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
 
 [![Open Issues](https://img.shields.io/github/issues-raw/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models?label=Open%20Issues)](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/issues)
@@ -30,9 +30,9 @@ ________________________________________________________________________________
 __________________________________________________________________________________
 
 - Workflow:
-  *the below workflow explanation is used to explain how user can use our framework*
-  - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real Prediction.
-  - Note: *'model' here refers to a single Instance of IntegratedPipeline instance*
+  *the below workflow explanation is used to explain how user can use our Framework*
+  - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same Model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real prediction.
+  - Note: *'model' here refers to a single instance of IntegratedPipeline instance*
   - Example workflow > (*this method is scalable and not restricted to one model*) :
   - ```[model initialized using 'memory-A' memory name -> train on Task A -> save weights -> change memory name to 'memory-B' -> train on task B -> save weights -> user prefer to load memory for prediction on task A -> load weights for task A -> weights for task B remains unchanged and not deleted -> ...]```
   Note -> This method is scalable and supports multiple Models sharing the same Memory name.
@@ -41,9 +41,9 @@ ________________________________________________________________________________
     - Workflow 1 (Training) ->  ```[you want to switch from task A to task B for prediction, but you haven't train your model on task B -> train the model first on task B -> save the Weights to database -> the Model can load task B Weights for later prediction on different tasks (ex: task C with regression based samples) -> ...]```
     - Workflow 2 (Memory switching) ->  *(workflow 2 only apply if task A have the same correlation as task C, F, E (ex: task A and C is classification) and task B has the same correlation to task D, K, L)*
       -> ```[when you already trains the Model on both task A and B -> use memory name 'memory-A' for prediction on task C -> switch to memory name 'memory-B' if you want to do prediction on task D]```
-    - NOTE = if task A is classification -> task C, F, E **must** have the same shape as task A and is also a classification task, *if* task B is regression -> task D, K, L **must** have the same shape as task B and is also a regression task.
+    - NOTE = if task A is classification task -> task C, F, E **must** have the same shape as task A and is also a classification task, *if* task B is regression -> task D, K, L **must** have the same shape as task B and is also a regression task.
     - Benefit of this approach:
-      - One IntegratedPipeline instance with 2 memory name can be used for Predicting both classification or regression tasks *when* both tasks have the same lengths and shapes.
+      - One IntegratedPipeline instance with 2 memory name can be used for predicting both classification or regression tasks *when* both tasks have the same lengths and shapes.
       - One IntegratedPipeline instance is enough to Train both classification task, and continue with regression task immediately. its Weights will be saved to database everytime each Training is done.
       - approach -> ```[after training on task A and B -> model can now do prediction on task C, D, E, F, ... continuously as long as these samples have the same shapes as task A and B]```
 
