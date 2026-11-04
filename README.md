@@ -1605,16 +1605,6 @@ async def p2p_tasks(X=None, y=None, titles=None, rules=None, task='classificatio
    # Note: CohesiveAgentDeployment contains ConsecutivePeerAgent that can start a server once ensemble prediction from peer is started
    # be advised to stop the server too before shutdown-ing CohesiveAgentDeployment cluster
 
-   # example peer_Ip_lists_config.json (de-comment to use)
-   # {
-         # you must put "known_peers" in the config so python can identify the list of IPs and Ports 
-         #  "known_peers": [ 
-         #    ["127.0.0.1", 5555], can be modified using real IP or local IP.
-         #    ["127.0.0.1", 5556],
-               # more ip and port lists...
-      #   ]
-      # }
-
 
    try:
       # Start both agents
