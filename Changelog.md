@@ -1,7 +1,7 @@
 ## Changelog
 All notable changes to this project will be documented in this file.
 ### PyPi AbstractIntegratedModule New Version changelog:
-- Updated: 03/11/2026
+- Last Updated: 04/11/2026
 - Recent Changelogs [Will be reset each new +0.1.0 versions]:
      - v1.2.5 [MAJOR REWORKS]:
        - Reworks Advanced Prediction method to separate Training and prediction to provide User's control.
@@ -31,7 +31,12 @@ All notable changes to this project will be documented in this file.
        - fixed multiple bugs in save and load memory for kNN Transformer.
        - removed useless functions for HNSW setups that are no longer in use.
        - added regression sample analysis for kNN Transformer.
-
+     - v1.3.2:
+       - Fixed AgentDistributedInference._handle_ping uses self.agent_id, which doesn’t exist on that class (use id(self)).
+       - Fixed ConsecutivePeerAgent._receive_message calls self._log_security_event, which only exists on AgentDistributedInference.
+       - Fixed AgentDistributedInference._receive_message calls self.log_security_event (missing underscore).
+       - Fixed IntegratedPipeline.prediction_batch passes y_true into the batch_size slot of _batch_prediction_core(batch_input_ids, batch_X_raw, y_true). In the else branch y_true is also a tuple from input_encoding.
+       - Fixed predict_single(text) is called with a dict payload (or None) in _handle_predict_request_async’s fallback branch, which prediction_batch can’t handle. This happens whenever predict_manager is None, because IntegratedPipeline.manager is None when AgentDistributedInference is constructed.
 
 # Binary-new Release Changelog (Only inside in this repository)
 ### [0.1.0] - 2026-05-05
