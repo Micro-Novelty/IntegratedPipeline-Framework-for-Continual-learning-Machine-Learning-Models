@@ -153,7 +153,7 @@ async def p2p_tasks(X=None, y=None, titles=None, rules=None, task='classificatio
 
 # Initiate tasks:
 if __name__ == '__main__':
-   X, y = '<your classification sample>'
+   X, y = '<your classification sample>' # NEED TO MODIFY
 
    # match to your own task (classification or regression based on your samples)
    # if you have X samples, you can use the previous prediction_manager loaded by train_run() for stateful continual learning behavior
@@ -168,7 +168,8 @@ if __name__ == '__main__':
    # insert secondary IntegratedPipeline model for p2p to make sure no same instance share the same port.
    p2p_tasks(X, y, titles=None, rules=None, task='classification', prediction_manager=prediction_manager, model=main_model, secondary_model=secondary_model)
 
-   # We use the previous PJME_MW for example only (change with your actual sample)
+   # We use the previous PJME_MW for example only (change with your actual sample) 
+   # NEED TO MODIFY
    daily = ...
    feature_cols = ...
    X2, y2, config = secondary_manager.prepare_dataset(daily, feature_cols, target_col_name="PJME_MW",
