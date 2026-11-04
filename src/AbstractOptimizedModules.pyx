@@ -413,15 +413,11 @@ def optimized_lstm_cell_backward(
 # ── multi head attention ──────────────────────
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def optimized_project_heads(
-    np.ndarray[DTYPE_t, ndim=3] x,
-    np.ndarray[DTYPE_t, ndim=3] W,
-    Py_ssize_t B,
-    Py_ssize_t S,
-    Py_ssize_t num_heads,
-    Py_ssize_t D,
-    Py_ssize_t M
-):
+def optimized_project_heads(object x_in, object W_in, Py_ssize_t B, Py_ssize_t S,
+                            Py_ssize_t num_heads, Py_ssize_t D, Py_ssize_t M):
+    cdef np.ndarray[DTYPE_t, ndim=3] x = np.ascontiguousarray(x_in, dtype=DTYPE)
+    cdef np.ndarray[DTYPE_t, ndim=3] W = np.ascontiguousarray(W_in, dtype=DTYPE)
+    
     cdef np.ndarray[DTYPE_t, ndim=4] out = np.zeros(
         (B, num_heads, S, M), dtype=DTYPE
     )
