@@ -1437,7 +1437,7 @@ X, y = '<replace with actual samples>'
 # Use the previous pipeline_setup.py for Training only.
 # Asynchronous prediction will automatically load the Trained weights
 # Use the main_prediction that was loaded by train_run() for flexibility on stateful continual learning behavior.
-main_prediction = train_run(db_path, X, y, task='classification', # example classification task
+main_prediction, main_model = train_run(db_path, X, y, task='classification', # example classification task
  pred_config=None, label_csv='ManualsTraining.txt', feature_cols=None)
 
 print(" = TESTING ASYNCHRONOUS PREDICTION MANAGER = ")
@@ -1506,7 +1506,7 @@ print(f'[=] Results: {async_predict}')
 # pair with your api_key and samples
 # (NOTE: This function is better used if you have test_titles, label_map and rules)
 print('[==] Initiating advanced batch prediction')
-         predicted_output = async_manager.advanced_batch_prediction(test_titles, label_map, rules, 
+predicted_output = async_manager.advanced_batch_prediction(test_titles, label_map, rules, 
          X=None, y=None, # provide your initialized X and y samples (Also Optional, can be set to None)
          api_key=secret_key, client_ip=None) # you can add client_ip to provide a robust authentication paired with secret_key
 # for better and faster advanced prediction when using titles and rules, consider using advanced batch prediction like in the above example
