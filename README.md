@@ -273,9 +273,8 @@ ________________________________________________________________________________
 ## Requirements
 > Requirements for installation markdown file can be downloaded here: [installation_guides](installation.md)
 ________________________________________________
-[~] To run and execute IntegratedPipeline, Requirement's include Or see [Requirements](installation_guides/usage_needs.txt):
-- Python 3.10 -> Python 3.14.
-- pip install for quick usage:
+- Python version: Python 3.10 -> Python 3.14.
+- pip install for Quick install:
 - ```bash
   pip install AbstractIntegratedModule # or
   python -m pip install AbstractIntegratedModule
