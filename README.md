@@ -312,11 +312,11 @@ ________________________________________________
 >       - Supported OS: Mac-Os, linux x86-64 and Windows, bundled in zip folders.
 >   - (Optional) Install AbstractIntegratedModule Compiled binaries from release section:
 >   - (Optional) Libraries needed if pip is not installed (For using Compiled binary, not python wheels):
->     - Paiohttp
+>     - aiohttp
 >     - scikit-learn
 >     - numpy
->     - psutilandas
->     - 
+>     - psutil
+>     - pandas
 >     - cryptography
 _______________________________________________________________________________________________________________________
 ### Requirements for Docker container
