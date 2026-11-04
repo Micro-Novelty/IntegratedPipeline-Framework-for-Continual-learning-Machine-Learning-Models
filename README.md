@@ -290,12 +290,12 @@ ________________________________________________
 - X and y samples or test titles dataset and rules samples for Training and Prediction (see Library in depth usage instructions below).
   - Test titles dataset and rules example can be seen in [main](main.py)
 
-for labels assignation used for Training and prediction on Classification task only:
-- .txt file that contains labels used for training and prediction in csv format, example will be provided below.
-- [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
-- Note:
-  - Regression sample will have its own custom separate prediction Config.
-  - Example .txt file for classification task with csv format: [ManualsTraining](ManualsTraining.txt)
+- for labels assignation used for Training and prediction on Classification task only:
+ - .txt file that contains labels used for training and prediction in csv format, example will be provided below.
+ - [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
+ - Note:
+   - Regression sample will have its own custom separate prediction Config.
+   - Example .txt file for classification task with csv format: [ManualsTraining](ManualsTraining.txt)
 
 - P2P requirements:
   - Two different ports and IPs in two different Machines.
@@ -312,11 +312,11 @@ for labels assignation used for Training and prediction on Classification task o
 >       - Supported OS: Mac-Os, linux x86-64 and Windows, bundled in zip folders.
 >   - (Optional) Install AbstractIntegratedModule Compiled binaries from release section:
 >   - (Optional) Libraries needed if pip is not installed (For using Compiled binary, not python wheels):
->     - Pandas
->     - aiohttp
+>     - Paiohttp
 >     - scikit-learn
 >     - numpy
->     - psutil
+>     - psutilandas
+>     - 
 >     - cryptography
 _______________________________________________________________________________________________________________________
 ### Requirements for Docker container
