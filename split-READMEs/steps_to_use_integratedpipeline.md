@@ -989,7 +989,7 @@ X, y = '<replace with actual samples>'
 # Use the previous pipeline_setup.py for Training only.
 # Asynchronous prediction will automatically load the Trained weights
 # Use the main_prediction that was loaded by train_run() for flexibility on stateful continual learning behavior.
-main_prediction = train_run(db_path, X, y, task='classification', # example classification task
+main_prediction, main_model = train_run(db_path, X, y, task='classification', # example classification task
  pred_config=None, label_csv='ManualsTraining.txt', feature_cols=None)
 
 print(" = TESTING ASYNCHRONOUS PREDICTION MANAGER = ")
@@ -1058,7 +1058,7 @@ print(f'[=] Results: {async_predict}')
 # pair with your api_key and samples
 # (NOTE: This function is better used if you have test_titles, label_map and rules)
 print('[==] Initiating advanced batch prediction')
-         predicted_output = async_manager.advanced_batch_prediction(test_titles, label_map, rules, 
+predicted_output = async_manager.advanced_batch_prediction(test_titles, label_map, rules, 
          X=None, y=None, # provide your initialized X and y samples (Also Optional, can be set to None)
          api_key=secret_key, client_ip=None) # you can add client_ip to provide a robust authentication paired with secret_key
 # for better and faster advanced prediction when using titles and rules, consider using advanced batch prediction like in the above example
@@ -1232,13 +1232,12 @@ async def p2p_tasks(X=None, y=None, titles=None, rules=None, task='classificatio
 # Initiate tasks:
 if __name__ == '__main__':
    X, y = '<your classification sample>'
-   # match to your own task (classification or regression based on your samples)
 
-   # if you have X samples, you can use the previous prediction_manager and main_model loaded by train_run() for stateful continual learning behavior
+   # match to your own task (classification or regression based on your samples)
+   # if you have X samples, you can use the previous prediction_manager loaded by train_run() for stateful continual learning behavior
    prediction_manager, main_model = train_run(db_path, X, y, task='classification', pred_config=None, 
               label_csv='ManualsTraining.txt', feature_cols=None, port=5000) # use port 5000
-
-   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it,
+   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it
    # this new instance used a different port for P2P so it doesnt conflict with other instance
    _, secondary_model = train_run(db_path, X, y, task='classification', pred_config=None, 
               label_csv='ManualsTraining.txt', feature_cols=None, port=5001) # use port 5001
@@ -1255,8 +1254,7 @@ if __name__ == '__main__':
 
    prediction_manager, main_model = train_run(db_path, X2, y2, task='regression', pred_config=config, # get your previous pred_config. 
               label_csv=None, feature_cols=len(feature_cols, port=5003) # use port 5003
-
-   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it,
+   # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it
    # this new instance used a different port for P2P so it doesnt conflict with other instance
    _, secondary_model = train_run(db_path, X2, y2, task='regression', pred_config=config, 
               label_csv=None, feature_cols=feature_cols, port=5004) # use port 5004
@@ -1379,5 +1377,3 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
      - ```python
        main_model._cross_session_availability() # cross session capability function
        ```
-
-12. As an option, You can add more feature's directly to what it should predict, behave using rules you have given, Create a visual dashboard, create a distributed mesh of this agent, and much more features you can try.
