@@ -8,7 +8,7 @@ version = "1.3.2"
 authors = [
     {name = "Micro-Novelty", email = "hernikpuspita5@gmail.com"},
 ]
-description = "Integrated Pipeline with Specialized Non-LLM AI Agent Framework for ARM64 and Windows architecture"
+description = "IntegratedPipeline Specifically provide a Framework to build Stateful continual learning Machine Learning Models optimized for Edge devices (ARM64)."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
