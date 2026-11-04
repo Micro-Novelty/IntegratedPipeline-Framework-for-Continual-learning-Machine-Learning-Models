@@ -107,6 +107,7 @@ ________________________________________________________________________________
    > - pandas
    > - aiohttp
    > - psutil
+   > - Cryptography
      
 4. Run IntegratedPipeline in a Container:
     - Install AbstractIntegratedModule via PIP or Compiled binaries:
