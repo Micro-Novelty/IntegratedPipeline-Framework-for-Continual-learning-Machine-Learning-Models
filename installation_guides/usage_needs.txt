@@ -1,11 +1,11 @@
 Requirements:
-[~] Requirement's include:
+[~] Requirement's include for binaries:
 
 [~] download PIP: 
   - ```
     pip install AbstractIntegratedModule
     ```
-[`] For binaries usage:
+[`] For binaries usage (optional):
 OS (Choose one minimal, specified for your needs):
 Windows Native OS - AbstractIntegratedModule.cp313-win_amd64 Supports Python 3.13 for Windows Only (Robust, Stable version)
 Linux x86_64 - AbstractIntegratedModule.cpython-312-x86_64-linux-gnu.so supports Python 3.12 only.
@@ -17,16 +17,17 @@ Library requirements to run AbstractIntegratedModule with binaries:
 - numpy
 - aiohttp
 - psutil
+- Cryptography
 
 AbstractIntegratedModule.pyd (For windows machine)
 AbstractIntegratedModule.cpython-39-x86_64-linux-gnu.so (For linux x86_64)
 AbstractIntegratedModule.cpython-39-aarch64-linux-gnu.so (for Linux ARM64 - Raspberry Pi)
 
 CSV file that contains training labels and titles. 
-  [=] To create CSV:
+[=] To create CSV:
      - create .txt file
      - create titles and labels
-     - Example:
+  - Example:
 ```
 window_title, label
 "Thesis.docx", focused_work,high,writing thesis
