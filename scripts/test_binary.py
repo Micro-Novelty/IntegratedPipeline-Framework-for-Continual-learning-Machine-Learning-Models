@@ -535,9 +535,9 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
       print(f"\n🔑 Using API Key: {api_key[:20]}...")
 
       # first payload for agent-1:
-      payloads_1 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":X, "y":y, "use_transformer": True, "agent_id": agent_1_id}
+      payloads_1 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":x, "y":y, "use_transformer": True, "agent_id": agent_1_id}
       # second payload for agent-2:
-      payloads_2 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":X, "y":y, "use_transformer": True, "agent_id": agent_2_id}
+      payloads_2 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":y, "y":y, "use_transformer": True, "agent_id": agent_2_id}
 
       # NOTE:
       # daily: is the dataframe/dataset you have loaded, if its present meaning You can use it in P2P using this setup for regression prediction:
