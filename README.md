@@ -32,7 +32,8 @@ ________________________________________________________________________________
 - Workflow:
   *the below workflow explanation is used to explain how user can use our Framework*
   - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same Model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real prediction.
-  - Note: *'model' here refers to a single instance of IntegratedPipeline instance*
+  
+  > Note: *'model' here refers to a single instance of IntegratedPipeline instance*
   - Example workflow > (*this method is scalable and not restricted to one model*) :
   - ```[model initialized using 'memory-A' memory name -> train on Task A -> save weights -> change memory name to 'memory-B' -> train on task B -> save weights -> user prefer to load memory for prediction on task A -> load weights for task A -> weights for task B remains unchanged and not deleted -> ...]```
   Note -> This method is scalable and supports multiple Models sharing the same Memory name.
