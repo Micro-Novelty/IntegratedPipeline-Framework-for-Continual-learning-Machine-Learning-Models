@@ -48,7 +48,8 @@ jobs:
             psutil \
             pytest \
             pytest-cov \
-            pytest-xdist
+            pytest-xdist \
+            AbstractIntegratedModule
 
       - name: Build Cython extensions (Linux/macOS)
         if: runner.os != 'Windows'
