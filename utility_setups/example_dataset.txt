@@ -1,0 +1,32 @@
+EXAMPLE TITLES DATASET AND RULES:
+# (OPTIONAL) You can also define your own test_titles and rules for testing the model, 
+# this is useful for testing the model's performance on unseen data if your goals are classifying work activities, etc.
+test_titles = [
+    ("Opening Thesis.docx", "slight_work"),
+    ("Watching YouTube and Google Chrome", "distracted"),
+    ("Watching Slack", "communication"),
+    ("Programming in Visual Studio Code", "focused_work"),
+    ("Watching netflix.com - Chrome", "break"),
+    ]
+
+# (OPTIONAL) You can also define your own rules for testing the model,
+# this is useful for controlling the model's learning performance on unseen data if your goals are classifying work activities, etc.
+rules = [
+        # === WORK / PRODUCTIVITY ===
+        (r'code|programming|develop|debug|compile|script', 'focused_work'),
+        (r'vscode|visual_studio|ide|terminal|shell', 'focused_work'),
+        (r'notion|evernote|onenote|notes|todo|task', 'productive'),
+        (r'slack|teams|discord|zoom|meeting|call', 'communication'),
+        (r'email|gmail|outlook|inbox|mail', 'communication'),
+
+        # === ENTERTAINMENT ===
+         (r'youtube|netflix|twitch|stream|video', 'entertainment'),
+         (r'music|spotify|soundcloud|audio|player', 'entertainment'),
+         (r'game|gaming|steam|epic|play', 'gaming'),
+         (r'facebook|instagram|tiktok|social|post', 'social_media'),
+         
+         # === BROWSING ===
+         (r'chrome|firefox|edge|safari|browser', 'browsing'),
+         (r'google|search|wiki|wiki|article', 'information'),
+         (r'stackoverflow|github|docs|documentation', 'research'),
+    ]
