@@ -75,3 +75,6 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           pytest tests/ -v -n auto --maxfail=1
+          
+      - name: Run Python script
+        run: python tests/daily_test_import.py
