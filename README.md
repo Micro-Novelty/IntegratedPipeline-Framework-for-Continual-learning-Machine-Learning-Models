@@ -20,7 +20,7 @@ AbstractIntegratedModule is Python Machine Learning Framework that **creates a M
 > [!IMPORTANT]
 > This Framework does not provide a standalone, new novel Deep-learning algorithms for a near-perfect Continual learning behavior Model, it is a Python Framework that utilized SQlite database as a way to save Memory and provide a instruction to build a stateful Continual learning Memory augmented Machine learning model.
 > 
-> All of the files provided here can be found in the main Github repository, for Users reading the README in PyPi, and wanted to try out the provided Python, shell or Dockerfile scripts for tests and demo, consider visiting the official github repository:
+> All of the files provided here can be found in the main Github repository, for Users who read the README in PyPi, and wanted to try out the provided Python, shell or Dockerfile scripts for tests and demo, consider visiting the official github repository:
 > - link: https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework
 >
 > *Consider check:*
