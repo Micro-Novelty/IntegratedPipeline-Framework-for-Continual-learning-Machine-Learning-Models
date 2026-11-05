@@ -1291,6 +1291,9 @@ ________________________________________________________________________________
    # if you want to use the IntegratedPipeline Transformer only, you can use this setup:
    # ideal when you want blazing Fast Transformer Training and prediction, and the Transformer weights are loaded using JSON, this made Transformer Training much more feasible and easily intuitive for Beginners who wants Complex abstraction models that can run on cheap Edge devices.
 
+   PLACEHOLDER: change this with your actual X and y samples:
+   X, y = ..., ...
+   
    vocab_size = main_model.vocab_size# <your actual vocab size>.
    model_transformer = Transformer(
                   vocab_size=vocab_size
