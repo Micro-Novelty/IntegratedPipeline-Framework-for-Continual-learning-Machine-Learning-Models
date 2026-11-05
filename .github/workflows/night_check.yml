@@ -78,4 +78,6 @@ jobs:
           pytest tests/ -v -n auto --maxfail=1
           
       - name: Run Python script
+        env:
+           PYTHONIOENCODING: utf-8
         run: python tests/daily_test_import.py
