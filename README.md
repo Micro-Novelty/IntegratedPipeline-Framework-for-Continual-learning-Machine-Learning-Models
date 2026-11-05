@@ -19,8 +19,7 @@ ________________________________________________________________________________
 AbstractIntegratedModule is Python Machine Learning Framework that **creates a Model that can Continuously learn, backed by *augmented memory* from SQLite Database to store Weights, in which each a Model memory is auditable, transparent, and allows User to Create a different memory for the Model to learn new things, without overwriting the *previous saved, Trained Weights* inside the SQlite database from different tasks**. Users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, Train the current Model with another task while preserving the previous Trained weights as memory inside the SQlite Database.
 > [!IMPORTANT]
 > This Framework does not provide a standalone, new novel Deep-learning algorithms for a near-perfect Continual learning behavior Model, it is a Python Framework that utilized SQlite database as a way to save Memory and provide a instruction to build a stateful Continual learning Memory augmented Machine learning model.
-> ### Important Note:
-> - All of the files provided here can be found in the main Github repository, if You are seeing this on PyPi and wanted to try out the provided .py, .sh or Dockerfile scripts below, consider visiting the official github repository:
+> All of the files provided here can be found in the main Github repository, if You are seeing this on PyPi and wanted to try out the provided Python, shell or Dockerfile scripts for tests and demo, consider visiting the official github repository:
 > - link: https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework
 >
 > *Consider check:* [MANN introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
