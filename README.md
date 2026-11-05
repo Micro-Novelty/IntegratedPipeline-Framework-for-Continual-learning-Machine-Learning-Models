@@ -295,7 +295,7 @@ ________________________________________________
 
 **Requirements for IntegratedPipeline:**
 - X and y samples or test titles dataset and rules samples for Training and Prediction (see Library in depth usage instructions below).
-  - Test titles dataset and rules example can be seen in [main](scripts/main.py)
+  - Test titles dataset and rules example can be seen in [main](utility_setups/example_dataset.txt)
 
 - for labels assignation used for Training and prediction on Classification task only:
  - .txt file that contains labels used for training and prediction in csv format, example will be provided below.
