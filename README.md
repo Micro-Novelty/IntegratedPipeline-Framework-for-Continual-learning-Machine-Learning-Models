@@ -97,8 +97,7 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 ### [>] Full Documentation Features
 - [Go to Library short description](#library-short-description)
-- [Go to Performance Overview](#both-performance-overview)
-- [Go to Why IntegratedPipeline?](#why-integratedpipeline)
+- [Go to Why should IntegratedPipeline?](#why-integratedpipeline)
 - [Go to Requirements](#requirements)
 - [Go to System-Specific-Notes](#system-specific-notes)
 - [Go to Quickstart with Docker](#docker-container-application)
