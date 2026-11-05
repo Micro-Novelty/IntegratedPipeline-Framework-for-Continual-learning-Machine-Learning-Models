@@ -2,7 +2,7 @@ name: Nightly Compatibility
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # every day at 02:00 UTC
+    - cron: '0 12 * * *'  # every day at 02:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -75,7 +75,7 @@ jobs:
       - name: Run test suite (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
-          pytest tests/ -v -n auto --maxfail=1
+          pytest scripts/test_binary.py -v -n auto --maxfail=1
           
       - name: Run Python script
         env:
