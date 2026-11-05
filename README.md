@@ -34,16 +34,17 @@ ________________________________________________________________________________
   - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same Model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real prediction.
   
   > Note: *'model' here refers to a single instance of IntegratedPipeline instance*
-  - Example workflow > (*this method is scalable and not restricted to one model*) :
+  Example workflow > (*this method is scalable and not restricted to one model*) :
   - ```[model initialized using 'memory-A' memory name -> train on Task A -> save weights -> change memory name to 'memory-B' -> train on task B -> save weights -> user prefer to load memory for prediction on task A -> load weights for task A -> weights for task B remains unchanged and not deleted -> ...]```
   Note -> This method is scalable and supports multiple Models sharing the same Memory name.
 
   - Training happens and needed *when* switching between Tasks using different memory name (ex: from task A to task B with different memory name) *if* you have not Train the Model on task B. if you already trained the Model on task A and task B (task A and B is only used for Training), Training is no longer needed and you can do prediction on task C (task C must have similar shapes and lengths like task A but with different values) using memory name 'memory-A', or prediction on task D (task D must have similar shapes and lengths like task B but with different values) using memory name 'memory-B'.
-    - Workflow 1 (Training) ->  ```[you want to switch from task A to task B for prediction, but you haven't train your model on task B -> train the model first on task B -> save the Weights to database -> the Model can load task B Weights for later prediction on different tasks (ex: task C with regression based samples) -> ...]```
-    - Workflow 2 (Memory switching) ->  *(workflow 2 only apply if task A have the same correlation as task C, F, E (ex: task A and C is classification) and task B has the same correlation to task D, K, L)*
+    Workflow 1 (Training) ->  ```[you want to switch from task A to task B for prediction, but you haven't train your model on task B -> train the model first on task B -> save the Weights to database -> the Model can load task B Weights for later prediction on different tasks (ex: task C with regression based samples) -> ...]```
+    Workflow 2 (Memory switching) ->  *(workflow 2 only apply if task A have the same correlation as task C, F, E (ex: task A and C is classification) and task B has the same correlation to task D, K, L)*
       -> ```[when you already trains the Model on both task A and B -> use memory name 'memory-A' for prediction on task C -> switch to memory name 'memory-B' if you want to do prediction on task D]```
-    - NOTE = if task A is classification task -> task C, F, E **must** have the same shape as task A and is also a classification task, *if* task B is regression -> task D, K, L **must** have the same shape as task B and is also a regression task.
-    - Benefit of this approach:
+    NOTE = if task A is classification task -> task C, F, E **must** have the same shape as task A and is also a classification task, *if* task B is regression -> task D, K, L **must** have the same shape as task B and is also a regression task.
+
+    Benefit of this approach:
       - One IntegratedPipeline instance with 2 memory name can be used for predicting both classification or regression tasks *when* both tasks have the same lengths and shapes.
       - One IntegratedPipeline instance is enough to Train both classification task, and continue with regression task immediately. its Weights will be saved to database everytime each Training is done.
       - approach -> ```[after training on task A and B -> model can now do prediction on task C, D, E, F, ... continuously as long as these samples have the same shapes as task A and B]```
