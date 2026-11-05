@@ -94,6 +94,29 @@ ________________________________________________________________________________
 ### Framework's Purpose
   - This framework is intended for Engineers who is early and interested in ML Engineering, in order to provide a Clearer picture of how edge AI should operate, Low memory management, and how it can be made continuously learn using Pragmatic solution by using SQLite to save Weights to prevent continuous catasthropic forgetting, IntegratedPipeline source code is open-sourced and can be found in our github repository, Meaning you can modify the Source code however You liked it to be, and help Us Grow the first Community!
 
+________________________________________________________________________________________________________________________
+### [>] Full Documentation Features
+- [Go to Library short description](#library-short-description)
+- [Go to Performance Overview](#both-performance-overview)
+- [Go to Why IntegratedPipeline?](#why-integratedpipeline)
+- [Go to Requirements](#requirements)
+- [Go to System-Specific-Notes](#system-specific-notes)
+- [Go to Quickstart with Docker](#docker-container-application)
+- [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
+- [Go to Troubleshooting](#troubleshooting)
+- [Go to Source code](#source-code-of-abstractintegratedmodule)
+  
+- Consider checking:
+  - [ROADMAP.md](ROADMAP.md)
+  - [SECURITY.md](SECURITY.md)
+  - [Contributing.md](Contributing.md)
+  - [changelog.md](changelog.md)
+  - [requirements-For-Dev](utility_setups/dev_needs.txt) for contributors requirements.
+  - [architecture_diagram](scripts/IntegratedPipeline_Flow.html)
+  - [steps_to_use_integratedpipeline](split-READMEs/steps_to_use_integratedpipeline.md) to use IntegratedPipeline
+  - Separated README contents for better understanding: [split-READMEs](split-READMEs)
+  - > Library Python wheels release repository: [Wheels provider repository)](https://github.com/Micro-Novelty/abstract-modules/releases)
+
 ____________________________________________________________________________________________________________________
 ### Library Short Description
 - Development Stage on PyPi: [![PyPI version](https://img.shields.io/pypi/v/AbstractIntegratedModule.svg)](https://pypi.org/project/AbstractIntegratedModule/) Official Release.
@@ -149,28 +172,6 @@ ________________________________________________________________________________
 >   - Transformer is Optimized for small samples using Novel alpha-based computing:
       - > *alpha-based computing for Transformer documentation:* [introduction, proofs and demo scripts](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/tree/introduction)
 
-________________________________________________________________________________________________________________________
-### [>] Full Documentation Features
-- [Go to Library short description](#library-short-description)
-- [Go to Performance Overview](#both-performance-overview)
-- [Go to Why IntegratedPipeline?](#why-integratedpipeline)
-- [Go to Requirements](#requirements)
-- [Go to System-Specific-Notes](#system-specific-notes)
-- [Go to Quickstart with Docker](#docker-container-application)
-- [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
-- [Go to Troubleshooting](#troubleshooting)
-- [Go to Source code](#source-code-of-abstractintegratedmodule)
-  
-- Consider checking:
-  - [ROADMAP.md](ROADMAP.md)
-  - [SECURITY.md](SECURITY.md)
-  - [Contributing.md](Contributing.md)
-  - [changelog.md](changelog.md)
-  - [requirements-For-Dev](utility_setups/dev_needs.txt) for contributors requirements.
-  - [architecture_diagram](scripts/IntegratedPipeline_Flow.html)
-  - [steps_to_use_integratedpipeline](split-READMEs/steps_to_use_integratedpipeline.md) to use IntegratedPipeline
-  - Separated README contents for better understanding: [split-READMEs](split-READMEs)
-  - > Library Python wheels release repository: [Wheels provider repository)](https://github.com/Micro-Novelty/abstract-modules/releases)
 ___________________________________________________________________________________________________       
 <img width="1280" height="600" alt="WhatsApp Image 2026-05-27 at 07 16 32" src="https://github.com/user-attachments/assets/4b58a556-45a3-419b-96fd-9c1b76cac574" />
 
