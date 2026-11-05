@@ -1,7 +1,7 @@
 ## Changelog
 All notable changes to this project will be documented in this file.
 ### PyPi AbstractIntegratedModule New Version changelog:
-- Last Updated: 04/11/2026
+- Last Updated: 05/11/2026
 - Recent Changelogs [Will be reset each new +0.1.0 versions]:
      - v1.2.5 [MAJOR REWORKS]:
        - Reworks Advanced Prediction method to separate Training and prediction to provide User's control.
@@ -37,6 +37,9 @@ All notable changes to this project will be documented in this file.
        - Fixed AgentDistributedInference._receive_message calls self.log_security_event (missing underscore).
        - Fixed IntegratedPipeline.prediction_batch passes y_true into the batch_size slot of _batch_prediction_core(batch_input_ids, batch_X_raw, y_true). In the else branch y_true is also a tuple from input_encoding.
        - Fixed predict_single(text) is called with a dict payload (or None) in _handle_predict_request_async’s fallback branch, which prediction_batch can’t handle. This happens whenever predict_manager is None, because IntegratedPipeline.manager is None when AgentDistributedInference is constructed.
+     - v1.3.3:
+       - removed slice of API key logged in terminal using print statements.
+       - fixed previous buggy tarball file.
 
 # Binary-new Release Changelog (Only inside in this repository)
 ### [0.1.0] - 2026-05-05
