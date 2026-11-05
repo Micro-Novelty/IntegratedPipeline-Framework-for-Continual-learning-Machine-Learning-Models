@@ -44,7 +44,7 @@ jobs:
           done
 
       - name: Upload Cython C files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cython-c-files
           path: src/*.c
@@ -145,7 +145,7 @@ jobs:
           fi
 
       - name: Upload Rust wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rust-wheels-${{ matrix.os }}
           path: |
@@ -248,7 +248,7 @@ jobs:
           fi
 
       - name: Upload wheels (Linux x86_64)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels-linux-x86_64
           path: |
@@ -348,7 +348,7 @@ jobs:
           fi
 
       - name: Upload wheels (Linux aarch64)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels-linux-aarch64
           path: |
@@ -414,7 +414,7 @@ jobs:
           fi
 
       - name: Upload wheels (macOS)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels-macos
           path: |
@@ -481,7 +481,7 @@ jobs:
           fi
 
       - name: Upload wheels (Windows)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels-windows
           path: |
@@ -530,7 +530,7 @@ jobs:
           ls -lah all-wheels/docs/ || true
 
       - name: Upload combined artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: all-wheels
           path: |
