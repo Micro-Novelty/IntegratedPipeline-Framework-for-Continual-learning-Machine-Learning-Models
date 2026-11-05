@@ -115,7 +115,7 @@ ________________________________________________________________________________
   - [architecture_diagram](scripts/IntegratedPipeline_Flow.html)
   - [steps_to_use_integratedpipeline](split-READMEs/steps_to_use_integratedpipeline.md) to use IntegratedPipeline
   - Separated README contents for better understanding: [split-READMEs](split-READMEs)
-  - > Library Python wheels release repository: [Wheels provider repository)](https://github.com/Micro-Novelty/abstract-modules/releases)
+  - > Library Python wheels provider repository: [Wheels provider repository)](https://github.com/Micro-Novelty/abstract-modules/releases)
 
 ____________________________________________________________________________________________________________________
 ### Library Short Description
