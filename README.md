@@ -177,14 +177,14 @@ ________________________________________________________________________________
 
 
 ## Why IntegratedPipeline?
-- IntegratedPipeline is a great choice for a sophisticated Non-LLM ML Model for The Main Orchestrator of a Distributed MANN-Type Model Working in Edge-device/Consumer-Based machine Where LLM isn't a great fit for Messy, Unpredictable environments. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
+- IntegratedPipeline is a great choice for a sophisticated Non-LLM ML Model for The Main Orchestrator of a Distributed MANN-Type Model Working in Edge-device/Consumer-based machine where regular ML framework isn't a great choice for Rigorous continual learning behavior on edge systems. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
 
 - IntegratedPipeline offers:
-1. Local-Based AI Orchestrator:
+1. Local-Based Continual learning ML Model Orchestrator:
    - IntegratedPipeline Creates its own SQLite Database inside Your Computer once the library is executed, This database is used directly to store the AI Memory, Attention weights, predicted Output, and identified peer, all without leaving the machine, The Database will be created Automatically once you run the library, database name saved as activity_log.db. 
 
-2. Continously Learning behavior for an Agent:
-   - different from LLM that is static and cannot improve beyond its given training condition, AI Models using IntegratedPipeline has a dynamic, flexible continously learning behavior with conditional training algorithms included in the library that has both supervised and unsupervised learning present, The learned input and predicted Output will be stored in the database as a Memory, allowing it to recall its memory during processing and find matching known prediction given if input matched with the stored input inside the database. 
+2. Continously Learning behavior for an edge AI:
+   - different from LLM that is static and cannot improve beyond its given training condition, ML Models using IntegratedPipeline has a dynamic, flexible continously learning behavior with conditional training algorithms included in the library that has both supervised and unsupervised learning present (mainly the Models used unsupervised learning frequently), The learned input and predicted Output will be stored in the database as a Memory, allowing it to recall its memory during processing and find matching known prediction given if input matched with the stored input inside the database. 
    User can control this behavior such as: 
    - Ex. pseudocode:
       - ```txt
@@ -199,25 +199,12 @@ ________________________________________________________________________________
      > - Allow flexible Training and model task allocation better:
      > - Deterministic behavior for Pragmatic Continual learning behavior for MANN type Models.
      
-     - Example 1: Workflow (Single model):
-     - ```txt
-       agent_1 with memory_name 'A' -> task A (Classification task)
-       change memory_name to 'B"
-       agent_1 with memory_name 'B" -> task B (Regression task)
-       regression task requires slight modification to match the required samples and argument (Easy modification)
-       ```
-     - Example 2: Worflow (Multiple models):
-     - ```txt
-       agent_1 with memory_name "A" -> task A (Classification)
-       agent_2 with memory_name "C" -> task C (Regression)
-       ```  
-
-    > - Note: this Continous learning behavior is efficient because its not relying on weights saved in RAM for memory, allowing flexible and predictable behavior inside a given environment.
-    >- Tradeoff: This approach is deterministic and Memory modification or removal requires Manual audit directly to the Model's SQlite database (Named activity_log.db).
+     > - Note: this Continous learning behavior is efficient because its not relying on weights saved in RAM for memory, allowing flexible and predictable behavior inside a given environment.
+     > - Tradeoff: This approach is deterministic and Memory modification or removal requires Manual audit directly to the Model's SQlite database (Named activity_log.db).
    
 3. Robust Specialized MLP, Transformer and LSTM Architecture with ensemble weighting architecture:
   - IntegratedPipeline usually used 1 Model for regular advanced prediction, but in some Conditions, it used 2 Different type's of AI Architecture stacked together, and one architecture to weight their confidence and probability fairly (ensemble method) to get the final prediction for the problem it faced, Specialized MLP for Noise robustness And Specialized Transformer that used Alpha-based Computing algorithm for contextual reasoning, LSTM architecture to provides proof-of-credibility over a certain output, acting as a support mechanism rather than Main orchestrator like MLP and Transformer. The reason why those Models complement and used together:
-      - Specialized MLP Provides synchronous robust classification Against noise with its specialized Weight Encoder (AWE) to handle noise using eigenvalue based computing that is lightweight and efficient. This allows MLP performance to improve Even during Quantization-Aware-Training, This Method can't be replicated Inside Transformer FFN (Feed-forward-network) because of Transformer dynamic brute force computing where AWE-Based generated weight's get diluted over time by Transformer dynamic projection embedding, making AWE Generated weight causes inefficient inside Transformer dynamic FFN/QKV projection.
+      - Specialized MLP Provides synchronous robust classification against noise with its specialized Weight Encoder (AWE) to handle noise using eigenvalue based computing that is lightweight and efficient. This allows MLP performance to improve Even when using Quantization-Aware-Training method. 
      - Specialized Transformer provides robust synchronous advanced contextual relationships, efficient data processing using Alpha based computing, The Transformer is tuned towards to be as flexible as possible to provide dynamic projection or fixed FFN projection training with minimal head's and dimension's to reduce computational power.
       - Our library also provides setup for kNN (k-Nearest-neighbor) Augmented Transformer for Users who Wants to use a much More Advanced Transformer, This Transformer is'nt used in the Main prediction flow inside IntegratedPipeline due to it being Memory heavy to run, instead this Transformer can be used separately if You have Larger Dataset and wants A small Transformer Model that can Remember longer contexts Using HNSW (Hierarchical Navigable Small World) Architecture and apply it on edge Devices.
         - Honest Limitation: Our Transformer can still analyze Images, by receiving Input that is an Image converted into X samples, its accuracy is expected to be much lower since Analyzing images requires larger datasets -> more computation -> more memory usage.
