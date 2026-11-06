@@ -179,7 +179,8 @@ ________________________________________________________________________________
 ## Why IntegratedPipeline?
 - IntegratedPipeline is a great choice for a sophisticated Non-LLM ML Model for The Main Orchestrator of a Distributed MANN-Type Model Working in Edge-device/Consumer-based machine where regular ML framework isn't a great choice for Rigorous continual learning behavior on edge systems. while still run efficiently on High-end Embedded systems in single-instance or as a distributed network during multi Agent cooperation.
 
-- IntegratedPipeline offers:
+IntegratedPipeline offers:
+
 1. Local-Based Continual learning ML Model Orchestrator:
    - IntegratedPipeline Creates its own SQLite Database inside Your Computer once the library is executed, This database is used directly to store the AI Memory, Attention weights, predicted Output, and identified peer, all without leaving the machine, The Database will be created Automatically once you run the library, database name saved as activity_log.db. 
 
