@@ -1,3 +1,5 @@
+==== This labels are easily changeable (suit to your needs) ====
+
 window_title,label,confidence,notes
 "Thesis.docx",focused_work
 "Microsoft Excel",work
