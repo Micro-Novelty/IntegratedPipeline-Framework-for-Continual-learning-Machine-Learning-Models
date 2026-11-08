@@ -1117,6 +1117,8 @@ ________________________________________________________________________________
         return results, chosen_label, confidence
     
     # for training only
+    # if new_memory is set to None, save_memory() AbstractIntegratedModule function will automatically create a random memory name (e.g: memory-07g6g3g2vgg).
+    # set new_memory to None if you are planning to do continuous learning where creating a different memory name is inefficient and took time.
     def train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, 
                 new_memory=None, with_training=True, port=None):
         memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols, port=port)
