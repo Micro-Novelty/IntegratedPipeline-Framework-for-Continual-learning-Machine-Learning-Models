@@ -27,7 +27,7 @@ def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_con
     if port is None:
         port = 5001
 
-    memory_name, label_csv, task, label_map, feature_cols, config = set_memory(db_path, X, y, new_memory=memory_name)
+    memory_name,label_csv, task, label_map, feature_cols, config = set_memory(db_path, X, y, new_memory=memory_name)
 
     if label_csv is None:
         label_csv = csv
@@ -44,7 +44,7 @@ def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_con
     main_model = IntegratedPipeline(
     memory_name=memory_name,  # memory name for the Model you already initialized
     use_async=True, # local asynchronous prediction is permitted, if not PipelineAsyncManager wont start asynchronous prediction.
-    agent_port=5001, # this port is used to set AgentDistributedInference server (optional)
+    agent_port=port, # this port is used to set AgentDistributedInference server (optional)
     ssl_cert_file=None, ssl_key_file=None,# provide your cert_file path or key_file path (optional)
     ssl_context=None, # used by the Agent server. (optional)
     client_ssl_context=None # used by the client. (optional)
@@ -302,7 +302,7 @@ if mode == 'one_run':
                                 label_csv=None, feature_cols=feature_cols)
 else:
     class_main, class_model = train_run(f_db_path, s_X, s_y, task='classification', pred_config=None, 
-                                            label_csv='ManualsTraining.txt', feature_cols=None)
+                                            label_csv='ManualsTraining.txt', feature_cols=None, port=5000)
     reg_main, reg_model = train_run(f_db_path, X, y, task='regression', pred_config=config, 
                                 label_csv=None, feature_cols=feature_cols, port=5008)
     
@@ -471,7 +471,7 @@ agent_2_id = 'ID-02'
 
 
 # function must be 'async' to use the await syntaxes below:
-async def agent_test(task='classification', x=None, y=None, titles=None, rules=None, label_map=None, main_prediction=None, main_model=None, sec_main_model=None):
+async def agent_test(task='classification', x=None, y=None, titles=None, rules=None, label_map=None, main_prediction=None, main_model=None, sec_model=None):
 
    # NOTE:
    # shared_auth_token : the secret_key you have alread made
@@ -496,7 +496,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
       security_level="DEVELOPMENT",
       enable_peers=True,
       trusted_networks=['127.0.0.1/32', '192.168.1.0/24'],
-      peer_discovery_port=5555,
+      peer_discovery_port=8001,
       shared_auth_token=secret_key,
       predict_manager=main_prediction
    )
@@ -504,7 +504,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
    # Agent 2 - Secondary (Port 5556)
    # same integratedpipeline model and main_prediction model, or you can set a different/second IntegratedPipeline and PipelinePredictionManager here (Changeable).
    agent2 = CohesiveAgentDeployment(
-      pipeline=sec_main_model,
+      pipeline=sec_model,
       memory_name="agent_secondary",
       filename=filename,
       target_title='window_title',
@@ -512,7 +512,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
       security_level="DEVELOPMENT",
       enable_peers=True,
       trusted_networks=['127.0.0.1/32', '192.168.1.0/24'],
-      peer_discovery_port=5556,
+      peer_discovery_port=8002,
       shared_auth_token=secret_key,
       predict_manager=main_prediction
    )
@@ -524,6 +524,9 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
       print("✅ Agent 1 started on port 5555")
       
       print("\n🚀 Starting Agent 2...")
+      print('PORT', agent2.pipeline.distribution.port)
+      print('PORT', agent1.pipeline.distribution.port)
+      
       await agent2.start()
       print("✅ Agent 2 started on port 5556")
       
@@ -568,7 +571,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
          api_key=api_key,
          method='advanced',
          disable_sync=True,
-         regression_payload=None
+         regression_payload=regression_payload
       ) 
       
       print(f"\n📊 Ensemble Result for Agent 1:")
@@ -597,8 +600,8 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
 
 # Initiate agent_test
 asyncio.run(agent_test(task='classification', x=s_X, y=s_y, titles=test_titles, rules=rules, label_map=label_map, 
-                       main_prediction=class_main, main_model=class_model, sec_main_model=sec_class_model))
-asyncio.run(agent_test(task='regression', x=X, y=y, main_prediction=reg_main, main_model=reg_model, sec_main_model=sec_reg_model))
+                       main_prediction=class_main, main_model=class_model, sec_model=sec_class_model))
+asyncio.run(agent_test(task='regression', x=X, y=y, main_prediction=reg_main, main_model=reg_model, sec_model=sec_reg_model))
 
 # Step 2
 from AbstractIntegratedModule import PipelineAsyncManager
