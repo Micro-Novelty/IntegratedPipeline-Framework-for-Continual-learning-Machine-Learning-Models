@@ -485,6 +485,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
         # PRODUCTION: secure for P2P networking,
         # DEVELOPMENT: not-secure for P2P networking
     main_model.timeout = 20000
+    sec_model.timeout = 20000
         
     # Agent 1 - Primary (Port 5555)
     agent1 = CohesiveAgentDeployment(
