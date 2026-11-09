@@ -326,7 +326,7 @@ knn_predict_run(main_prediction, s_X, s_y, label_map=label_map)
  # for regression:
  # use the previous example of regression sample (PJME_MW Sample).
  # label_map is None for regression sample, labels for prediction will use prediction config              
-main_prediction, _ = knn_train_run(f_db_path, X, y, task='regression', pred_config=config, 
+main_prediction, sec_label_map = knn_train_run(f_db_path, X, y, task='regression', pred_config=config, 
                                  label_csv=None, feature_cols=feature_cols)
 knn_predict_run(main_prediction, X, y, label_map=None)
 
@@ -473,129 +473,129 @@ agent_2_id = 'ID-02'
 # function must be 'async' to use the await syntaxes below:
 async def agent_test(task='classification', x=None, y=None, titles=None, rules=None, label_map=None, main_prediction=None, main_model=None, sec_model=None):
 
-   # NOTE:
-   # shared_auth_token : the secret_key you have alread made
-   # trusted networks is a list (must be list), that contain allowed IPs for networking.
-   # pass IntegratedPipeline (here its main_model), and PipelinePredictionManager (here its main_prediction).
-   # agent memory_name can be anything you want.
-   # pass target_titles and label_name (matches the target_title you used during loading your label_map inside your .txt file.)
+    # NOTE:
+    # shared_auth_token : the secret_key you have alread made
+    # trusted networks is a list (must be list), that contain allowed IPs for networking.
+    # pass IntegratedPipeline (here its main_model), and PipelinePredictionManager (here its main_prediction).
+    # agent memory_name can be anything you want.
+    # pass target_titles and label_name (matches the target_title you used during loading your label_map inside your .txt file.)
 
-   # enable_peers : allow an agent to communicate with other agent.
-   # security_level:
-      # PRODUCTION: secure for P2P networking,
-      # DEVELOPMENT: not-secure for P2P networking
-   main_model.timeout = 20000
-    
-   # Agent 1 - Primary (Port 5555)
-   agent1 = CohesiveAgentDeployment(
-      pipeline=main_model,
-      memory_name="agent_primary",
-      filename=filename,
-      target_title='window_title',
-      label_name='label',
-      security_level="DEVELOPMENT",
-      enable_peers=True,
-      trusted_networks=['127.0.0.1/32', '192.168.1.0/24'],
-      peer_discovery_port=8001,
-      shared_auth_token=secret_key,
-      predict_manager=main_prediction
-   )
+    # enable_peers : allow an agent to communicate with other agent.
+    # security_level:
+        # PRODUCTION: secure for P2P networking,
+        # DEVELOPMENT: not-secure for P2P networking
+    main_model.timeout = 20000
+        
+    # Agent 1 - Primary (Port 5555)
+    agent1 = CohesiveAgentDeployment(
+        pipeline=main_model,
+        memory_name="agent_primary",
+        filename=filename,
+        target_title='window_title',
+        label_name='label',
+        security_level="DEVELOPMENT",
+        enable_peers=True,
+        trusted_networks=['127.0.0.1/32', '192.168.1.0/24'],
+        peer_discovery_port=8001,
+        shared_auth_token=secret_key,
+        predict_manager=main_prediction
+    )
 
-   # Agent 2 - Secondary (Port 5556)
-   # same integratedpipeline model and main_prediction model, or you can set a different/second IntegratedPipeline and PipelinePredictionManager here (Changeable).
-   agent2 = CohesiveAgentDeployment(
-      pipeline=sec_model,
-      memory_name="agent_secondary",
-      filename=filename,
-      target_title='window_title',
-      label_name='label',
-      security_level="DEVELOPMENT",
-      enable_peers=True,
-      trusted_networks=['127.0.0.1/32', '192.168.1.0/24'],
-      peer_discovery_port=8002,
-      shared_auth_token=secret_key,
-      predict_manager=main_prediction
-   )
+    # Agent 2 - Secondary (Port 5556)
+    # same integratedpipeline model and main_prediction model, or you can set a different/second IntegratedPipeline and PipelinePredictionManager here (Changeable).
+    agent2 = CohesiveAgentDeployment(
+        pipeline=sec_model,
+        memory_name="agent_secondary",
+        filename=filename,
+        target_title='window_title',
+        label_name='label',
+        security_level="DEVELOPMENT",
+        enable_peers=True,
+        trusted_networks=['127.0.0.1/32', '192.168.1.0/24'],
+        peer_discovery_port=8002,
+        shared_auth_token=secret_key,
+        predict_manager=main_prediction
+    )
 
-   try:
-      # Start both agents
-      print("\n🚀 Starting Agent 1...")
-      await agent1.start()
-      print("✅ Agent 1 started on port 5555")
-      
-      print("\n🚀 Starting Agent 2...")
-      print('PORT', agent2.pipeline.distribution.port)
-      print('PORT', agent1.pipeline.distribution.port)
-      
-      await agent2.start()
-      print("✅ Agent 2 started on port 5556")
-      
-      # Give servers time to fully bind.
-      await asyncio.sleep(2)
-      
-      # Get API keys
-      api_key = agent1.get_api_key()
-      print(f"\n🔑 Using API Key: {api_key[:20]}...")
+    try:
+        # Start both agents
+        print("\n🚀 Starting Agent 1...")
+        await agent1.start()
+        print("✅ Agent 1 started on port 5555")
+        
+        print("\n🚀 Starting Agent 2...")
+   
+        await agent2.start()
+        print("✅ Agent 2 started on port 5556")
+        
+        # Give servers time to fully bind.
+        await asyncio.sleep(2)
+        
+        # Get API keys
+        api_key = agent1.get_api_key()
+        print(f"\n🔑 Using API Key: {api_key[:20]}...")
 
-      # first payload for agent-1:
-      payloads_1 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":x, "y":y, "use_transformer": True, "agent_id": agent_1_id}
-      # second payload for agent-2:
-      payloads_2 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":y, "y":y, "use_transformer": True, "agent_id": agent_2_id}
+        # first payload for agent-1:
+        payloads_1 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":x, "y":y, "use_transformer": True, "agent_id": agent_1_id}
+        # second payload for agent-2:
+        payloads_2 = {"test_titles": titles, "label_map": label_map, "rules": rules, "X":x, "y":y, "use_transformer": True, "agent_id": agent_2_id}
 
-      # NOTE:
-      # daily: is the dataframe/dataset you have loaded, if its present meaning You can use it in P2P using this setup for regression prediction:
-      if daily is not None and task == 'regression':
-         regression_payload = {
-               'context': daily,
-               'feature_columns': feature_cols,
-               'target_col_name': 'PJME_MW',
-               'window_size': 30,
-               'horizon': 1
-         }
-      else:
-         # set to None for classification tasks.
-         regression_payload = None
+        # NOTE:
+        # daily: is the dataframe/dataset you have loaded, if its present meaning You can use it in P2P using this setup for regression prediction:
+        if daily is not None and task == 'regression':
+            regression_payload = {
+                'context': daily,
+                'feature_columns': feature_cols,
+                'target_col_name': 'PJME_MW',
+                'window_size': 30,
+                'horizon': 1
+                }
+            
+        else:
+            print('Regression payload is not initialized')
+            # set to None for classification tasks.
+            regression_payload = None
 
-      # Make prediction with peer ensemble
-      # Peer Connection will be ensured successfull during P2P search. 
-      result = await agent1.multi_modal_peer_ensemble_prediction(
-         payloads=payloads_1,
-         api_key=api_key,
-         method='advanced',
-         disable_sync=True,
-         regression_payload=regression_payload
-      )
+        # Make prediction with peer ensemble
+        # Peer Connection will be ensured successfull during P2P search. 
+        result = await agent1.multi_modal_peer_ensemble_prediction(
+            payloads=payloads_1,
+            api_key=api_key,
+            method='advanced',
+            disable_sync=True,
+            regression_payload=regression_payload
+        )
 
-      result2 = await agent2.multi_modal_peer_ensemble_prediction(
-         payloads=payloads_2,
-         api_key=api_key,
-         method='advanced',
-         disable_sync=True,
-         regression_payload=regression_payload
-      ) 
-      
-      print(f"\n📊 Ensemble Result for Agent 1:")
-      print(f"   Prediction: {result.get('prediction', 'N/A')}")
-      print(f"   Confidence: {result.get('confidence', 0):.2%}")
+        result2 = await agent2.multi_modal_peer_ensemble_prediction(
+            payloads=payloads_2,
+            api_key=api_key,
+            method='advanced',
+            disable_sync=True,
+            regression_payload=regression_payload
+        ) 
+        
+        print(f"\n📊 Ensemble Result for Agent 1:")
+        print(f"   Prediction: {result.get('prediction', 'N/A')}")
+        print(f"   Confidence: {result.get('confidence', 0):.2%}")
 
-      print(f"   Second Prediction: {result2.get('prediction', 'N/A')}")
-      print(f"   Second Confidence: {result2.get('confidence', 0):.2%}")
+        print(f"   Second Prediction: {result2.get('prediction', 'N/A')}")
+        print(f"   Second Confidence: {result2.get('confidence', 0):.2%}")
 
-      # Keep running briefly.
-      print("\n⏳ Cluster stable. Waiting 30 seconds before shutdown...")
-      await asyncio.sleep(30)
-      agent1._peer_agent.stop_server()
-      agent2._peer_agent.stop_server()
-      
-   except Exception as e:
-      print(f"\n❌ Error in cluster: {e}")
-      traceback.print_exc()
+        # Keep running briefly.
+        print("\n⏳ Cluster stable. Waiting 30 seconds before shutdown...")
+        await asyncio.sleep(30)
+        agent1._peer_agent.stop_server()
+        agent2._peer_agent.stop_server()
+        
+    except Exception as e:
+        print(f"\n❌ Error in cluster: {e}")
+        traceback.print_exc()
 
-   # NOTE: shutdown is important for each agent. (IMPORTANT)
-   print("\n🛑 Shutting down cluster...")
-   await agent1.shutdown()
-   await agent2.shutdown()
-   print("✅ Cluster shutdown complete")
+    # NOTE: shutdown is important for each agent. (IMPORTANT)
+    print("\n🛑 Shutting down cluster...")
+    await agent1.shutdown()
+    await agent2.shutdown()
+    print("✅ Cluster shutdown complete")
 
 
 # Initiate agent_test
@@ -705,6 +705,8 @@ encoder, net, reports, warnings = train_snn_network(X=X, y=y, epochs=50,
 
 # x must be a two dimensional sample, if X.ndim > 2, consider reshaping the X to be a 2D sample safely.
 results = snn_predict(X=X, y=y, task='regression', label_map=sec_label_map, encoder=encoder, net=net)
+
+print('[>] Results: ', results)
 # net is the SNNNetwork Class, and Encoder is PoissonEncoder, both are required for Prediction and must be passed in this function, consider saving the SNN net and the encoder using json for later use.
 # Small Note:
 # - This architecture is not guaranteed to work best for Classifying tabular datas, its good for time series event based activity classification.
