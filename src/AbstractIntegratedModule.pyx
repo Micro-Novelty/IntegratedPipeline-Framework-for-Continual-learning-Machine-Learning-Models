@@ -5169,6 +5169,10 @@ class MLP:
     def continuous_predictive_correction(self, manager, prob, predicted_index, AME=None, anisotropy=None):
         eps = 1e-5
         label_map = manager.label_map
+        if label_map is None:
+            print('[>] Label map is None, returning probabilities as is...')
+            return prob
+            
         n_classes = len(label_map)
         manager._repair_class_counters(n_classes)   # guarantees valid 1-D counters
     
@@ -8883,16 +8887,20 @@ class ModelStorage:
 
                 # dynamic corruption check 
                 if isinstance(value, list):
-                    arr = np.asarray(value)
-                    if arr.ndim > 2:
-                        print(f'[!] Corrupted value for key {key} '
-                            f'(ndim={arr.ndim}), removing')
-                        continue
+                    try:
+                        arr = np.asarray(value)
+                        if arr.ndim > 2:
+                            print(f'[!] Corrupted value for key {key} '
+                                f'(ndim={arr.ndim}), removing')
+                            continue
 
-                    if num_classes > 0 and arr.ndim == 1 and \
-                    len(arr) not in (num_classes, num_classes * 2):
-                        print(f'[!] Suspicious shape for key {key}: '
-                            f'{arr.shape}, expected {num_classes} — removing')
+                        if num_classes > 0 and arr.ndim == 1 and \
+                        len(arr) not in (num_classes, num_classes * 2):
+                            print(f'[!] Suspicious shape for key {key}: '
+                                f'{arr.shape}, expected {num_classes} — removing')
+                            continue
+                    except Exception as e:
+                        print(f'[>] Cannot determine value: {e}')
                         continue
 
                 # None values — skipped silently
@@ -13966,7 +13974,7 @@ class IntegratedPipeline:
     def _validate_dict_memory(self, memory: dict, num_classes: int) -> tuple:
         """Validate dict memory — expected primary format."""
         if not memory:
-            return (False, "Empty dict (no memory yet)", None)
+            return (False, "Empty dict (no memory)", None)
 
         valid_keys = {'TW', 'MW', 'TP', 'MP', 'TA', 'local',
                     '_cached_probs', '_data'}
@@ -18520,23 +18528,29 @@ class AccurateAnswerCache:
                 'added_at'   : datetime.now().isoformat(),
                 'last_hit'   : None
             }
-
-            self.cache[key] = entry
-
+            if self.cache is not None:
+                if isinstance(self.cache, dict):
+                    self.cache[key] = entry
+                    print(f'[💎] Verified answer successfully cached: {prediction} (source={source})')
+                else:
+                    print(f'[!] cache is not a dictionary! possible corruption during memory retrieval!')
+                
             # maintain O(1) exact match index
             if ids_hash is not None:
                 self.exact_hash_index[ids_hash] = key
 
-            if len(self.cache) > self.max_size:
-                self._evict_lru()
+            if self.cache is not None and isinstance(self.cache, dict):
+                if len(self.cache) > self.max_size:
+                    self._evict_lru()
 
-            print(f'[💎] Verified answer cached: {prediction} (source={source})')
-
-            if self.cache[key]['source'] != 'automatic_verified' and not source.startswith('automatic'):
-                self.pipeline.storage.save_accurate_cache_dict(self.memory_name, self.cache)
-            
+            if self.cache is not None and isinstance(self.cache, dict):
+                if self.cache[key]['source'] != 'automatic_verified' and not source.startswith('automatic'):
+                    self.pipeline.storage.save_accurate_cache_dict(self.memory_name, self.cache)
+                
         except Exception as e:
             print(f'[!] Failed to add samples and answer to Answer cache due to: {e}')
+       
+    
 
 
     def lookup(self, x_mlp, input_ids=None):
@@ -19718,8 +19732,8 @@ class PipelineAsyncManager:
         # Generate initial API key if enabled
         if self.config.require_api_key:
             self._default_api_key = api_key if api_key else self.api_key_manager.generate_key({'type': 'default'})
-            print(f"[🔑] Default API Key: {self._default_api_key}")
-            print("[!] Store this key securely - it won't be shown again!")
+            print(f"[🔑] Default API Key used: {self._default_api_key}")
+            print("[!] Store the key securely - it won't be shown again!")
 
         self.state_file = state_file if state_file is not None else 'security_state.json'
         self.admin_keys: Dict[str, dict] = {}  # admin_token -> {role, created_at}
@@ -21850,7 +21864,10 @@ def train_snn_network(X=None, y=None, net=None, hidden_layer=None, utility=None,
 
         X_train, X_test, y_train, y_test, X_val, y_val = _prepare_train_val_split(X=X, y=y, random_state=random_state)
         y_train_net = y_train
-        n_classes = max(len(label_map), int(y_train.max() + 1))
+        if label_map is not None:
+            n_classes = max(len(label_map), int(y_train.max() + 1))
+        else:
+            n_classes = int(y_train.max() + 1)
 
     n_in = X_train.shape[1]
     if net is None or hidden_layer is None:
@@ -23658,7 +23675,10 @@ class PipelinePredictionManager:
             if self.pipeline.use_transformer and self.pipeline.model2 is not None:
                 print("\n[🔄] Running Transformer forward method (Transformer)")
                 if X is not None and y is not None:
-                    sequence_ids = self.pipeline._features_to_sequence(X_train)
+                    if infer_y == 'classification':
+                        sequence_ids = self.pipeline._features_to_sequence(X_train)
+                    else:
+                        sequence_ids = X.copy()
                 else:
                     sequence_ids = self.pipeline.sequence_encoding(dataset, label_map=label_map)
 
