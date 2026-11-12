@@ -4,7 +4,7 @@ setuptools>=84.0.0
 wheel>=0.48.0
 
 # ===== Testing =====
-pytest>=9.1.0
+pytest>=9.2.0
 pytest-cov>=4.1.0
 pytest-xdist>=3.8.0  # parallel tests
 
