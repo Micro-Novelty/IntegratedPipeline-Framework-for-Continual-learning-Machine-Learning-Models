@@ -321,6 +321,7 @@ else:
  # use any X and y for classification (plus label map using label_csv)
 main_prediction, label_map = knn_train_run(f_db_path, s_X, s_y, task='classification', pred_config=config, 
                                  label_csv="ManualsTraining.txt", feature_cols=None)
+
 knn_predict_run(main_prediction, s_X, s_y, label_map=label_map)
 
  # for regression:
@@ -414,7 +415,7 @@ sec_main_model.initialize_transformer_model(titles=test_titles, rules=rules, lab
 sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=label_map, raw_X=s_X, raw_Y=s_y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
 sec_main_model.train_mlp_model(titles=test_titles, rules=rules, label_map=label_map, X=s_X, y=s_y, task='classification', train_epochs=500, momentum=0.9, lr=0.01)
 sec_main_model.train_transformer(titles=test_titles, rules=rules, label_map=label_map, X=s_X, y=s_y,  task='classification', d_model=128, train_epochs=10, 
-                                    mode='dynamic_backward', lr=0.5, batch_size=4)
+                                    mode='fixed_backward', lr=0.5, batch_size=4)
 sec_main_model.train_lstm(titles=test_titles, rules=rules, label_map=label_map, raw_X=s_X, raw_Y=s_y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
 
 
@@ -693,21 +694,35 @@ from AbstractIntegratedModule import initialize_snn_network
 
 # n_hidden and seed can be changed and flexible.
 # X, y, and label map is a must samples to pass.
-net, hidden_layer, utility = initialize_snn_network(X, y, sec_label_map, n_hidden=64, seed=42)
+titles, _, class_label_map = class_main.load_labels_from_csv("ManualsTraining.txt", "window_title", "label")
 
-encoder, net, reports, warnings = train_snn_network(X=X, y=y, epochs=50,
-      net=net, hidden_layer=hidden_layer, task='regression', # pass your net, hidden_layer and task (can be classification and regression)
+net, hidden_layer, utility = initialize_snn_network(X, y, sec_label_map, n_hidden=64, seed=42)
+class_net, class_hidden_layer, class_utility = initialize_snn_network(s_X, s_y, class_label_map, n_hidden=64, seed=35)
+
+class_encoder, class_net, reports, warnings = train_snn_network(X=s_X, y=s_y, epochs=50,
+      net=class_net, hidden_layer=class_hidden_layer, task=None, # pass your net, hidden_layer and task (can be classification and regression)
       batch_size=32, n_steps=20, # n number of steps for Input encoding for Noise robustness, higher steps, higher robustness from Noise.
       n_hidden=64, lr=2e-3,  # pass hidden layers (n_hidden) for the SNN Network (n_hidden must match the previous initialized n_hidden), and learning rate for the SNN network.
-      pretrain_steps=200, unsupervised_stdp=False # pretrain steps can be set to 0 if unsupervised_std is set to False (This is for STDP Unsupervised leearning for the SNN before BPTT Training in order to shape better Weights)
+      pretrain_steps=200, unsupervised_stdp=True, jepa_pretrain_enabled=True# pretrain steps can be set to 0 if unsupervised_std is set to False (This is for STDP Unsupervised leearning for the SNN before BPTT Training in order to shape better Weights)
       )
+      
+encoder, net, reports, warnings = train_snn_network(X=X, y=y, epochs=50,
+      net=net, hidden_layer=hidden_layer, task=None, # pass your net, hidden_layer and task (can be classification and regression)
+      batch_size=32, n_steps=20, # n number of steps for Input encoding for Noise robustness, higher steps, higher robustness from Noise.
+      n_hidden=64, lr=2e-3,  # pass hidden layers (n_hidden) for the SNN Network (n_hidden must match the previous initialized n_hidden), and learning rate for the SNN network.
+      pretrain_steps=200, unsupervised_stdp=True, jepa_pretrain_enabled=True # pretrain steps can be set to 0 if unsupervised_std is set to False (This is for STDP Unsupervised leearning for the SNN before BPTT Training in order to shape better Weights)
+      )
+      
 # This function already includes diagnostic modules for the Whole SNN network to give you a Clearer picture of the SNN Condition before Prediction.
 # Very High Dead neurons is a sign of Bad development, consider to Increase hidden layers or learning rate in order for the Model to improve.
 
 # x must be a two dimensional sample, if X.ndim > 2, consider reshaping the X to be a 2D sample safely.
+class_results = snn_predict(X=s_X, y=s_y, task='classification', label_map=class_label_map, encoder=class_encoder, net=class_net)
 results = snn_predict(X=X, y=y, task='regression', label_map=sec_label_map, encoder=encoder, net=net)
 
-print('[>] Results: ', results)
+print('[>] Regression Results: ', results)
+print('[>] Classification results:', class_results)
+
 # net is the SNNNetwork Class, and Encoder is PoissonEncoder, both are required for Prediction and must be passed in this function, consider saving the SNN net and the encoder using json for later use.
 # Small Note:
 # - This architecture is not guaranteed to work best for Classifying tabular datas, its good for time series event based activity classification.
