@@ -1,6 +1,7 @@
-# [=] AbstractIntegratedModule - Specialized Deep Learning Framework for Continual-learning Models.
+# [=] AbstractIntegratedModule 
+### A Specialized Deep Learning Framework for Continual-learning edge AI Models.
 
-**Specialized Python framework that provides Continual learning with persistent memory capability for Machine-learning Models**
+**Specialized Python framework that provides Continual learning with persistent memory capability for Machine-learning Models that works for edge systems**
 _________________________________________________________________________________________________
 
 <img width="800" height="400" alt="Energy_Consumption_Training py - Desktop - Visual Studio Code 18_10_2026 12_57_26" src="https://github.com/user-attachments/assets/a9ea0b41-3761-4302-bccb-a3228dd77fd3" />
