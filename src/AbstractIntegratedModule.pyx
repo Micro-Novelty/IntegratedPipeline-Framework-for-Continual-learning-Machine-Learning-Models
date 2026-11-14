@@ -7585,16 +7585,11 @@ class ExplainabilityModule:
         # Train on this single example for a few epochs
         self.pipeline.model3.train(X_features, y_onehot, epochs=1000, lr=self.pipeline.mlp.lr, verbose=True, max_samples_for_focused_fit=200)
         self.pipeline.model3.lr = old_lr  # Restore old LR
-        # 5. Store in memory gate for fast retrieval
-        self.pipeline.modular_prediction_saving(
-            self.pipeline.encode(text, self.pipeline.vocab),
-            X_features,
-            correct_label
-        )
-        # 6. Add to buffer for batch consolidation later.
+   
+        # 5. Add to buffer for batch consolidation later.
         self.feedback_buffer.append((X_features, y_onehot, text, correct_label))
         
-        # 7. Batch train when buffer is full
+        # 6. Batch train when buffer is full
         if len(self.feedback_buffer) >= self.buffer_size:
             print(f"\n[🔄] Buffer full with {len(self.feedback_buffer)} feedback examples. Starting batch training...")
             self._batch_train_from_feedback()
@@ -8844,6 +8839,16 @@ class ModelStorage:
             finally:
                 if conn:
                     conn.close()
+                    
+    def get_depth(self, lst):
+        if not isinstance(lst, list):
+            return 0
+        if not lst:
+            return 1
+        return 1 + max(self.get_depth(item) for item in lst)
+        
+    def is_more_than_2d(self, lst):
+        return self.get_depth(lst) > 2
 
 
     def _validate_and_repair(self, data, memory_name=None):
@@ -8888,17 +8893,17 @@ class ModelStorage:
                 # dynamic corruption check 
                 if isinstance(value, list):
                     try:
-                        arr = np.asarray(value)
-                        if arr.ndim > 2:
-                            print(f'[!] Corrupted value for key {key} '
-                                f'(ndim={arr.ndim}), removing')
+						
+                        if self.is_more_than_2d(value):
+                            print(f'[!] Corrupted value for key: {key} with more than 2 dimensions')
                             continue
 
-                        if num_classes > 0 and arr.ndim == 1 and \
-                        len(arr) not in (num_classes, num_classes * 2):
+                        if num_classes > 0 and \
+                        len(value) not in (num_classes, num_classes * 2):
                             print(f'[!] Suspicious shape for key {key}: '
                                 f'{arr.shape}, expected {num_classes} — removing')
                             continue
+                            
                     except Exception as e:
                         print(f'[>] Cannot determine value: {e}')
                         continue
@@ -9204,7 +9209,7 @@ class ModelStorage:
             c = conn.cursor()      
             
             c.execute("""
-            SELECT weights FROM accurate_cache_storage 
+            SELECT weights FROM weight_storage
             WHERE memory_name = ? AND is_active = 1
             """, (memory_name,))               
         
@@ -13430,7 +13435,6 @@ class IntegratedPipeline:
         self.autonomous = False 
         self.show_explainability_details = True    
         self.freeze_learning = False 
-        self._cache_save_count = None
         self._prob_save_count = None
         self.hashing_vectorizer = None
 
@@ -13976,7 +13980,7 @@ class IntegratedPipeline:
         if not memory:
             return (False, "Empty dict (no memory)", None)
 
-        valid_keys = {'TW', 'MW', 'TP', 'MP', 'TA', 'local',
+        valid_keys = {'TP', 'MP', 'TA', 'local',
                     '_cached_probs', '_data'}
 
         for key, value in memory.items():
@@ -14727,32 +14731,6 @@ class IntegratedPipeline:
 
         return anisotropy
 
-    def modular_prediction_saving(self, X, X2, output):
-        memory_name = self.memory_name
-
-        X = self._sanitize_for_storage(X)
-        X2 = self._sanitize_for_storage(X2)
-        output = self._sanitize_for_storage(output)
-
-        if self.memory is None:
-            self.memory = {}
-
-        elif not isinstance(self.memory, dict):
-            print(f'[!] Warning: memory was {type(self.memory)}, converting to dict')
-            # Try to convert or reset
-            if isinstance(self.memory, np.ndarray):
-                # If memory was an array, changing type - log it
-                print(f'[!] Converting memory from array to dict, old shape: {self.memory.shape}')
-            self.memory = {}
-
-        self.memory['TW'] = X, output # transformers Weight
-        self.memory['MW'] = X2, output # MLP Weight
-        try:
-            print('🚀 Memory Prediction Added!')
-            self.storage.save_model_dict(memory_name, self.memory, type='Pipeline', model_type='prediction')
-        except Exception as e:
-            print(f'[!] Cant save model memory: {e}')
-
 
     def modular_probability_saving(self, X, X2, prob):
         memory_name = self.memory_name
@@ -15394,8 +15372,6 @@ class IntegratedPipeline:
             if fresh_probs.ndim == 1:
                 fresh_probs = fresh_probs[np.newaxis, :]
 
-            cached_count = 0   # track global cache count
-
             for i, fresh_idx in enumerate(needs_fresh):
                 row = fresh_probs[i]
 
@@ -15407,15 +15383,6 @@ class IntegratedPipeline:
                     row = aligned
 
                 chunk_probs[fresh_idx] = row
-
-                # cap caching meaningfully
-                if cached_count < 2:
-                    self.modular_prediction_saving(
-                        fresh_ids[i:i+1],
-                        fresh_X[i:i+1],
-                        row[np.newaxis, :]
-                    )
-                    cached_count += 1
 
 
         return np.array([
@@ -15602,14 +15569,7 @@ class IntegratedPipeline:
 
                 batch_probs[idx] = row
 
-                # instance-level counter
-                if getattr(self, '_cache_save_count', 0) < 2:
-                    self.modular_prediction_saving(
-                        fresh_input_ids[i:i+1],
-                        fresh_X_raw[i:i+1],
-                        row[np.newaxis, :]
-                    )
-                    self._cache_save_count = getattr(self, '_cache_save_count', 0) + 1
+
 
         # build valid_probs with guaranteed consistent shape
         valid_probs = []
@@ -15824,9 +15784,6 @@ class IntegratedPipeline:
             else:
                 print('[+] Autonomous dynamic prediction: ')
                 probs, details = self.ensemble.predict_ensemble(input_ids, X, y, method='dynamic', embedded=use_embedded) 
-
-            self.modular_prediction_saving(input_ids, X, probs)
-            print('🚀 Memory Added!')
 
         return probs
 
@@ -18608,40 +18565,43 @@ class AccurateAnswerCache:
             best_combined_sim = 0.0
 
             for entry in self.cache.values():
-                mlp_sim = self.pipeline.cosine_robust_similarity(x_mlp, entry['x_mlp'])
+                if 'x_mlp' in entry and 'input_ids' in entry:
+                    mlp_sim = self.pipeline.cosine_robust_similarity(x_mlp, entry['x_mlp'])
 
-                seq_sim = 1.0
-                if input_ids is not None and entry['input_ids'] is not None:
-                    ids_a = self._flatten_indices(input_ids)
-                    ids_b = entry['input_ids'].ravel()
+                    seq_sim = 1.0
+                    if input_ids is not None and entry['input_ids'] is not None:
+                        ids_a = self._flatten_indices(input_ids)
+                        ids_b = entry['input_ids'].ravel()
 
-                    if ids_a.shape != ids_b.shape:
-                        ids_a, ids_b = self._adapt_ids_shape(ids_a, ids_b)
+                        if ids_a.shape != ids_b.shape:
+                            ids_a, ids_b = self._adapt_ids_shape(ids_a, ids_b)
 
-                    min_len = min(len(ids_a), len(ids_b))
-                    if min_len > 0:
-                        seq_sim = float(np.mean(ids_a[:min_len] == ids_b[:min_len]))
+                        min_len = min(len(ids_a), len(ids_b))
+                        if min_len > 0:
+                            seq_sim = float(np.mean(ids_a[:min_len] == ids_b[:min_len]))
 
-                combined_env_sim = ((mlp_sim + seq_sim) / 2 * anisotropy) 
-                deterministic_modelling_sim = ((mlp_sim + seq_sim) / 2 * AME)  
+                    combined_env_sim = ((mlp_sim + seq_sim) / 2 * anisotropy) 
+                    deterministic_modelling_sim = ((mlp_sim + seq_sim) / 2 * AME)  
 
-                combinatorial_absolute_factor = (
-                    deterministic_modelling_sim > best_combined_sim and 
-                    AME < 0.5 and 
-                    entry['confidence'] > 0.5
-                )
-                dynamic_environmental_factor = (
-                    combined_env_sim > best_combined_sim and 
-                    AME > 0.5 and
-                    entry['confidence'] > confidence_threshold
-                )
+                    combinatorial_absolute_factor = (
+                        deterministic_modelling_sim > best_combined_sim and 
+                        AME < 0.5 and 
+                        entry['confidence'] > 0.5
+                    )
+                    dynamic_environmental_factor = (
+                        combined_env_sim > best_combined_sim and 
+                        AME > 0.5 and
+                        entry['confidence'] > confidence_threshold
+                    )
 
-                if combinatorial_absolute_factor:
-                    best_combined_sim = deterministic_modelling_sim
+                    if combinatorial_absolute_factor:
+                        best_combined_sim = deterministic_modelling_sim
+                    else:
+                        best_combined_sim = combined_env_sim
+
+                    best_match = entry
                 else:
-                    best_combined_sim = combined_env_sim
-
-                best_match = entry
+                    return None
 
             if best_match and best_combined_sim >= self.similarity_threshold:
                 best_match['hit_count'] += 1
@@ -18660,6 +18620,7 @@ class AccurateAnswerCache:
 
         except Exception as e:
             print(f'[!] Cant search for Correct answer in cache due to: {e}')
+            traceback.print_exc()
             return None
 
     def _hash_ids(self, input_ids):
@@ -18669,6 +18630,7 @@ class AccurateAnswerCache:
             return hashlib.md5(ids.tobytes(), usedforsecurity=False).hexdigest()
         except Exception as e:
             print(f'[!] cannot create a Hash ID for samples due to: {e}')
+           
             return None
 
     def _make_key(self, x_mlp):
@@ -21781,16 +21743,28 @@ def print_confidence_report(results, top_k=3, max_print_threshold=50):
                 f"|| Top-{top_k}: [{top_str}]")
     return pred_cache
 
-def initialize_snn_network(X=None, y=None, label_map=None, n_hidden=64, n_in=None, n_classes=None, seed=0, random_state=42):
+def initialize_snn_network(X=None, y=None, label_map=None, task=None, n_hidden=64, n_in=None, n_classes=None, seed=0, random_state=42):
     try:
         utility = SNNUtility()
         rng = utility.seed_everything(seed)
+        if isinstance(X, list):
+            X  = np.asarray(X)
         if n_in is not None and n_classes is not None:
             net, hidden_layer = build_snn_network(n_in, n_hidden, n_classes, rng)
         else:
+            if task is None:
+                task = infer_target_type(y=y)
+            if task == 'regression':
+                if X.ndim > 2:
+                    X = X.reshape(len(X), -1)
+                    
             X_train, X_test, y_train, y_test, X_val, y_val = _prepare_train_val_split(X=X, y=y, random_state=random_state)
             n_in = X_train.shape[1]
-            n_classes = max(len(label_map), int(y_train.max() + 1))
+            if label_map is not None:
+                n_classes = max(len(label_map), int(y_train.max() + 1))
+            else:
+                n_classes = y.shape[1]
+                
             net, hidden_layer = build_snn_network(n_in, n_hidden, n_classes, rng)
 
         print(f'[>] Initialized SNN Network with hidden dim: {n_hidden}')
@@ -21825,7 +21799,7 @@ def infer_target_type(y=None, max_classes_ratio=0.05, max_unique_absolute=50):
        
 
 
-def train_snn_network(X=None, y=None, net=None, hidden_layer=None, utility=None, task='classification', label_map=None,
+def train_snn_network(X=None, y=None, net=None, hidden_layer=None, utility=None, task=None, label_map=None,
          epochs=50, batch_size=32, n_steps=20, 
          n_hidden=64, lr=2e-3, seed=0, pretrain_steps=200, unsupervised_stdp=False,
          random_state=42, jepa_pretrain_enabled=False, X_unlabeled=None, jepa_kwargs=None):
@@ -21944,22 +21918,45 @@ def train_snn_network(X=None, y=None, net=None, hidden_layer=None, utility=None,
 
     return encoder, net, report, warnings
 
-def _snn_predict_regression(X, net, encoder, n_mc=20):
+
+def _snn_predict_regression(X, net, encoder, n_mc=20, z_score=1.96):
     sc = getattr(net, 'regression_scalers', None)
     if sc is None:
         raise ValueError('[>] net has no regression_scalers: train it with train_snn_network(task="regression") first')
+    
     X = np.asarray(X, dtype=np.float64)
     X = X.reshape(len(X), -1)                                                    # (N, W*F)
     Xs = np.clip((X - sc['lo']) / sc['span'], 0.0, 1.0)
-
-    # the Poisson encoder is stochastic, its repeated to get a prediction and a spread
+    
     outs = np.stack([net.predict(encoder.encode(Xs), task='regression')[1] for _ in range(n_mc)])   # (n_mc, N, n_out)
+    
+    # Unscaled std in normalized space (useful for scale-free confidence score)
+    norm_std = outs.std(0)
+    
     mean = outs.mean(0) * sc['y_sd'] + sc['y_mu']
-    std = outs.std(0) * sc['y_sd']
-
+    std = norm_std * sc['y_sd']
+    
+    # 1. Confidence Intervals (e.g., 95% CI when z_score=1.96)
+    ci_lower = mean - z_score * std
+    ci_upper = mean + z_score * std
+    
+    # 2. Heuristic Confidence Score (0 to 1)
+    confidence_score = 1.0 / (1.0 + norm_std)
+    
     if mean.shape[1] == 1:
-        mean, std = mean[:, 0], std[:, 0]
-    return {'prediction': mean, 'std': std}
+        mean = mean[:, 0]
+        std = std[:, 0]
+        ci_lower = ci_lower[:, 0]
+        ci_upper = ci_upper[:, 0]
+        confidence_score = confidence_score[:, 0]
+        
+    return {
+        'prediction': mean,
+        'std': std,
+        'ci_lower': ci_lower,
+        'ci_upper': ci_upper,
+        'confidence': confidence_score
+    }
 
 
 def snn_predict(X=None, y=None, task='classification', label_map=None, encoder=None, net=None, random_state=42, max_print_threshold=50):
@@ -22000,6 +21997,7 @@ def snn_predict(X=None, y=None, task='classification', label_map=None, encoder=N
 
     if task == 'regression':
         result = _snn_predict_regression(X, net, encoder)
+        print(f"[>] SNN Prediction: {result['prediction']} || Confidence: {result['confidence_score']}")
         return result
 
     try:
