@@ -1796,16 +1796,18 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
       from AbstractIntegratedModule import train_snn_network
       from AbstractIntegratedModule import snn_predict
       from AbstractIntegratedModule import initialize_snn_network
+      from AbstractIntegratedModule import set_memory
+      from AbstractIntegratedModule import save_memory
     
 
       # if your X samples (for regression and classification) has large values, consider re-scaling your X samples to lower range to [-1, 1] to prevent Exploding gradients.
       
       # X = main_model._safe_to_2d_float(X) if your X samples has len(X.shape) > 2 or you can reshape the X yourself using X.reshape(...).
 
-      # load existing memory
+      # load existing memory if present.
       # X, y, memory name is just a placeholder (replace it).
       X, y, memory_name = ..., ..., None.
-      db_path = 'snn_memory.db' -> just a placeholder, change it.
+      db_path = 'snn_memory.db' # -> just a placeholder, change it.
       
       _, label_csv, task, label_map, _, _ = set_memory(db_path, X, y, new_memory=memory_name)
       
