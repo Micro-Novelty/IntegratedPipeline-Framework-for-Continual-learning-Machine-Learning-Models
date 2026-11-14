@@ -139,6 +139,9 @@ jobs:
             else
               cp readme-docs/opt-README.md "$GITHUB_WORKSPACE/rust_optimization_/target/wheels/opt-README.md"
             fi
+            
+            mkdir -p "$wheel_dir"
+            cp readme-docs/opt-README.md "$wheel_dir/opt-README.md"
             echo "✅ opt-README.md bundled with Rust wheels"
           else
             echo "⚠️ readme-docs/opt-README.md not found, skipping"
