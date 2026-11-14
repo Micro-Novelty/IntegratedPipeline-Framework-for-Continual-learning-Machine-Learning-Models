@@ -49,8 +49,8 @@ def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_con
     ssl_context=None, # used by the Agent server. (optional)
     client_ssl_context=None # used by the client. (optional)
     ) 
-    
-    
+
+
     main_prediction = PipelinePredictionManager(
         main_model, # your initialized pipeline
         label_csv=label_csv, 
@@ -67,7 +67,7 @@ def init_setup(db_path, X, y, memory_name=None, csv=None, new_task=None, new_con
         titles, _, label_map = main_prediction.load_labels_from_csv(
             label_csv,  # the name of your .txt file with CSV format.
             'window_title', 'label')
-            
+
 
     # Quantization config is optional
     qcfg = QuantConfig(enabled=True, w_bits=8, a_bits=8)
@@ -109,7 +109,7 @@ def one_train_round(memory_name, main_model, db_path, X, y, with_training=False,
             main_model.train_transformer(titles=titles, rules=rules, label_map=label_map, X=X, y=y,  task=task, d_model=64, train_epochs=10, 
                                             mode='dynamic_backward', lr=0.5, batch_size=4)
             main_model.train_lstm(titles=titles, rules=rules, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
-            
+
             # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
             save_memory(db_path, memory_name, label_csv, X, y, task, label_map)
 
@@ -165,14 +165,14 @@ def train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_col
     one_train_round(memory_name, main_model, db_path, X, y, with_training,
         task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
     return main_prediction, main_model
-    
+
 
 def one_run(db_path, X, y, task=None, pred_config=None, label_csv=None, feature_cols=None, 
             new_memory=None, with_training=True, port=None):
     memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols, port=port)
     one_train_round(memory_name, main_model, db_path, X, y, with_training,
         task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
-    
+
     results, chosen_label, confidence = predict(main_prediction, X, y, label_map=label_map)
 
     return results, chosen_label, confidence
@@ -229,13 +229,15 @@ def knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_trai
     else:
         print('[>] Invalid task name')
 
+
 def knn_train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, new_memory=None, with_training=True):
     memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
-    
+
     knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_training,
        task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
 
     return main_prediction, label_map
+
 
 def knn_predict_run(main_prediction, X, y, label_map=None):
     transformer_probs, attn_weights, prediction = main_prediction.knn_forward_inference(X, y,
@@ -305,7 +307,7 @@ else:
                                             label_csv='ManualsTraining.txt', feature_cols=None, port=5000)
     reg_main, reg_model = train_run(f_db_path, X, y, task='regression', pred_config=config, 
                                 label_csv=None, feature_cols=feature_cols, port=5008)
-    
+
     sec_class_main, sec_class_model = train_run(f_db_path, s_X, s_y, task='classification', pred_config=None, 
                                             label_csv='ManualsTraining.txt', feature_cols=None, port=5009)
     sec_reg_main, sec_reg_model = train_run(f_db_path, X, y, task='regression', pred_config=config, 
@@ -313,7 +315,6 @@ else:
 
     results, chosen_label, confidence = one_run(f_db_path, s_X, s_y, with_training=False)
     results, chosen_label, confidence = one_run(f_db_path, X, y, with_training=False)
-    
 
 
 # ==== Use pipeline_setup.py continual learning workflow ======
@@ -353,7 +354,7 @@ rules = [
          (r'music|spotify|soundcloud|audio|player', 'entertainment'),
          (r'game|gaming|steam|epic|play', 'gaming'),
          (r'facebook|instagram|tiktok|social|post', 'social_media'),
-         
+
          # === BROWSING ===
          (r'chrome|firefox|edge|safari|browser', 'browsing'),
          (r'google|search|wiki|wiki|article', 'information'),
@@ -487,7 +488,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
         # DEVELOPMENT: not-secure for P2P networking
     main_model.timeout = 20000
     sec_model.timeout = 20000
-        
+
     # Agent 1 - Primary (Port 5555)
     agent1 = CohesiveAgentDeployment(
         pipeline=main_model,
@@ -524,15 +525,15 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
         print("\n🚀 Starting Agent 1...")
         await agent1.start()
         print("✅ Agent 1 started on port 5555")
-        
+
         print("\n🚀 Starting Agent 2...")
-   
+
         await agent2.start()
         print("✅ Agent 2 started on port 5556")
-        
+
         # Give servers time to fully bind.
         await asyncio.sleep(2)
-        
+
         # Get API keys
         api_key = agent1.get_api_key()
         print(f"\n🔑 Using API Key: {api_key[:20]}...")
@@ -552,7 +553,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
                 'window_size': 30,
                 'horizon': 1
                 }
-            
+
         else:
             print('Regression payload is not initialized')
             # set to None for classification tasks.
@@ -575,7 +576,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
             disable_sync=True,
             regression_payload=regression_payload
         ) 
-        
+
         print(f"\n📊 Ensemble Result for Agent 1:")
         print(f"   Prediction: {result.get('prediction', 'N/A')}")
         print(f"   Confidence: {result.get('confidence', 0):.2%}")
@@ -588,7 +589,7 @@ async def agent_test(task='classification', x=None, y=None, titles=None, rules=N
         await asyncio.sleep(30)
         agent1._peer_agent.stop_server()
         agent2._peer_agent.stop_server()
-        
+
     except Exception as e:
         print(f"\n❌ Error in cluster: {e}")
         traceback.print_exc()
@@ -696,23 +697,28 @@ from AbstractIntegratedModule import initialize_snn_network
 # X, y, and label map is a must samples to pass.
 titles, _, class_label_map = class_main.load_labels_from_csv("ManualsTraining.txt", "window_title", "label")
 
-net, hidden_layer, utility = initialize_snn_network(X, y, sec_label_map, n_hidden=64, seed=42)
-class_net, class_hidden_layer, class_utility = initialize_snn_network(s_X, s_y, class_label_map, n_hidden=64, seed=35)
 
+def init_snn_setup(X, y, label_map=None, seed=0, n_hidden=32):
+	net, hidden_layer, utility = initialize_snn_network(X, y, label_map, n_hidden=64, seed=42)
+	return net, hidden_layer, utility
+	
+net, hidden_layer, utility = init_snn_setup(X, y, label_map=None, n_hidden=64)
+class_net, class_hidden_layer, class_utility = init_snn_setup(s_X, s_y, label_map=label_map, n_hidden=64)
+	
 class_encoder, class_net, reports, warnings = train_snn_network(X=s_X, y=s_y, epochs=50,
       net=class_net, hidden_layer=class_hidden_layer, task=None, # pass your net, hidden_layer and task (can be classification and regression)
       batch_size=32, n_steps=20, # n number of steps for Input encoding for Noise robustness, higher steps, higher robustness from Noise.
       n_hidden=64, lr=2e-3,  # pass hidden layers (n_hidden) for the SNN Network (n_hidden must match the previous initialized n_hidden), and learning rate for the SNN network.
       pretrain_steps=200, unsupervised_stdp=True, jepa_pretrain_enabled=True# pretrain steps can be set to 0 if unsupervised_std is set to False (This is for STDP Unsupervised leearning for the SNN before BPTT Training in order to shape better Weights)
       )
-      
+
 encoder, net, reports, warnings = train_snn_network(X=X, y=y, epochs=50,
       net=net, hidden_layer=hidden_layer, task=None, # pass your net, hidden_layer and task (can be classification and regression)
       batch_size=32, n_steps=20, # n number of steps for Input encoding for Noise robustness, higher steps, higher robustness from Noise.
       n_hidden=64, lr=2e-3,  # pass hidden layers (n_hidden) for the SNN Network (n_hidden must match the previous initialized n_hidden), and learning rate for the SNN network.
       pretrain_steps=200, unsupervised_stdp=True, jepa_pretrain_enabled=True # pretrain steps can be set to 0 if unsupervised_std is set to False (This is for STDP Unsupervised leearning for the SNN before BPTT Training in order to shape better Weights)
       )
-      
+
 # This function already includes diagnostic modules for the Whole SNN network to give you a Clearer picture of the SNN Condition before Prediction.
 # Very High Dead neurons is a sign of Bad development, consider to Increase hidden layers or learning rate in order for the Model to improve.
 
