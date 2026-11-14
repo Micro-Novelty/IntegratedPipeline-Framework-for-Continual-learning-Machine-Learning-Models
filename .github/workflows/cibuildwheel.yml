@@ -135,9 +135,9 @@ jobs:
         run: |
           if [ -f "readme-docs/opt-README.md" ]; then
             if [[ "$RUNNER_OS" == "Windows" ]]; then
-              cp readme-docs/opt-README.md "D:/a/rust-target/wheels/opt-README.md"
+                wheel_dir="D:/a/rust-target/wheels"
             else
-              cp readme-docs/opt-README.md "$GITHUB_WORKSPACE/rust_optimization_/target/wheels/opt-README.md"
+                wheel_dir="$GITHUB_WORKSPACE/rust-target/wheels"
             fi
             
             mkdir -p "$wheel_dir"
@@ -154,8 +154,8 @@ jobs:
           path: |
             D:/a/rust-target/wheels/*.whl
             D:/a/rust-target/wheels/opt-README.md
-            rust_optimization_/target/wheels/*.whl
-            rust_optimization_/target/wheels/opt-README.md
+            rust-target/wheels/*.whl
+            rust-target/wheels/opt-README.md
           if-no-files-found: ignore
           retention-days: 7
 
