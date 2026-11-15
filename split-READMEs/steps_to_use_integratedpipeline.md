@@ -835,6 +835,9 @@ ________________________________________________________________________________
    # if you want to use the IntegratedPipeline Transformer only, you can use this setup:
    # ideal when you want blazing Fast Transformer Training and prediction, and the Transformer weights are loaded using JSON, this made Transformer Training much more feasible and easily intuitive for Beginners who wants Complex abstraction models that can run on cheap Edge devices.
 
+   PLACEHOLDER: change this with your actual X and y samples:
+   X, y = ..., ...
+   
    vocab_size = main_model.vocab_size# <your actual vocab size>.
    model_transformer = Transformer(
                   vocab_size=vocab_size
@@ -1149,16 +1152,6 @@ async def p2p_tasks(X=None, y=None, titles=None, rules=None, task='classificatio
    # Note: CohesiveAgentDeployment contains ConsecutivePeerAgent that can start a server once ensemble prediction from peer is started
    # be advised to stop the server too before shutdown-ing CohesiveAgentDeployment cluster
 
-   # example peer_Ip_lists_config.json (de-comment to use)
-   # {
-         # you must put "known_peers" in the config so python can identify the list of IPs and Ports 
-         #  "known_peers": [ 
-         #    ["127.0.0.1", 5555], can be modified using real IP or local IP.
-         #    ["127.0.0.1", 5556],
-               # more ip and port lists...
-      #   ]
-      # }
-
 
    try:
       # Start both agents
@@ -1344,19 +1337,33 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
 
 10. SNN Prediction Usage (Separated from IntegratedPipeline):
     - Example usage:
-    - NOTE: (Our SNN cant handle Regression samples):
+    - This SNN setup can be made continual learning. 
     - ### [CLASSIFICATION TASK AND REGRESSION TASK] :
     - ```python
       from AbstractIntegratedModule import train_snn_network
       from AbstractIntegratedModule import snn_predict
       from AbstractIntegratedModule import initialize_snn_network
+      from AbstractIntegratedModule import set_memory
+      from AbstractIntegratedModule import save_memory
+    
 
       # if your X samples (for regression and classification) has large values, consider re-scaling your X samples to lower range to [-1, 1] to prevent Exploding gradients.
-      # X = main_model._safe_to_2d_float(X) if your X samples has len(shape) > 2
+      
+      # X = main_model._safe_to_2d_float(X) if your X samples has len(X.shape) > 2 or you can reshape the X yourself using X.reshape(...).
 
+      # load existing memory if present.
+      # X, y, memory name is just a placeholder (replace it).
+      X, y, memory_name = ..., ..., None.
+      db_path = 'snn_memory.db' # -> just a placeholder, change it.
+      
+      _, label_csv, task, label_map, _, _ = set_memory(db_path, X, y, new_memory=memory_name)
+      
       # n_hidden and seed can be changed and flexible.
       # X, y, and label map is a must samples to pass.
       net, hidden_layer, utility = initialize_snn_network(X, y, label_map, n_hidden=64, seed=42)
+      # for regression tasks:
+      reg_net, reg_hidden_layer, reg_utility = initialize_snn_network(X, y, label_map=None, task=task, n_hidden=65, seed=0)
+      # label mapcan be set to None so the SNN 
     
       encoder, net, reports, warnings = train_snn_network(X=X, y=y, epochs=50,
             net=net, hidden_layer=hidden_layer, task='<your_task>', # pass your net, hidden_layer and task (can be classification and regression)
@@ -1364,18 +1371,25 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
             n_hidden=64, lr=2e-3,  # pass hidden layers (n_hidden) for the SNN Network (n_hidden must match the previous initialized n_hidden), and learning rate for the SNN network.
             pretrain_steps=200, unsupervised_stdp=False # pretrain steps can be set to 0 if unsupervised_std is set to False (This is for STDP Unsupervised leearning for the SNN before BPTT Training in order to shape better Weights)
             )
-      # This function already includes diagnostic modules for the Whole SNN network to give you a Clearer picture of the SNN Condition before Prediction.
-      # Very High Dead neurons is a sign of Bad development, consider to Increase hidden layers or learning rate in order for the Model to improve.
+          # This function already includes diagnostic modules for the Whole SNN network to give you a Clearer picture of the SNN Overall Conditions (ex: Dead neurons total) before real Prediction is made.
+          # Very High Dead neurons is a sign of Bad development, consider to Increase hidden layers or learning rate in order for the Model to improve.
+
+
+      # Save memory after Training:
+      save_memory(db_path, memory_name, label_csv, X, y, task, label_map)
 
       # x must be a two dimensional sample, if X.ndim > 2, consider reshaping the X to be a 2D sample safely.
-      results = snn_predict(X=X, y=y, task='your_task', label_map=label_map, encoder=encoder, net=net)
+      results = snn_predict(X=X, y=y, task=task, label_map=label_map, encoder=encoder, net=net)
       # net is the SNNNetwork Class, and Encoder is PoissonEncoder, both are required for Prediction and must be passed in this function, consider saving the SNN net and the encoder using json for later use.
       # Small Note:
       # - This architecture is not guaranteed to work best for Classifying tabular datas, its good for time series event based activity classification.
       ```
       
-12. Cross-Session availability:
+11. Cross-Session availability:
    - To use Cross-session avialability to transfer or import memory, consider using this setup:
      - ```python
        main_model._cross_session_availability() # cross session capability function
        ```
+
+12. As an option, You can add more feature's directly to what it should predict, behave using rules you have given, Create a visual dashboard, create a distributed mesh of this agent, and much more features you can try.
+
