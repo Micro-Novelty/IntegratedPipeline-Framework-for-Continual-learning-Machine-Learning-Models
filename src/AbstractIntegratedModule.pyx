@@ -21997,7 +21997,7 @@ def snn_predict(X=None, y=None, task='classification', label_map=None, encoder=N
 
     if task == 'regression':
         result = _snn_predict_regression(X, net, encoder)
-        print(f"[>] SNN Prediction: {result['prediction']} || Confidence: {result['confidence_score']}")
+        print(f"[>] SNN Prediction: {result['prediction']} || Confidence: {result['confidence']}")
         return result
 
     try:
