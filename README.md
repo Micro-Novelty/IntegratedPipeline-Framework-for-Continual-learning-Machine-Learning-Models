@@ -1839,7 +1839,7 @@ calibrated_probability = main_model._handle_distributed_connections(probs, attn_
       # - This architecture is not guaranteed to work best for Classifying tabular datas, its good for time series event based activity classification.
       ```
       
-12. Cross-Session availability:
+11. Cross-Session availability:
    - To use Cross-session avialability to transfer or import memory, consider using this setup:
      - ```python
        main_model._cross_session_availability() # cross session capability function
