@@ -1,7 +1,7 @@
 ## Changelog
 All notable changes to this project will be documented in this file.
 ### PyPi AbstractIntegratedModule New Version changelog:
-- Last Updated: 05/11/2026
+- Last Updated: 15/11/2026
 - Recent Changelogs [Will be reset each new +0.1.0 versions]:
      - v1.2.5 [MAJOR REWORKS]:
        - Reworks Advanced Prediction method to separate Training and prediction to provide User's control.
@@ -40,6 +40,25 @@ All notable changes to this project will be documented in this file.
      - v1.3.3:
        - removed slice of API key logged in terminal using print statements.
        - fixed previous buggy tarball file.
+     - v1.3.4:
+       - requirements of AbstractIntegratedModule is now Transparent.
+       - fixed uninitialized parameters in specific block in Advanced prediction method.
+     - v1.3.5:
+       - Fixed logic bug that wasnt properly updated with the new changes of Transformer prediction in batch prediction in IntegratedPipeline.
+       - fixed edge cases bug where number of classes can be None during advanced prediction method in classification task.
+     - v1.3.6:
+       - fixed bug in correct answer caching where Nonetype object in cache caused a crash that prevent saving correct answer for memory.
+       - fixed inconsistent logic in advanced prediction method where regression sample is treated like a classification samples that gets padded to create sequence based inputs where logically regression samples are already sequence based, causing the model to receive slightly distorted input.
+     - v1.3.7:
+       - Fixed inhomogenous shape bug in model memory storage during loading saved probabilities that is caused by an old function of the IntegratedPipeline class that save memory weights, the underlying old function to save memory weights is now removed and replaced with the previously new save and set memory functions.
+       - Fixed bug in SNN pretraining where JEPA pretraining failed to execute due to a missing label map
+     - v1.3.8:
+       - refined probabilities handling that are loaded as a memory from database to handle arrays of probabilities that are 2D due to leftover artifact from memory serialization during saving memory.
+       - fixed outdated memory corruption logic in IntegratedPipeline class.
+
+
+
+
 
 # Binary-new Release Changelog (Only inside in this repository)
 ### [0.1.0] - 2026-05-05
