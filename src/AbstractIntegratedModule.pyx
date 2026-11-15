@@ -8895,8 +8895,22 @@ class ModelStorage:
                     try:
 						
                         if self.is_more_than_2d(value):
-                            print(f'[!] Corrupted value for key: {key} with more than 2 dimensions')
-                            continue
+                            print(f'[!] value for key: {key} with more than 2 dimensions, getting the actual probabilities...')
+                            try:
+                                try:
+                                    if isinstance(value[0][0][0], (float, int)):
+                                        value = value[0][1]
+                                    else:
+                                        continue
+                                except:
+                                    if isinstance(value[0][0], (float, int)):
+                                        value = value[1]
+                                    else:
+                                        continue
+                            except Exception as e:
+                                print(f'[>] Cannot process probabilities due to possible corruption: {e}')
+                                continue
+
 
                         if num_classes > 0 and \
                         len(value) not in (num_classes, num_classes * 2):
@@ -8906,6 +8920,7 @@ class ModelStorage:
                             
                     except Exception as e:
                         print(f'[>] Cannot determine value: {e}')
+                        traceback.print_exc()
                         continue
 
                 # None values — skipped silently
@@ -13463,7 +13478,9 @@ class IntegratedPipeline:
             print(f'|| Found Matched Memory: {memory_name}!')
             self.memory = self.storage.memory_retrieval(memory_name, type_func='Pipeline', verbose=True)
 
-            is_corrupted, reason, suggested_fix = self.is_memory_corrupted(self.memory)
+            result = self.is_memory_corrupted(self.memory)
+            if result is not None and isinstance(result, tuple):
+                is_corrupted, reason, suggested_fix = result[0], result[1], result[2]
             if is_corrupted:
                 print(f'[⚠️] MEMORY CORRUPTION DETECTED!')
                 print(f'    Reason: {reason}')
@@ -13515,7 +13532,7 @@ class IntegratedPipeline:
             if len(memory) == self._get_num_classes():
                 return memory
             else:
-                print('[!] Memory length is not tied with current number of classes! skipping Memory.')
+         
                 return None
 
         return memory
@@ -14816,7 +14833,14 @@ class IntegratedPipeline:
 
     def model_memory_gate(self, x, x2, i=1):
         memory = self.memory
-        is_corrupted, reason, _ = self.is_memory_corrupted(memory)      
+        result = self.is_memory_corrupted(memory)    
+
+        is_corrupted = False
+        is_val_corrupted = False
+        reason = None
+
+        if result is not None and isinstance(result, tuple):
+            is_corrupted, _, _ = result[0], result[1], result[2]
 
         if isinstance(memory, np.ndarray):
             if self._get_num_classes() and memory.shape[-1] == self._get_num_classes():
@@ -14885,7 +14909,9 @@ class IntegratedPipeline:
 
         if isinstance(memory, dict):
             for key, value in list(memory.items()):
-                is_val_corrupted, reason, _ = self.is_memory_corrupted(value)
+                result = self.is_memory_corrupted(value)
+                if result is not None and isinstance(result, tuple):
+                    is_val_corrupted, reason, _ = result[0], result[1], result[2]
                 if is_val_corrupted and not key.startswith('supervised'):
                     print(f'[!] Removing corrupted entry {key}: {reason}')
                     del memory[key] 
@@ -15029,8 +15055,14 @@ class IntegratedPipeline:
         output_mlp = None
         out = None
 
+        is_corrupted = False
+        reason = None
+        
+
         memory = self.memory
-        is_corrupted, reason, _ = self.is_memory_corrupted(memory)
+        result = self.is_memory_corrupted(memory)
+        if result is not None and isinstance(result, tuple):
+            is_corrupted, reason, _ = result[0], result[1], result[2]
 
         if isinstance(memory, np.ndarray):
             if self._get_num_classes() and not memory.shape[-1] == self._get_num_classes():
@@ -15091,10 +15123,15 @@ class IntegratedPipeline:
 
         if isinstance(memory, dict):
             for key, value in list(memory.items()):
-                is_val_corrupted, reason, _ = self.is_memory_corrupted(value)
-                if is_val_corrupted:
-                    print(f'[!] Removing corrupted entry {key}: {reason}')
-                    del memory[key] 
+                result = self.is_memory_corrupted(value)
+      
+                if result is not None and isinstance(result, tuple):
+                    is_val_corrupted, reason, _ = result[0], result[1], result[2]
+                    if is_val_corrupted:
+                        print(f'[!] Removing corrupted entry {key}: {reason}')
+                        del memory[key] 
+                else:
+                    return None
 
             cache_trans_memory = [key for key, (inp) in memory.items() if key.startswith('TP') and (isinstance(inp, np.ndarray) or isinstance(inp, list)) and self.cosine_robust_similarity(x, inp) >= 0.85]
             cache_mlp_memory =  [key for key, (inp2) in memory.items() if key.startswith('MP') and (isinstance(inp2, np.ndarray) or isinstance(inp2, list)) and self.cosine_similarity(x2, inp2) >= 0.85]
