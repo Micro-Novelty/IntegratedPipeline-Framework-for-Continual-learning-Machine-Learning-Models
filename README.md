@@ -40,6 +40,7 @@ ________________________________________________________________________________
 
 - Workflow:
   *the below workflow explanation is used to explain how user can use our Framework*
+  - The Framework will create 1 automatic SQlite database with a name 'activity_log.db' ('activity_log.db' name cannot be changed) for storing memory primitives such as Transformer weights blobs, and 1 user approved database used for continual learning behavior (Database name can be customizable for this part) used for loading samples, memories, and required tasks.
   - User trains the Model on task A -> using memory name 'memory-A' and save the weights on the Database, When Users switch to train the same Model on task B, change memory name to 'Memory-b', when User wants to load the same Weights that used to train the Model on task A (for prediction purpose), user can directly use memory name: 'memory-A', and the Weights used after training on task A will be loaded automatically to the Model and ready to be used for real prediction.
   
   > Note: *'model' here refers to a single instance of IntegratedPipeline model*
@@ -48,6 +49,7 @@ ________________________________________________________________________________
   - ```[model initialized using 'memory-A' memory name -> train on Task A -> save weights -> change memory name to 'memory-B' -> train on task B -> save weights -> user prefer to load memory for prediction on task A -> load weights for task A -> weights for task B remains unchanged and not deleted -> ...]```
 
   > Note -> This method is scalable and supports multiple Models sharing the same memory name.
+  > When the Model loads a memory, it first looks into the SQLite database, and retrieve the Old X and y samples, compare its geometric complexity using Linear Centered Kernel Alignment with the current samples (The best mathematical formula for comparing samples with samples with flexibility), if the Geometric complexity has 95% similarity with the current samples, the memory will be loaded.
 
   - Training happens and needed *when* switching between Tasks using different memory name (ex: from task A to task B with different memory name) *if* you have not Train the Model on task B. if you already trained the Model on task A and task B (task A and B is only used for Training), Training is no longer needed and you can do prediction on task C (task C must have similar shapes and lengths like task A but with different values) using memory name 'memory-A', or prediction on task D (task D must have similar shapes and lengths like task B but with different values) using memory name 'memory-B'.
     > Workflow 1 (Training) ->  ```[you want to switch from task A to task B for prediction, but you haven't train your model on task B -> train the model first on task B -> save the Weights to database -> the Model can load task B Weights for later prediction on different tasks (ex: task C with regression based samples) -> ...]```
@@ -138,8 +140,8 @@ ________________________________________________________________________________
 - The library published in PyPi includes precompiled binaries (Python wheels) for:
  - aarch64 manylinux_2_17+ architecture -> Python version 3.10, 3.11 only.
  - aarch64 musllinux_1.2+ architecture -> Python version 3.10, 3.11 only.
- - Windows 64 bit architecture (Python 3.10, 3.11, 3.12)
- - single tarball file for broad compatibilty accross different Architectures.
+ - Windows 64 bit architecture (Python 3.10, 3.11, 3.12.
+ - single tarball file for broad compatibilty accross different Architectures and versions compatible up to Python version 3.14.
  - Note:
    - For Linux x86-64 and Mac-OS Python Wheels can be downloaded using pip steps below.
  ____________________________________________________________________________________________________
@@ -185,7 +187,7 @@ ________________________________________________________________________________
 IntegratedPipeline offers:
 
 1. Local-Based Continual learning ML Model Orchestrator:
-   - IntegratedPipeline Creates its own SQLite Database inside Your Computer once the library is executed, This database is used directly to store the AI Memory, Attention weights, predicted Output, and identified peer, all without leaving the machine, The Database will be created Automatically once you run the library, database name saved as activity_log.db.
+   - IntegratedPipeline Creates its own SQLite Databases inside Your Computer once the library is executed, This database is used directly to store the AI Memory, Attention weights, predicted Output, and identified peer, all without leaving the machine, The Database will be created Automatically once you run the library, database name saved as activity_log.db.
    - Most of the underlying weights are saved as JSON, *Transformer weights is saved as Binary blobs*.
 
 2. Continously Learning behavior for an edge AI:
@@ -274,7 +276,7 @@ ________________________________________________________________________________
 > Requirements for installation markdown file can be downloaded here: [installation_guides](Installation.md)
 ________________________________________________
 **Installation:**
-- Python version: Python 3.10 -> Python 3.14.
+- Python version: Python 3.10 -> Python 3.13.
 - pip install for Quick install:
 - ```bash
   pip install AbstractIntegratedModule # or
@@ -1220,7 +1222,7 @@ ________________________________________________________________________________
     ```python
     from pipeline_setup import one_run
     from pipeline_setup import train_run
-    import pandas
+    import pandas as pd
 
     # EXAMPLE REGRESSION TASK:
     df = pd.read_csv("PJME_hourly.csv", parse_dates=["Datetime"], index_col="Datetime")
@@ -1253,6 +1255,7 @@ ________________________________________________________________________________
                                       window_size=30, horizon=8) # TASK B is regression type (e.g task B has shape (500, 8))
     t_X, t_y = '<load your third X and y samples> TASK C (e.g task C must have the same shape as task A and B (500, 8) for prediction later).
 
+    # db_path is secondary SQlite database, activity_log,db remains unchanged.
     db_path = 'model_memory_storage.db' # path to your sqlite database, customizable name (must put .db in the end).
 
     # ========= TESTING BLOCK (for validation test) =============
@@ -1309,7 +1312,7 @@ ________________________________________________________________________________
    # or just get your old Transformer:
    # model_transformer = main_model.model2
 
-   sequence_inputs = main_model._features_to_sequence(X, d_model=pipeline.transformer_d_model) # Converts X samples into sequences that the Transformer can recognize.
+   sequence_inputs = main_model._features_to_sequence(X, d_model=main_model.transformer_d_model) # Converts X samples into sequences that the Transformer can recognize.
    # embedded=True will ensure that Transformer forward method will put a correct mask for the samples.
    # mode='dynamic_backward' helps Transformer to gains better accuracy for Complex vocabularies.
    model_transformer.train(sequence_inputs, y, epochs=100, mode='dynamic_backward', lr=0.1, embedded=True, batch_size=2)
@@ -1510,7 +1513,7 @@ async_manager.start(method='Transformer_included', bootstrap_token=None) # booth
 # IMPORTANT NOTE: the async_predict variable will return all the prediction results, prediction success, failures, so you can directly see how the model predicts each batch of the given sample.
 # test_titles and rules are can be set to None if not needed.
 payloads = {'test_titles': test_titles, 'label_map': label_map, 'rules': rules, 'use_transformer': True}
-async_predict = wrapper.prediction_method(payloads, X, y_samples=y, chunk_size=1000,
+async_predict = async_manager.prediction_method(payloads, X, y_samples=y, chunk_size=1000,
                  max_predictions=3, task="auto", timeout=1000,
                  api_key=api_key, client_ip=None, overall_timeout=20000,
                  stop_on_error=False)
@@ -1559,7 +1562,7 @@ print("=== SECURE PEER-TO-PEER CLUSTER ===")
 
 # example task (change to regression if yours are regression task)
 # function must be async to use the await syntax (Non-blocking)
-async def p2p_tasks(X=None, y=None, titles=None, rules=None, task='classification', prediction_manager=None, secondary_model=None)
+async def p2p_tasks(X=None, y=None, titles=None, rules=None, task='classification', prediction_manager=None, main_model=None,, secondary_model=None):
    main_model.distribution.enable_ssl = False # set to false if you dont have SSL key and CERT, this code would instruct AgentDistributedInference that you don't have SSL, and provide you a regular unsecured socket (Not necessary for production)
    secondary_model.distribution.enable_ssl = False
 
@@ -1707,11 +1710,11 @@ if __name__ == '__main__':
                                     window_size=30, horizon=5)
 
    prediction_manager, main_model = train_run(db_path, X2, y2, task='regression', pred_config=config, # get your previous pred_config. 
-              label_csv=None, feature_cols=len(feature_cols, port=5003) # use port 5003
+              label_csv=None, feature_cols=len(feature_cols), port=5003) # use port 5003
    # Loads a new secondary IntegratedPipeline instance (secondary prediction manager isnt needed) and train it
    # this new instance used a different port for P2P so it doesnt conflict with other instance
    _, secondary_model = train_run(db_path, X2, y2, task='regression', pred_config=config, 
-              label_csv=None, feature_cols=feature_cols, port=5004) # use port 5004
+              label_csv=None, feature_cols=len(feature_cols), port=5004) # use port 5004
 
    p2p_tasks(X2, y2, titles=None, rules=None, task='regression', prediction_manager=prediction_manager, model=main_model, secondary_model=secondary_model)
 
