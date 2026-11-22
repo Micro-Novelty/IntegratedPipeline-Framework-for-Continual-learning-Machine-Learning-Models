@@ -19,8 +19,11 @@ ________________________________________________________________________________
 AbstractIntegratedModule is Python Machine Learning Framework that **creates a Model that can Continuously learn, backed by *augmented memory* from SQLite Database to store Weights, in which each a Model memory is auditable, transparent, and allows User to Create a different memory for the Model to learn new things, without overwriting the *previous saved, Trained Weights* inside the SQlite database from different tasks**. Users can firstly Train the Model, and load the required Weights for that specific memory name for later usage, Train the current Model with another task while preserving the previous Trained weights as memory inside the SQlite Database.
 > [!IMPORTANT]
 > This Framework does not provide a standalone, new novel Deep-learning algorithms for a near-perfect Continual learning behavior Model, it is a Python Framework that utilized SQlite database as a way to save Memory and provide a instruction to build a stateful Continual learning Memory augmented Machine learning model.
-> 
-> All of the files provided here can be found in the main Github repository, for Users who read the README in PyPi, and wanted to try out the provided Python, shell or Dockerfile scripts for tests and demo, consider visiting the official github repository:
+> The provided capability of Continual learning does not provides the Model with "Greater accuracy" than baseline Models, this framework is intented to provides Consistent accuracies for Machine learning Models using external Memory (SQlite database) while continuously training using small samples.
+> Note:
+> - This Framework requires a machine with RAM above > 1 GB and memory storage > 4 GB (Does not work in smaller more constrained Single board Computers with lower RAM <256 MB), works accross ARM and x86-64 architectures.
+> - Continuous Training requires Higher RAM usage for regression tasks (Consider to batch samples to smaller samples, and feed to the Model one after another to form smaller memories).
+> - All of the files provided here can be found in the main Github repository, for Users who read the README in PyPi, and wanted to try out the provided Python, shell or Dockerfile scripts for tests and demo, consider visiting the official github repository:
 > - link: https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework
 >
 > *Consider check:*
@@ -182,7 +185,8 @@ ________________________________________________________________________________
 IntegratedPipeline offers:
 
 1. Local-Based Continual learning ML Model Orchestrator:
-   - IntegratedPipeline Creates its own SQLite Database inside Your Computer once the library is executed, This database is used directly to store the AI Memory, Attention weights, predicted Output, and identified peer, all without leaving the machine, The Database will be created Automatically once you run the library, database name saved as activity_log.db. 
+   - IntegratedPipeline Creates its own SQLite Database inside Your Computer once the library is executed, This database is used directly to store the AI Memory, Attention weights, predicted Output, and identified peer, all without leaving the machine, The Database will be created Automatically once you run the library, database name saved as activity_log.db.
+   - Most of the underlying weights are saved as JSON, *Transformer weights is saved as Binary blobs*.
 
 2. Continously Learning behavior for an edge AI:
    - different from LLM that is static and cannot improve beyond its given training condition, ML Models using IntegratedPipeline has a dynamic, flexible continously learning behavior with conditional training algorithms included in the library that has both supervised and unsupervised learning present (mainly the Models used unsupervised learning frequently), The learned input and predicted Output will be stored in the database as a Memory, allowing it to recall its memory during processing and find matching known prediction given if input matched with the stored input inside the database. 
@@ -1070,6 +1074,7 @@ ________________________________________________________________________________
                 main_model.train_lstm(titles=titles, rules=rules, label_map=label_map, raw_X=X, raw_Y=y, n_train=0.8, n_display=5, train_epochs=10, lr=0.1)
                 
                 # save memory right after training to your custom initialized database: (ex: to your data_storage.db)
+                # This function will save the X, y, label_map, memory_name, label_csv, task, as JSON.
                 save_memory(db_path, memory_name, label_csv, X, y, task, label_map)
     
                 # save weights to database
