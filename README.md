@@ -994,8 +994,11 @@ ________________________________________________________________________________
         # port is used for P2P (Optional)
         if port is None:
             port = 5001
-    
+
+        # Boolean that will be used for Parameters for continual learning:
+        # set continuous_training to True when the required task is not None or you can set your own terms for Continual learning switch.
         memory_name, label_csv, task, label_map, feature_cols, config = set_memory(db_path, X, y, new_memory=memory_name)
+        continuous_training = task is not None 
     
         if label_csv is None:
             label_csv = csv
@@ -1044,10 +1047,10 @@ ________________________________________________________________________________
                                 lstm_train_epochs=50, lstm_lr=5e-1, lstm_hidden_dim=64, tf_heads=4, tf_d_model=32,
                                 error_decay=0.75)
     
-        return memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols
+        return memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols, continuous_training
     
     # handle training round for one task at a time:
-    def one_train_round(memory_name, main_model, db_path, X, y, with_training=False, titles=None, rules=None, 
+    def one_train_round(continuous_training=False, memory_name, main_model, db_path, X, y, with_training=False, titles=None, rules=None, 
                     task=None, label_map=None, feature_cols=None, label_csv=None, use_qat=True, qcfg=None, config=None):
         # TRAINING BLOCK: This is where you train the MLP, Transformer, and LSTM models with the specified configurations you want.
     
@@ -1070,7 +1073,7 @@ ________________________________________________________________________________
             # This function will automatically adds the loaded weights to the current model, so you can continue training or prediction without losing any progress.
             memory_loaded, lstm_weights, transformer_weights, mlp_weights, = main_model.load_model_memory()
     
-            if not memory_loaded and with_training:
+            if with_training and continuous_training or memory_loaded:
                 main_model.train_mlp_model(titles=titles, rules=rules, label_map=label_map, X=X, y=y, task=task, train_epochs=500, momentum=0.9, lr=0.01)
                 main_model.train_transformer(titles=titles, rules=rules, label_map=label_map, X=X, y=y,  task=task, d_model=64, train_epochs=10, 
                                                 mode='dynamic_backward', lr=0.5, batch_size=4)
@@ -1097,7 +1100,7 @@ ________________________________________________________________________________
             main_model.initialize_lstm_model(input_size=1, hidden_size=32, output_size=1, dropout_rate=0.1, seed=42)
             memory_loaded, lstm_weights, transformer_weights, mlp_weights, = main_model.load_model_memory()
     
-            if not memory_loaded and with_training:
+            if with_training and continuous_training or memory_loaded:
                 main_model.train_mlp_model(titles=titles, rules=rules, label_map=label_map, X=X, y=y, task=task, train_epochs=500, momentum=0.9, lr=0.01)
                 main_model.train_transformer(titles=titles, rules=rules, label_map=label_map, X=X, y=y,  task=task, d_model=64, train_epochs=10, 
                                                     mode='dynamic_backward', lr=0.5, batch_size=4)
@@ -1129,9 +1132,9 @@ ________________________________________________________________________________
     # set new_memory to None if you are planning to do continuous learning where creating a different memory name is inefficient and took time.
     def train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, 
                 new_memory=None, with_training=True, port=None):
-        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols, port=port)
+        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols, continuous_training = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols, port=port)
     
-        one_train_round(memory_name, main_model, db_path, X, y, with_training,
+        one_train_round(continuous_training=continuous_training, memory_name, main_model, db_path, X, y, with_training,
             task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
     
         # return main_prediction for later usage (like P2P or asynchronous prediction)
@@ -1140,8 +1143,8 @@ ________________________________________________________________________________
     # one full train -> predict.
     def one_run(db_path, X, y, task=None, pred_config=None, label_csv=None, feature_cols=None, 
                 new_memory=None, with_training=True, port=None):
-        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols, port=None)
-        one_train_round(memory_name, main_model, db_path, X, y, with_training,
+        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols, continuous_training = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols, port=None)
+        one_train_round(continuous_training=continuous_training, memory_name, main_model, db_path, X, y, with_training,
             task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
         
         results, chosen_label, confidence = predict(main_prediction, X, y, label_map=label_map)
@@ -1149,7 +1152,7 @@ ________________________________________________________________________________
         return results, chosen_label, confidence
 
     # ================== Continual learning setup for kNN Transformer (OPTIONAL, can be removed) =======================
-    def knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_training=False, titles=None, rules=None, 
+    def knn_transformer_round(continuous_training=False, memory_name, main_prediction, db_path, X, y, with_training=False, titles=None, rules=None, 
                 task=None, label_map=None, feature_cols=None, label_csv=None, use_qat=True, qcfg=None, config=None):
         if task == 'classification':
             # NOTE:
@@ -1167,7 +1170,7 @@ ________________________________________________________________________________
                 memory_k=5, memory_metric='euclidean')  
     
             loaded = main_prediction.load_memory_head_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
-            if not loaded and with_training:
+            if not loaded and with_training or continuous_training:
                 losses, accs, _ = main_prediction.knn_forward_inference(X, y,
                 label_map=label_map, # Label map can be safely set to None during Training phase.
                 training=True, train_epochs=10, task='classification', batch_size=64,
@@ -1187,7 +1190,7 @@ ________________________________________________________________________________
                 memory_k=5, memory_metric='euclidean')  
     
             loaded = main_prediction.load_memory_head_setup(memory_name) # This function is used to load the saved HNSW Memory inside your (activity_log.db) database, and automatically apply the Old Memory back to the knn-augmented Transformer.
-            if not loaded and with_training:
+            if not loaded and with_training or continuous_training:
                 losses, accs, _ = main_prediction.knn_forward_inference(X, y,
                 label_map=label_map, # Label map can be safely set to None during Training phase.
                 training=True, train_epochs=10, task='regression', batch_size=64,
@@ -1202,9 +1205,9 @@ ________________________________________________________________________________
 
     def knn_train_run(db_path, X, y, task, pred_config=None, label_csv=None, feature_cols=None, 
             new_memory=None, with_training=True):
-        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
+        memory_name, main_model, main_prediction, task, label_csv, label_map, qcfg, feature_cols, continuous_training = init_setup(db_path, X, y, memory_name=new_memory, csv=label_csv, new_task=task, new_config=pred_config, cols=feature_cols)
     
-        knn_transformer_round(memory_name, main_prediction, db_path, X, y, with_training,
+        knn_transformer_round(continuous_training=continuous_training, memory_name, main_prediction, db_path, X, y, with_training,
         task=task, label_map=label_map, feature_cols=feature_cols, label_csv=label_csv, use_qat=True, qcfg=qcfg, config=pred_config)
 
         return main_prediction, label_map
