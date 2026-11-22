@@ -108,7 +108,7 @@ ________________________________________________________________________________
 - [Go to Requirements](#requirements)
 - [Go to System-Specific-Notes](#system-specific-notes)
 - [Go to Quickstart with Docker](#docker-container-application)
-- [Go to Step's to use IntegratedPipeline](#steps-for-library-in-depth-usage)
+- [Go to Step's to use IntegratedPipeline](#library-in-depth-usage)
 - [Go to Troubleshooting](#troubleshooting)
 - [Go to Source code](#source-code-of-abstractintegratedmodule)
   
@@ -305,7 +305,7 @@ ________________________________________________
   - json file for peer IP lists (this will allow 2 different peers to connect): [example_peers_list](utility_setups/peer_ip_lists.json)
     
 [OPTIONAL INSTALLATION METHOD]:
-- This installation method is needed for users who doesn't have pip Installed:
+- This installation method is needed for users who don't have pip Installed:
 > - [OPTIONAL] For using AbstractIntegratedModule Binaries:
 >  - (Optional) Download AbstractIntegratedModule Compiled Binary file extension manually in the repository for Users who can't use pip install (Choose one minimal, specified for your needs):
 >    - AbstractOptimizedModules for Optimizing Transformer using Cython (Optional)
@@ -459,7 +459,7 @@ ________________________________________________________________________________
 >   - Commercialize it: Package, brand, and sell the software for profit.
 
 ______________________________________________________________________________________________________________________
-## Step's for library in-depth Usage
+## library in-depth Usage
 > - *Steps to use IntegratedPipeline Markdown file can be downloaded here:* [Download steps to use IntegratedPipeline markdown file](https://github.com/Micro-Novelty/IntegratedPipeline-Framework-for-Continual-learning-Machine-Learning-Models/blob/main/split-READMEs/steps_to_use_integratedpipeline.md)
 
 0. Download via PIP:
