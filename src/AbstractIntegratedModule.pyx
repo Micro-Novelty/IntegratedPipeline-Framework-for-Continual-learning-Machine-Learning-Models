@@ -19731,9 +19731,8 @@ class PipelineAsyncManager:
         # Generate initial API key if enabled
         if self.config.require_api_key:
             self._default_api_key = api_key if api_key else self.api_key_manager.generate_key({'type': 'default'})
-            print(f"[🔑] Default API Key used: {self._default_api_key}")
-            print("[!] Store the key securely - it won't be shown again!")
-
+            print(f"[🔑] Default API Key is used.")
+       
         self.state_file = state_file if state_file is not None else 'security_state.json'
         self.admin_keys: Dict[str, dict] = {}  # admin_token -> {role, created_at}
         self._load_state()
