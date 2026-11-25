@@ -22,6 +22,7 @@ AbstractIntegratedModule is Python Machine Learning Framework that **creates a M
 > The provided capability of Continual learning does not provides the Model with "Greater accuracy" than baseline Models, this framework is intented to provides Consistent accuracies for Machine learning Models using external Memory (SQlite database) while continuously training using small samples.
 > Note:
 > - This Framework requires a machine that supports Python with RAM above > 2 GB and free memory storage > 8 GB for faster Continuous Training on classification tasks (Does not work or perform worse in smaller more constrained Single board Computers with lower RAM <256 MB and memory storage < 2 GB), works stable accross ARM and x86-64 architectures.
+> - This Framework is made to be used for local tasks where fast Continuous Training can be made as a background backend process, assuming user has time to wait for Training to be completed and NOT intended to be used for tasks requiring very fast decision making (in milisencond range).
 > - Continuous Training requires Higher RAM usage for regression tasks (Consider to batch samples to smaller samples, and feed to the Model one after another to form smaller memories).
 > - All of the files provided here can be found in the main Github repository, for Users who read the README in PyPi, and wanted to try out the provided Python, shell or Dockerfile scripts for tests and demo, consider visiting the official github repository:
 > - link: https://github.com/Micro-Novelty/IntegratedPipeline-Specialized-Non-LLM-AI-Agent-Framework
