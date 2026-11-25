@@ -1,8 +1,9 @@
-## Requirements and Installations
-
+____________________________________________________________________________________________________________________
+## Requirements
+> Requirements for installation markdown file can be downloaded here: [installation_guides](Installation.md)
 ________________________________________________
 **Installation:**
-- Python version: Python 3.10 -> Python 3.14.
+- Python version: Python 3.10 -> Python 3.13.
 - pip install for Quick install:
 - ```bash
   pip install AbstractIntegratedModule # or
@@ -16,7 +17,7 @@ ________________________________________________
 
 **Requirements for IntegratedPipeline:**
 - X and y samples or test titles dataset and rules samples for Training and Prediction (see Library in depth usage instructions below).
-  - Test titles dataset and rules example can be seen in [main](main.py)
+  - Test titles dataset and rules example can be seen in [main](utility_setups/example_dataset.txt)
 
 - for labels assignation used for Training and prediction on Classification task only:
  - .txt file that contains labels used for training and prediction in csv format, example will be provided below.
@@ -30,7 +31,7 @@ ________________________________________________
   - json file for peer IP lists (this will allow 2 different peers to connect): [example_peers_list](utility_setups/peer_ip_lists.json)
     
 [OPTIONAL INSTALLATION METHOD]:
-- This installation method is needed for users who doesn't have pip Installed:
+- This installation method is needed for users who don't have pip Installed:
 > - [OPTIONAL] For using AbstractIntegratedModule Binaries:
 >  - (Optional) Download AbstractIntegratedModule Compiled Binary file extension manually in the repository for Users who can't use pip install (Choose one minimal, specified for your needs):
 >    - AbstractOptimizedModules for Optimizing Transformer using Cython (Optional)
@@ -40,11 +41,11 @@ ________________________________________________
 >       - Supported OS: Mac-Os, linux x86-64 and Windows, bundled in zip folders.
 >   - (Optional) Install AbstractIntegratedModule Compiled binaries from release section:
 >   - (Optional) Libraries needed if pip is not installed (For using Compiled binary, not python wheels):
->     - Paiohttp
+>     - aiohttp
 >     - scikit-learn
 >     - numpy
->     - psutilandas
->     - 
+>     - psutil
+>     - pandas
 >     - cryptography
 _______________________________________________________________________________________________________________________
 ### Requirements for Docker container
@@ -168,5 +169,4 @@ ________________________________________________________________________________
      # Stop all agents
      docker-compose down
      ```
-    
-
+   
